@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2023/4/20.
 //
 
-#ifndef TEST_LIST_H
-#define TEST_LIST_H
+#ifndef LIST_H
+#define LIST_H
 
 #include <stdbool.h>
 
@@ -50,4 +50,4 @@ static inline bool listIsEmpty(const listNode *head) {
     return head->next == head && head->prev == head;
 }
 
-#endif //TEST_LIST_H
+#endif //LIST_H

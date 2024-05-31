@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2023/3/14.
 //
 
-#ifndef TEST_CALCULATOR_H
-#define TEST_CALCULATOR_H
+#ifndef CALCULATOR_H
+#define CALCULATOR_H
 
 #include "global_function.h"
 
@@ -33,4 +33,4 @@ const char *calcEqnErr2Str(calcEqnErr err);
 
 __attribute__((unused)) void calculatorUsage(void);
 
-#endif //TEST_CALCULATOR_H
+#endif //CALCULATOR_H

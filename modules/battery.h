@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2023/3/9.
 //
 
-#ifndef TEST_BATTERY_H
-#define TEST_BATTERY_H
+#ifndef BATTERY_H
+#define BATTERY_H
 
 #include "global_config.h"
 #include "global_function.h"
@@ -40,4 +40,4 @@ __attribute__((unused)) void batteryFullCount(void);
 
 /** @} */
 
-#endif //TEST_BATTERY_H
+#endif //BATTERY_H

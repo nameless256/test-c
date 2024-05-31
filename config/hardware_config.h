@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2023/3/10.
 //
 
-#ifndef TEST_HARDWARE_CONFIG_H
-#define TEST_HARDWARE_CONFIG_H
+#ifndef HARDWARE_CONFIG_H
+#define HARDWARE_CONFIG_H
 
 #define NO_CONFIG_PIN (-1)
 
@@ -19,4 +19,4 @@
 
 /** @} */
 
-#endif //TEST_HARDWARE_CONFIG_H
+#endif //HARDWARE_CONFIG_H

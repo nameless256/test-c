@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2023/3/9.
 //
 
-#ifndef TEST_GLOBAL_FUNCTION_H
-#define TEST_GLOBAL_FUNCTION_H
+#ifndef GLOBAL_FUNCTION_H
+#define GLOBAL_FUNCTION_H
 
 #include <string.h>
 #include <stdint.h>
@@ -75,4 +75,4 @@ char *macNum2Str(uint64_t macNum, char buf[]);
  */
 int macAddressAutoPartition(int argc, char *argv[]);
 
-#endif //TEST_GLOBAL_FUNCTION_H
+#endif //GLOBAL_FUNCTION_H

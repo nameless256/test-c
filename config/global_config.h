@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2023/3/10.
 //
 
-#ifndef TEST_GLOBAL_CONFIG_H
-#define TEST_GLOBAL_CONFIG_H
+#ifndef GLOBAL_CONFIG_H
+#define GLOBAL_CONFIG_H
 
 #include "hardware_config.h"
 
@@ -70,4 +70,4 @@
 }
 /** @} */
 
-#endif //TEST_GLOBAL_CONFIG_H
+#endif //GLOBAL_CONFIG_H

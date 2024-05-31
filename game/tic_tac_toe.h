@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2023/12/29.
 //
 
-#ifndef TEST_TIC_TAC_TOE_H
-#define TEST_TIC_TAC_TOE_H
+#ifndef TIC_TAC_TOE_H
+#define TIC_TAC_TOE_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -35,4 +35,4 @@ ticTacToe *ticTacToeCreate();
 
 void ticTacToeDestroy(ticTacToe **pObj);
 
-#endif //TEST_TIC_TAC_TOE_H
+#endif //TIC_TAC_TOE_H

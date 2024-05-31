@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2024/1/4.
 //
 
-#ifndef TEST_SUDOKU_H
-#define TEST_SUDOKU_H
+#ifndef SUDOKU_H
+#define SUDOKU_H
 
 #include "list.h"
 #include "dlx.h"
@@ -134,4 +134,4 @@ void sudokuCancel(sudoku *obj);
 
 void sudokuUsage(void);
 
-#endif //TEST_SUDOKU_H
+#endif //SUDOKU_H

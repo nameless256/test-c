@@ -2,8 +2,8 @@
 // Created by xiaoxianghui on 2024/1/31.
 //
 
-#ifndef TEST_DLX_H
-#define TEST_DLX_H
+#ifndef DLX_H
+#define DLX_H
 
 /*
  * DLX算法(结构)思想
@@ -107,4 +107,4 @@ uint16_t dlxSearch(dlx *obj, uint16_t count);
  */
 __attribute__((unused)) void dlxUsage(void);
 
-#endif //TEST_DLX_H
+#endif //DLX_H
