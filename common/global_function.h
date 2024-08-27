@@ -20,7 +20,7 @@
 #define nameVal2Str(name)           name2Str(name)
 #define name2StrCase(name)          case name: return name2Str(name)
 #define constraintMapping(value, num, total) \
-        ((total) ? (((value) > (total)) ? (num) : ((value) * (num) / (total))) : 0)
+        ((total) ? (((value) > (total)) ? (num) : ((num) * (value) / (total))) : 0)
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define structOffsetOf(type, member) ((uintptr_t)(&((type *)0)->member))
