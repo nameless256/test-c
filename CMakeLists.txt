@@ -6,7 +6,6 @@ set(CMAKE_C_STANDARD 11)
 include_directories(common)
 include_directories(common/algorithm)
 include_directories(common/structure)
-include_directories(config)
 include_directories(game)
 include_directories(modules)
 
