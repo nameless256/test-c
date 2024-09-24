@@ -100,7 +100,7 @@ bool createDir(const char *path) {
             pathDepth--;
             if (pathDepth) copy[strlen(copy)] = '/';
         }
-        if (pathDepth > 128) break;
+        if (pathDepth > 16) break;
     } while (pathDepth);
     free(copy), copy = NULL;
     if (pathDepth) return true;
