@@ -75,4 +75,11 @@ char *macNum2Str(uint64_t macNum, char buf[]);
  */
 int macAddressAutoPartition(int argc, char *argv[]);
 
+/**
+ * 创建目录
+ * @param path 目录的路径
+ * @return 返回bool类型，表示操作是否成功
+ */
+bool createDir(const char *path);
+
 #endif //GLOBAL_FUNCTION_H

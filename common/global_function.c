@@ -82,3 +82,28 @@ int macAddressAutoPartition(int argc, char **argv) {
     system("pause");
     return 0;
 }
+
+#include <io.h>
+
+bool createDir(const char *path) {
+    char *copy = calloc(strlen(path) + 1, 1);
+    if (copy == NULL) return true;
+    strcpy(copy, path);
+    uint8_t pathDepth = 1;
+    do {
+        if (access(copy, F_OK)) {
+            if (mkdir(copy)) {
+                char *p = strrchr(copy, '/');
+                *p = '\0';
+                pathDepth++;
+            } else {
+                pathDepth--;
+                if (pathDepth) copy[strlen(copy)] = '/';
+            }
+        } else {
+            pathDepth = 0;
+        }
+    } while(pathDepth);
+    free(copy), copy = NULL;
+    return false;
+}
