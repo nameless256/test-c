@@ -91,19 +91,15 @@ bool createDir(const char *path) {
     strcpy(copy, path);
     uint8_t pathDepth = 1;
     do {
-        if (access(copy, F_OK)) {
-            if (mkdir(copy)) {
-                char *p = strrchr(copy, '/');
-                *p = '\0';
-                pathDepth++;
-            } else {
-                pathDepth--;
-                if (pathDepth) copy[strlen(copy)] = '/';
-            }
+        if (mkdir(copy)) {
+            char *p = strrchr(copy, '/');
+            *p = '\0';
+            pathDepth++;
         } else {
-            pathDepth = 0;
+            pathDepth--;
+            if (pathDepth) copy[strlen(copy)] = '/';
         }
-    } while(pathDepth);
+    } while (pathDepth);
     free(copy), copy = NULL;
     return false;
 }
