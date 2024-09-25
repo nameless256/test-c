@@ -93,14 +93,20 @@ bool createDir(const char *path) {
     do {
         if (mkdir(copy)) {
             char *p = strrchr(copy, '/');
-            if (!p) break;
+            if (!p) {
+                perror("strrchr failed");
+                break;
+            }
             *p = '\0';
             pathDepth++;
         } else {
             pathDepth--;
             if (pathDepth) copy[strlen(copy)] = '/';
         }
-        if (pathDepth > 16) break;
+        if (pathDepth > 16) {
+            perror("path depth too big");
+            break;
+        }
     } while (pathDepth);
     free(copy), copy = NULL;
     if (pathDepth) return true;
