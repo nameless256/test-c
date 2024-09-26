@@ -27,6 +27,12 @@
 
 #define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOffsetOf(type, member)))
 
+#define assertActions(action, expression, message, ...) \
+        do {if (!(expression)) { fprintf(stderr, message, ##__VA_ARGS__); action;}} while (0)
+
+#define assertReturns(expression, message, ...) \
+        do {if (!(expression)) { fprintf(stderr, message, ##__VA_ARGS__); return;}} while (0)
+
 uint8_t getNumDigit(uint32_t num);
 
 /**
@@ -81,5 +87,7 @@ int macAddressAutoPartition(int argc, char *argv[]);
  * @return 返回bool类型，表示操作是否成功
  */
 bool createDir(const char *path);
+
+void traverseDir(const char *dir, uint8_t depthMax, void (*cbFilePath)(const char *const filePath));
 
 #endif //GLOBAL_FUNCTION_H

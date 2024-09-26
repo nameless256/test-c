@@ -85,7 +85,7 @@ int macAddressAutoPartition(int argc, char **argv) {
 
 #include <io.h>
 
-bool createDir(const char *path) {
+bool createDir(const char *const path) {
     char *copy = calloc(strlen(path) + 1, 1);
     if (copy == NULL) return true;
     strcpy(copy, path);
@@ -111,4 +111,59 @@ bool createDir(const char *path) {
     free(copy), copy = NULL;
     if (pathDepth) return true;
     return false;
+}
+
+#include <windows.h>
+
+static void traverseDir1(char *dir, uint16_t bufLen, uint8_t depth, uint8_t depthMax,
+                         void (*cbFilePath)(const char *const filePath)) {
+    assertReturns(dir, "dir is null\n");
+    assertReturns(depth <= depthMax, "dir traversal depth is too large\n");
+    assertReturns(bufLen >= strlen(dir) + strlen("/*"), "path too long\n");
+    strcat(dir, "/*");
+    HANDLE hFind;
+    WIN32_FIND_DATA ffd;
+    hFind = FindFirstFile(dir, &ffd);
+    assertActions(memset(strrchr(dir, '/'), 0, strlen("/*")); return, hFind != INVALID_HANDLE_VALUE,
+                  "unable to open directory, error code: %lu\n", GetLastError());
+    do {
+        if (!strcmp(ffd.cFileName, ".") || !strcmp(ffd.cFileName, "..")) continue;
+/*
+        printf("ATTR 0x%08lx", ffd.dwFileAttributes);
+        for (int i = 0; i < depth; ++i) printf(" |  ");
+        printf(" |- %s\n", ffd.cFileName);
+*/
+        if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            char *filePath = calloc(strlen(dir) + strlen(ffd.cFileName), sizeof(char));
+            if (!filePath) {
+                printf("file path malloc failed\n");
+            } else {
+                strcpy(filePath, dir);
+                strcpy(strrchr(filePath, '*'), ffd.cFileName);
+                if (cbFilePath) cbFilePath(filePath);
+                free(filePath), filePath = NULL;
+            }
+        } else {
+            if (strlen(dir) + strlen(ffd.cFileName) > bufLen) {
+                printf("path too long\n");
+            } else {
+                strcpy(strrchr(dir, '*'), ffd.cFileName);
+                traverseDir1(dir, bufLen, depth + 1, depthMax, cbFilePath);
+                memset(strrchr(dir, '/'), 0, strlen(ffd.cFileName));
+                strcat(dir, "/*");
+            }
+        }
+    } while (FindNextFile(hFind, &ffd) != 0);
+    FindClose(hFind);
+    memset(strrchr(dir, '/'), 0, strlen("/*"));
+}
+
+void traverseDir(const char *const dir, uint8_t depthMax, void (*cbFilePath)(const char *const filePath)) {
+    assertReturns(dir, "dir is null\n");
+    uint16_t bufLen = strlen(dir) + 1;
+    char *dirCopy = calloc(bufLen, sizeof(char));
+    assertReturns(dirCopy, "dirCopy malloc failed\n");
+    strcpy(dirCopy, dir);
+    traverseDir1(dirCopy, bufLen, 0, depthMax, cbFilePath);
+    free(dirCopy), dirCopy = NULL;
 }
