@@ -160,7 +160,7 @@ static void traverseDir1(char *dir, uint16_t bufLen, uint8_t depth, uint8_t dept
 
 void traverseDir(const char *const dir, uint8_t depthMax, void (*cbFilePath)(const char *const filePath)) {
     assertReturns(dir, "dir is null\n");
-    uint16_t bufLen = strlen(dir) + 1;
+    uint16_t bufLen = MAX_PATH;
     char *dirCopy = calloc(bufLen, sizeof(char));
     assertReturns(dirCopy, "dirCopy malloc failed\n");
     strcpy(dirCopy, dir);
