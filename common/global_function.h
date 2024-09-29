@@ -31,7 +31,7 @@
         do {if (!(expression)) { fprintf(stderr, message, ##__VA_ARGS__); action;}} while (0)
 
 #define assertReturns(expression, message, ...) \
-        do {if (!(expression)) { fprintf(stderr, message, ##__VA_ARGS__); return;}} while (0)
+        assertActions(return, expression, message, ##__VA_ARGS__)
 
 uint8_t getNumDigit(uint32_t num);
 

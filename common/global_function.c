@@ -119,12 +119,12 @@ static void traverseDir1(char *dir, uint16_t bufLen, uint8_t depth, uint8_t dept
                          void (*cbFilePath)(const char *const filePath)) {
     assertReturns(dir, "dir is null\n");
     assertReturns(depth <= depthMax, "dir traversal depth is too large\n");
-    assertReturns(bufLen >= strlen(dir) + strlen("/*"), "path too long\n");
-    strcat(dir, "/*");
+    assertReturns(bufLen >= strlen(dir) + strlen("\\*"), "path too long\n");
+    strcat(dir, "\\*");
     HANDLE hFind;
     WIN32_FIND_DATA ffd;
     hFind = FindFirstFile(dir, &ffd);
-    assertActions(memset(strrchr(dir, '/'), 0, strlen("/*")); return, hFind != INVALID_HANDLE_VALUE,
+    assertActions(goto dirReset, hFind != INVALID_HANDLE_VALUE,
                   "unable to open directory, error code: %lu\n", GetLastError());
     do {
         if (!strcmp(ffd.cFileName, ".") || !strcmp(ffd.cFileName, "..")) continue;
@@ -149,13 +149,14 @@ static void traverseDir1(char *dir, uint16_t bufLen, uint8_t depth, uint8_t dept
             } else {
                 strcpy(strrchr(dir, '*'), ffd.cFileName);
                 traverseDir1(dir, bufLen, depth + 1, depthMax, cbFilePath);
-                memset(strrchr(dir, '/'), 0, strlen(ffd.cFileName));
-                strcat(dir, "/*");
+                memset(strrchr(dir, '\\'), 0, strlen(ffd.cFileName));
+                strcat(dir, "\\*");
             }
         }
     } while (FindNextFile(hFind, &ffd) != 0);
     FindClose(hFind);
-    memset(strrchr(dir, '/'), 0, strlen("/*"));
+    dirReset:
+    memset(strrchr(dir, '\\'), 0, strlen("\\*"));
 }
 
 void traverseDir(const char *const dir, uint8_t depthMax, void (*cbFilePath)(const char *const filePath)) {
