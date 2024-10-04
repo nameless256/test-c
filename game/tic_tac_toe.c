@@ -4,16 +4,7 @@
 
 #include <malloc.h>
 #include <string.h>
-#include <stdio.h>
 #include "tic_tac_toe.h"
-
-/// 类定义
-struct TicTacToe {
-    char board[3][3];
-    bool gameOver;
-    uint8_t count;
-    char winner, side;
-};
 
 static inline bool checkGameOver(ticTacToe *obj) {
     uint8_t sideCheck, empty, draw = 0;
@@ -36,8 +27,8 @@ static inline bool checkGameOver(ticTacToe *obj) {
     return true;
 }
 
-public(void, ticTacToe, reset) {
-    memset(*this, 0, sizeof(struct TicTacToe));
+void ticTacToeReset(ticTacToe *obj) {
+    memset(obj, 0, sizeof(ticTacToe));
 }
 
 char ticTacToeGetSide(ticTacToe *obj) {
@@ -76,16 +67,12 @@ bool ticTacToeIsFinish(ticTacToe *obj) {
     return obj->gameOver;
 }
 
-public(ticTacToe *, ticTacToe, create) {
-    *this = malloc(sizeof(struct TicTacToe));
-    call(ticTacToe, reset);
-    return this;
+ticTacToe *ticTacToeCreate() {
+    ticTacToe *obj = malloc(sizeof(ticTacToe));
+    ticTacToeReset(obj);
+    return obj;
 }
 
 void ticTacToeDestroy(ticTacToe **pObj) {
     if (*pObj) free(*pObj), *pObj = NULL;
-}
-
-void ticTacToeUsage(void) {
-    printf("Usage: tic_tac_toe [OPTION]...\n");
 }

@@ -24,10 +24,6 @@
 int main() {
     clock_t start = clock();
 
-    ticTacToe *a;
-
-    ticTacToeUsage();
-
     clock_t stop = clock();
     double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
     printf("Time elapsed: %.5f \n", elapsed);

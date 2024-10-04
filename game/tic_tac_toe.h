@@ -8,19 +8,31 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-/// 对外隐藏
-typedef struct TicTacToe *ticTacToe;
+typedef struct {
+    char board[3][3];
+    bool gameOver;
+    uint8_t count;
+    char winner, side;
+} ticTacToe;
 
-#define call(class, methodName, ...) class##_##methodName(this, ## __VA_ARGS__)
+void ticTacToeReset(ticTacToe *obj);
 
-#define public(returnType, class, methodName, ...) returnType class##_##methodName(class *this, ## __VA_ARGS__)
+char ticTacToeGetSide(ticTacToe *obj);
 
-public(ticTacToe *, ticTacToe, create);
+char ticTacToeGetOtherSide(ticTacToe *obj);
 
-public(void, ticTacToe, destroy);
+bool ticTacToeSet(ticTacToe *obj, uint8_t x, uint8_t y);
 
-public(void, ticTacToe, reset);
+char ticTacToeGet(ticTacToe *obj, uint8_t x, uint8_t y);
 
-void ticTacToeUsage(void);
+char ticTacToeGetWinner(ticTacToe *obj);
+
+bool ticTacToeIsDraw(ticTacToe *obj);
+
+bool ticTacToeIsFinish(ticTacToe *obj);
+
+ticTacToe *ticTacToeCreate();
+
+void ticTacToeDestroy(ticTacToe **pObj);
 
 #endif //TIC_TAC_TOE_H
