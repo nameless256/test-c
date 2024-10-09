@@ -27,6 +27,7 @@
 
 #define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOffsetOf(type, member)))
 
+// 不可进行 break 操作
 #define assertActions(action, expression, message, ...) \
         do {if (!(expression)) { fprintf(stderr, message, ##__VA_ARGS__); action;}} while (0)
 
