@@ -2,7 +2,7 @@
 // Created by xiaoxianghui on 2023/3/9.
 //
 
-#include "global_function.h"
+#include "tool.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -167,4 +167,50 @@ void traverseDir(const char *const dir, uint8_t depthMax, void (*cbFilePath)(con
     strcpy(dirCopy, dir);
     traverseDir1(dirCopy, bufLen, 0, depthMax, cbFilePath);
     free(dirCopy), dirCopy = NULL;
+}
+
+// 判断 path 是否在 base_path 下
+int isSubPath(const char *base_path, const char *path) {
+    size_t base_len = strlen(base_path);
+    size_t path_len = strlen(path);
+    // 如果 base_path 比 path 长，不可能是子路径
+    if (base_len > path_len) return 0;
+    // 比较前缀是否相同
+    if (strncmp(base_path, path, base_len) != 0) return 0;
+    // 检查 base_path 后是否有路径分隔符
+    if (path[base_len] == '/' || path[base_len] == '\\') return 1;
+    // 检查 base_path 是否正好是 path 的前缀
+    return (path[base_len] == '\0');
+}
+
+// 拼接字符串的函数实现
+char *concatStrings(char separator, int count, ...) {
+    // 初始化可变参数列表
+    va_list args;
+    va_start(args, count);
+    // 计算总长度
+    size_t totalLength = 0;
+    for (int i = 0; i < count; ++i) {
+        const char *str = va_arg(args, const char*);
+        totalLength += strlen(str);
+    }
+    totalLength += count - 1;  // 添加分隔符的长度
+    // 分配内存
+    char *buffer = (char *) malloc(totalLength + 1);  // +1 是为了添加空字符 '\0'
+    assertActions(goto argsRelease, buffer != NULL, "Memory allocation failed\n");
+    va_start(args, count);
+    // 拼接字符串
+    char *dest = buffer;
+    for (int i = 0; i < count; ++i) {
+        const char *str = va_arg(args, const char*);
+        dest += sprintf(dest, "%s", str);
+        // 不在最后一个字符串后面添加分隔符
+        if (i != count - 1 && separator != '\0') *dest++ = separator;
+    }
+    // 确保以空字符结尾
+    *dest = '\0';
+    // 结束可变参数列表
+    argsRelease:
+    va_end(args);
+    return buffer;
 }

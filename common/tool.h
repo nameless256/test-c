@@ -90,4 +90,8 @@ bool createDir(const char *path);
 
 void traverseDir(const char *dir, uint8_t depthMax, void (*cbFilePath)(const char *const filePath));
 
+int isSubPath(const char *base_path, const char *path);
+
+char *concatStrings(char separator, int count, ...);
+
 #endif //GLOBAL_FUNCTION_H
