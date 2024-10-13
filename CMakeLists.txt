@@ -3,18 +3,23 @@ project(test_c C)
 
 set(CMAKE_C_STANDARD 11)
 
-include_directories(common)
-include_directories(common/algorithm)
-include_directories(common/structure)
-include_directories(game)
-include_directories(modules)
+include_directories(
+        common
+        common/algorithm
+        common/framework
+        common/structure
+        game
+        modules
+)
 
 file(
         GLOB_RECURSE SOURCES
-        "modules/*.c"
+        "common/algorithm/*.c"
+        "common/framework/*.c"
+        "common/structure/*.c"
         "common/*.c"
-#        "common/structure/*.c"
         "game/*.c"
+        "modules/*.c"
 )
 
 add_executable(test_c main.c ${SOURCES})
