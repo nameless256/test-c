@@ -91,7 +91,7 @@ bool createDir(const char *const path) {
     strcpy(copy, path);
     uint8_t pathDepth = 1;
     do {
-        if (mkdir(copy)) {
+        if (access(copy, F_OK) || mkdir(copy)) {
             char *p = strrchr(copy, '/');
             if (!p) {
                 perror("strrchr failed");
