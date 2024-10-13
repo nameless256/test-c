@@ -12,9 +12,9 @@
  * <h2><center>&copy; COPYRIGHT 20XX XXX Corporation</center></h2>
  *****************************************************************************************
  */
-#include "tic_tac_toe.h"
 #include <stdio.h>
 #include <time.h>
+#include "oop.h"
 
 /**
  * @defgroup Main
