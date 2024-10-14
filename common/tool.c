@@ -90,9 +90,12 @@ bool createDir(const char *const path) {
     if (copy == NULL) return true;
     strcpy(copy, path);
     uint8_t pathDepth = 1;
+    if ((strrchr(copy, '.') && strrchr(copy, '\\') && (strrchr(copy, '\\') < strrchr(copy, '.')))) {
+        *strrchr(copy, '\\') = '\0';
+    }
     do {
         if (access(copy, F_OK) || mkdir(copy)) {
-            char *p = strrchr(copy, '/');
+            char *p = strrchr(copy, '\\');
             if (!p) {
                 perror("strrchr failed");
                 break;
@@ -101,7 +104,7 @@ bool createDir(const char *const path) {
             pathDepth++;
         } else {
             pathDepth--;
-            if (pathDepth) copy[strlen(copy)] = '/';
+            if (pathDepth) copy[strlen(copy)] = '\\';
         }
         if (pathDepth > 16) {
             perror("path depth too big");
