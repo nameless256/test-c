@@ -3,3 +3,7 @@
 //
 
 #include "oop.h"
+
+classDef(test)
+
+classDefEnd

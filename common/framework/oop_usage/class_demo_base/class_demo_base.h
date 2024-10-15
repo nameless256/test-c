@@ -5,19 +5,15 @@
 #ifndef TEST_C_CLASS_DEMO_BASE_H
 #define TEST_C_CLASS_DEMO_BASE_H
 
+#include "oop.h"
 #include "tool.h"
 #include <stdlib.h>
 #include <stdio.h>
 
-struct classDemoBase {
-    union {
-        char _; // 空类占用 1 字节的主要原因是确保每个对象都有一个唯一的地址，并且满足对齐要求。
-        struct {
+classDef(classDemoBase)
             char *name;
             uint8_t age;
-        };
-    };
-};
+classDefEnd
 
 void classDemoBase_print(struct classDemoBase *self) {
     if (self) {
