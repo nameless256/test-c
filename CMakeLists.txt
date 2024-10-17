@@ -8,8 +8,6 @@ include_directories(
         common/algorithm
         common/framework
         common/framework/oop_usage
-        common/framework/oop_usage/class_demo
-        common/framework/oop_usage/class_demo_base
         common/structure
         game
         modules
