@@ -86,12 +86,19 @@ void CONCAT(className, _dtor)(className *self)
 
 #define ctorCall(ctorName, ...) CONCAT3(className, _ctor_, ctorName)(self, ## __VA_ARGS__)
 
+#define obj_define(className, varName, ctor, ...) \
+    className varName; \
+    ctor(&varName, ## __VA_ARGS__)
+
+#define obj_destroy(varName, dtor) \
+    dtor(&varName)
+
 #define new_obj(className, varName, ctor, ...) \
     className *varName = calloc(1, sizeof(struct classDemoBase)); \
-    if (varName) ctor(varName, ## __VA_ARGS__);
+    if (varName) ctor(varName, ## __VA_ARGS__)
 
-#define delete_obj(className, variableName) \
-    CONCAT(className, _dtor)(variableName); \
-    free(variableName);
+#define delete_obj(className, varName) \
+    CONCAT(className, _dtor)(varName); \
+    free(varName)
 
 #endif //TEST_C_OOP_H
