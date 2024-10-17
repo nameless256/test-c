@@ -36,7 +36,11 @@
 struct className; \
 typedef struct className className
 
-// 空类占用 1 字节的主要原因是确保每个对象都有一个唯一的地址，并且满足对齐要求。
+// 空类的对象占用 1 字节的原因是为了保证每个对象在内存中有唯一的地址。
+// 这是 C++ 标准的规定，以确保即使对于空类，不同对象的指针也可以区分。
+// 空的结构体（struct）在 C++ 中也是同样的处理方式，即占用 1 字节。
+// 这是因为 struct 和 class 在 C++ 中除了默认访问控制外，其他方面几乎相同。
+// 这种设计有助于避免多个空对象实例共享同一个地址，从而简化了指针和引用的管理，特别是在多态和继承的情况下。
 #define classDef(className) \
 struct className { \
     union { \
@@ -87,7 +91,7 @@ void CONCAT(className, _dtor)(className *self)
     if (varName) ctor(varName, ## __VA_ARGS__);
 
 #define delete_obj(className, variableName) \
-    CONCAT(className, _dtor)(variableName, ## __VA_ARGS__); \
+    CONCAT(className, _dtor)(variableName); \
     free(variableName);
 
 #endif //TEST_C_OOP_H
