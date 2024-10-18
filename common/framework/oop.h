@@ -32,31 +32,40 @@
 
 #include <stdarg.h>
 
-#define classDeclare(className) \
-struct className; \
-typedef struct className className
+/**
+ * @attention 由于 继承 的特性
+ * @attention 无法在 C语言 中实现 成员变量 的 访问控制
+ * @attention 所有 派生类 中定义的 成员变量 仅允许 派生类 的 成员函数 直接访问
+ * @attention 成员函数 访问权限 由 声明文件 决定
+ * @attention 派生类 访问 基类 的 成员变量 仅允许 通过 基类 的 成员函数 间接访问
+ */
 
-// 空类的对象占用 1 字节的原因是为了保证每个对象在内存中有唯一的地址。
-// 这是 C++ 标准的规定，以确保即使对于空类，不同对象的指针也可以区分。
-// 空的结构体（struct）在 C++ 中也是同样的处理方式，即占用 1 字节。
-// 这是因为 struct 和 class 在 C++ 中除了默认访问控制外，其他方面几乎相同。
-// 这种设计有助于避免多个空对象实例共享同一个地址，从而简化了指针和引用的管理，特别是在多态和继承的情况下。
-#define classDef(className) \
+/**
+ * @details 空类的对象占用 1 字节的原因是为了保证每个对象在内存中有唯一的地址。
+ * @details 这是 C++ 标准的规定，以确保即使对于空类，不同对象的指针也可以区分。
+ * @details 空的结构体（struct）在 C++ 中也是同样的处理方式，即占用 1 字节。
+ * @details 这是因为 struct 和 class 在 C++ 中除了默认访问控制外，其他方面几乎相同。
+ * @details 这种设计有助于避免多个空对象实例共享同一个地址，从而简化了指针和引用的管理，特别是在多态和继承的情况下。
+ */
+#define classDef(className, ...) \
+struct className; \
+typedef struct className className; \
 struct className { \
     union { \
         char _; \
-        struct {
+        struct { \
+            __VA_ARGS__ __VA_ARGS__;
 
 #define classDefEnd \
         }; \
     }; \
 };
 
-#define mFuncDeclare(returnType, className, methodName, ...) \
+#define mFuncDeclare(returnType, methodName, ...) \
 returnType CONCAT3(className, _, methodName)(className *self, ## __VA_ARGS__)
 
 #define mFuncDefine(returnType, methodName, ...) \
-mFuncDeclare(returnType, className, methodName, ## __VA_ARGS__)
+mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 
 #define mVarDeclare(className, type, varName) \
 type CONCAT3(className, _get_, varName)(className *self); \
@@ -66,39 +75,36 @@ void CONCAT3(className, _set_, varName)(className *self, type val)
 type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
 void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
 
-#define ctorDeclare(className, ctorName, ...) \
-void CONCAT3(className, _ctor_, ctorName)(className *self, ## __VA_ARGS__)
+#define ctorDeclare(...) \
+void CONCAT(className, _ctor)(className *self, ## __VA_ARGS__)
 
-#define ctorDefine(ctorName, ...) \
-void CONCAT3(className, _ctor_, ctorName)(className *self, ## __VA_ARGS__)
+#define ctorDefine(...) \
+ctorDeclare(__VA_ARGS__)
 
-#define dtorDeclare(className) \
-void CONCAT(className, _dtor)(className *self); \
-void CONCAT(delete_, className)(className *self)
-
-#define dtorDefine() \
-void CONCAT(delete_, className)(className *self) { \
-    if (!self) return; \
-    CONCAT(className, _dtor)(self); \
-    free(self); \
-} \
+#define dtorDeclare() \
 void CONCAT(className, _dtor)(className *self)
 
-#define ctorCall(ctorName, ...) CONCAT3(className, _ctor_, ctorName)(self, ## __VA_ARGS__)
+#define dtorDefine() \
+dtorDeclare()
 
-#define obj_define(className, varName, ctor, ...) \
+/******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
+
+/// 难以支持重载, 真要做只能建议在 构造函数 内 通过 self 后面的第一个参数再套一层可变参数
+#define obj_create(className, varName, ...) \
     className varName; \
-    ctor(&varName, ## __VA_ARGS__)
+    CONCAT3(className, _ctor)(&varName, ## __VA_ARGS__)
 
-#define obj_destroy(varName, dtor) \
-    dtor(&varName)
+/// 无法在退出作用域时自动销毁对象 (需要手动调用)
+#define obj_destroy(className, varName) \
+    CONCAT3(className, _dtor)(&varName)
 
-#define new_obj(className, varName, ctor, ...) \
+/******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
+
+#define obj_new(className, varName, ...) \
     className *varName = calloc(1, sizeof(struct classDemoBase)); \
-    if (varName) ctor(varName, ## __VA_ARGS__)
+    if (varName) CONCAT3(className, _ctor)(varName, ## __VA_ARGS__)
 
-#define delete_obj(className, varName) \
-    CONCAT(className, _dtor)(varName); \
-    free(varName)
+#define obj_delete(className, varName) \
+    if (varName) {CONCAT3(className, _dtor)(varName); free(varName);}
 
 #endif //TEST_C_OOP_H

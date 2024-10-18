@@ -12,17 +12,9 @@ mFuncDefine(void, print) {
     }
 }
 
-ctorDefine(nameAge, const char *name, uint8_t age) {
+ctorDefine(const char *name, uint8_t age) {
     if (name) self->name = strdup(name);
     self->age = age;
-}
-
-ctorDefine(name, const char *name) {
-    ctorCall(nameAge, name, 0);
-}
-
-ctorDefine(void) {
-    ctorCall(name, "default");
 }
 
 dtorDefine() {

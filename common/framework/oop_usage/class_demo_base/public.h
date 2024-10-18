@@ -10,16 +10,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-classDeclare(classDemoBase);
+// 公共 继承 include *\public
 
-mFuncDeclare(void, classDemoBase, print);
+// 派生类类名 定义
+#undef className
+#define className classDemoBase
 
-ctorDeclare(classDemoBase, nameAge, const char *name, uint8_t age);
+classDef(className)
+            char *name;
+            uint8_t age;
+classDefEnd
 
-ctorDeclare(classDemoBase, name, const char *name);
+mFuncDeclare(void, print);
 
-ctorDeclare(classDemoBase, void);
+ctorDeclare(const char *name, uint8_t age);
 
-dtorDeclare(classDemoBase);
+dtorDeclare();
 
 #endif //TEST_C_PUBLIC_H
