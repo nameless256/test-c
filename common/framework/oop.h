@@ -61,28 +61,80 @@ struct className { \
     }; \
 };
 
+#define cthis ((className *)self)
+
+/******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
+
+#define vFuncTabDef struct CONCAT3(className, _, vFuncTab) {
+
+#define vFuncTabDefEnd } const *vptr;
+
+#define vFuncTabImplement static struct CONCAT3(className, _, vFuncTab) CONCAT3(className, _, vFuncTab)
+
+#define vFuncTabBaseImplement static struct CONCAT3(classBaseName, _, vFuncTab) CONCAT3(classBaseName, _, vFuncTab)
+
+#define vFuncDeclare(returnType, methodName, ...) \
+returnType (*methodName)(void *self, ## __VA_ARGS__)
+
+#define vFuncBinding(methodName) \
+.methodName = CONCAT3(className, _, methodName)
+
+#define vptrInit() cthis->vptr = &CONCAT3(className, _, vFuncTab)
+
+/// \todo 虚函数表拷贝
+#define vptrBaseInit() \
+cthis->classBaseName.vptr = &CONCAT3(classBaseName, _, vFuncTab)
+
+#define vCtorDeclare(...) \
+void (*ctor)(void *self, ## __VA_ARGS__)
+
+#define vDtorDeclare() \
+void (*dtor)(void *self)
+
+/******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
+
+#define mFuncAddr(methodName) CONCAT3(className, _, methodName)
+
+#define mFuncCall(methodName, ...) mFuncAddr(methodName)(self, ## __VA_ARGS__)
+
+#define mFuncBaseAddr(methodName) CONCAT3(classBaseName, _, methodName)
+
+#define mFuncBaseCall(methodName, ...) mFuncBaseAddr(methodName)(self, ## __VA_ARGS__)
+
 #define mFuncDeclare(returnType, methodName, ...) \
-returnType CONCAT3(className, _, methodName)(className *self, ## __VA_ARGS__)
+returnType mFuncAddr(methodName)(void *self, ## __VA_ARGS__)
 
 #define mFuncDefine(returnType, methodName, ...) \
 mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 
-#define mVarDeclare(className, type, varName) \
-type CONCAT3(className, _get_, varName)(className *self); \
-void CONCAT3(className, _set_, varName)(className *self, type val)
+/******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
+
+#define mVarDeclare(type, varName) \
+type CONCAT3(className, _get_, varName)(void *self); \
+void CONCAT3(className, _set_, varName)(void *self, type val)
 
 #define mVarDefine(type, varName) \
-type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
-void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
+type CONCAT3(className, _get_, varName)(void *self) { return cthis->varName; } \
+void CONCAT3(className, _set_, varName)(void *self, type val) { cthis->varName = val; }
+
+/******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
 #define ctorDeclare(...) \
-void CONCAT(className, _ctor)(className *self, ## __VA_ARGS__)
+void CONCAT(className, _ctor)(void *self, ## __VA_ARGS__)
 
 #define ctorDefine(...) \
 ctorDeclare(__VA_ARGS__)
 
+#define ctorAddr() CONCAT(className, _ctor)
+
+#define ctorCall(methodName, ...) ctorAddr()(self, ## __VA_ARGS__)
+
+#define ctorBaseAddr() CONCAT(classBaseName, _ctor)
+
+#define ctorBaseCall(...) ctorBaseAddr()(self, ## __VA_ARGS__)
+
 #define dtorDeclare() \
-void CONCAT(className, _dtor)(className *self)
+void CONCAT(className, _dtor)(void *self)
 
 #define dtorDefine() \
 dtorDeclare()
@@ -101,7 +153,7 @@ dtorDeclare()
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define obj_new(className, varName, ...) \
-    className *varName = calloc(1, sizeof(struct classDemoBase)); \
+    className *varName = calloc(1, sizeof(struct className)); \
     if (varName) CONCAT3(className, _ctor)(varName, ## __VA_ARGS__)
 
 #define obj_delete(className, varName) \

@@ -4,19 +4,30 @@
 
 #include "private.h"
 
-#define className classDemoBase
+mVarDefine(char *, name)
 
-mFuncDefine(void, print) {
-    if (self) {
-        printf("[%d] --------- {%s} name %s age %d\n", __LINE__, __FUNCTION__, self->name, self->age);
-    }
+mVarDefine(uint8_t, age)
+
+static mFuncDeclare(void, _init);
+
+mFuncDefine(void, eat) {
+    printf("[%d] --------- {%s} Eating... \n", __LINE__, __FUNCTION__);
 }
 
-ctorDefine(const char *name, uint8_t age) {
-    if (name) self->name = strdup(name);
-    self->age = age;
+ctorDefine() {
+    mFuncCall(_init);
+    printf("[%d] --------- {%s} Animal constructor called \n", __LINE__, __FUNCTION__);
 }
 
 dtorDefine() {
-    if (self->name) free(self->name);
+    printf("[%d] --------- {%s} Animal destructor called \n", __LINE__, __FUNCTION__);
 }
+
+vFuncTabImplement = {
+    vFuncBinding(dtor),
+};
+
+static mFuncDefine(void, _init) {
+    vptrInit();
+}
+

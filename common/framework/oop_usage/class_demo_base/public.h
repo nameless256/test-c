@@ -14,16 +14,20 @@
 
 // 派生类类名 定义
 #undef className
-#define className classDemoBase
+#define className Animal
 
 classDef(className)
+            vFuncTabDef
+                vFuncDeclare(void, makeSound);
+                vDtorDeclare();
+            vFuncTabDefEnd
             char *name;
             uint8_t age;
 classDefEnd
 
-mFuncDeclare(void, print);
+mFuncDeclare(void, eat);
 
-ctorDeclare(const char *name, uint8_t age);
+ctorDeclare();
 
 dtorDeclare();
 

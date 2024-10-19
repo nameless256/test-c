@@ -12,14 +12,21 @@
 
 // 公共 继承 include *\public
 #include "class_demo_base/public.h"
+
 #undef classBaseName
-#define classBaseName className
+#define classBaseName Animal
 
 // 派生类类名 定义
 #undef className
-#define className classDemo
+#define className Dog
 
-classDef(className, classDemoBase)
+classDef(className, classBaseName)
 classDefEnd
+
+mFuncDeclare(void, displayInfo);
+
+ctorDeclare();
+
+dtorDeclare();
 
 #endif //TEST_C_CLASS_DEMO_PUBLIC_H
