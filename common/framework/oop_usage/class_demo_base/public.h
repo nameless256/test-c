@@ -14,7 +14,7 @@
 
 // 派生类类名 定义
 #undef className
-#define className Animal
+#define className animal
 
 classDef(className)
             vFuncTabDef

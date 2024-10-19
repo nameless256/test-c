@@ -4,15 +4,6 @@
 
 #include "private.h"
 
-static mFuncDeclare(void, _init);
-
-ctorDefine() {
-    ctorBaseCall();
-    mFuncCall(_init);
-    printf("[%d] --------- {%s} Dog constructor called \n", __LINE__, __FUNCTION__);
-    mFuncBaseCall(set_name, "Rex");
-}
-
 mFuncDefine(void, makeSound) {
     printf("[%d] --------- {%s} Barking... \n", __LINE__, __FUNCTION__);
 }
@@ -24,13 +15,16 @@ mFuncDefine(void, displayInfo) {
 }
 
 dtorDefine() {
+    dtorBaseCall();
     printf("[%d] --------- {%s} Dog destructor called \n", __LINE__, __FUNCTION__);
 }
 
-vFuncTabBaseImplement = {
-    vFuncBinding(makeSound),
-};
+vFuncTabBaseImplement;
 
-static mFuncDefine(void, _init) {
+ctorDefine() {
+    ctorBaseCall();
     vptrBaseInit();
+    vFuncOverride(makeSound);
+    printf("[%d] --------- {%s} Dog constructor called \n", __LINE__, __FUNCTION__);
+    mFuncBaseCall(set_name, "Rex");
 }

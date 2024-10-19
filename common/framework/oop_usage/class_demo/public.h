@@ -14,11 +14,11 @@
 #include "class_demo_base/public.h"
 
 #undef classBaseName
-#define classBaseName Animal
+#define classBaseName animal
 
 // 派生类类名 定义
 #undef className
-#define className Dog
+#define className dog
 
 classDef(className, classBaseName)
 classDefEnd

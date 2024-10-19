@@ -6,7 +6,7 @@
 #include "class_demo/public.h"
 
 void oopUsage(void) {
-    obj_create(classDemo, obj, classDemo_ctor);
-    
-    obj_destroy(obj, classDemo_ctor);
+    obj_create(dog, obj);
+
+    obj_destroy(dog, obj);
 }

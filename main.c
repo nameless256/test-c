@@ -14,7 +14,7 @@
  */
 #include <stdio.h>
 #include <time.h>
-#include "oop.h"
+#include "oop_usage.h"
 
 /**
  * @defgroup Main
@@ -23,6 +23,8 @@
 
 int main() {
     clock_t start = clock();
+
+    oopUsage();
 
     clock_t stop = clock();
     double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;

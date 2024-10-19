@@ -30,8 +30,6 @@
 
 #define DEFINE_ROOT(root_type, root_name) root_type root_name;
 
-#include <stdarg.h>
-
 /**
  * @attention 由于 继承 的特性
  * @attention 无法在 C语言 中实现 成员变量 的 访问控制
@@ -61,7 +59,7 @@ struct className { \
     }; \
 };
 
-#define cthis ((className *)self)
+#define cThis ((className *)self)
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
@@ -69,21 +67,26 @@ struct className { \
 
 #define vFuncTabDefEnd } const *vptr;
 
-#define vFuncTabImplement static struct CONCAT3(className, _, vFuncTab) CONCAT3(className, _, vFuncTab)
+#define vFuncTabImplement \
+static struct CONCAT3(className, _, vFuncTab) CONCAT3(className, _, vFuncTab) = {}
 
-#define vFuncTabBaseImplement static struct CONCAT3(classBaseName, _, vFuncTab) CONCAT3(classBaseName, _, vFuncTab)
+#define vFuncTabBaseImplement \
+static struct CONCAT3(classBaseName, _, vFuncTab) CONCAT3(classBaseName, _, vFuncTab) = {}
 
 #define vFuncDeclare(returnType, methodName, ...) \
 returnType (*methodName)(void *self, ## __VA_ARGS__)
 
+#define vFuncOverride(methodName) \
+CONCAT3(classBaseName, _, vFuncTab).methodName = CONCAT3(className, _, methodName)
+
 #define vFuncBinding(methodName) \
-.methodName = CONCAT3(className, _, methodName)
+CONCAT3(className, _, vFuncTab).methodName = CONCAT3(className, _, methodName)
 
-#define vptrInit() cthis->vptr = &CONCAT3(className, _, vFuncTab)
+#define vptrInit() cThis->vptr = &CONCAT3(className, _, vFuncTab)
 
-/// \todo 虚函数表拷贝
 #define vptrBaseInit() \
-cthis->classBaseName.vptr = &CONCAT3(classBaseName, _, vFuncTab)
+CONCAT3(classBaseName, _, vFuncTab) = *cThis->classBaseName.vptr; \
+cThis->classBaseName.vptr = &CONCAT3(classBaseName, _, vFuncTab)
 
 #define vCtorDeclare(...) \
 void (*ctor)(void *self, ## __VA_ARGS__)
@@ -114,8 +117,8 @@ type CONCAT3(className, _get_, varName)(void *self); \
 void CONCAT3(className, _set_, varName)(void *self, type val)
 
 #define mVarDefine(type, varName) \
-type CONCAT3(className, _get_, varName)(void *self) { return cthis->varName; } \
-void CONCAT3(className, _set_, varName)(void *self, type val) { cthis->varName = val; }
+type CONCAT3(className, _get_, varName)(void *self) { return cThis->varName; } \
+void CONCAT3(className, _set_, varName)(void *self, type val) { cThis->varName = val; }
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
@@ -139,16 +142,20 @@ void CONCAT(className, _dtor)(void *self)
 #define dtorDefine() \
 dtorDeclare()
 
+#define dtorBaseAddr() CONCAT(classBaseName, _dtor)
+
+#define dtorBaseCall() dtorBaseAddr()(self)
+
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
 /// 难以支持重载, 真要做只能建议在 构造函数 内 通过 self 后面的第一个参数再套一层可变参数
 #define obj_create(className, varName, ...) \
     className varName; \
-    CONCAT3(className, _ctor)(&varName, ## __VA_ARGS__)
+    CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
 
 /// 无法在退出作用域时自动销毁对象 (需要手动调用)
 #define obj_destroy(className, varName) \
-    CONCAT3(className, _dtor)(&varName)
+    CONCAT3(className, _, dtor)(&varName)
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
