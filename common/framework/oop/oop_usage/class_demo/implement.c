@@ -19,7 +19,7 @@ dtorDefine() {
     printf("[%d] --------- {%s} Dog destructor called \n", __LINE__, __FUNCTION__);
 }
 
-vFuncTabBaseImplement;
+vFuncTabImplement(classBaseName);
 
 ctorDefine() {
     ctorBaseCall();

@@ -8,5 +8,7 @@
 void oopUsage(void) {
     obj_create(dog, obj);
 
+    dog_displayInfo(&obj);
+
     obj_destroy(dog, obj);
 }

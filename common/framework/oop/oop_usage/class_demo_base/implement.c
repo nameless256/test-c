@@ -16,7 +16,7 @@ dtorDefine() {
     printf("[%d] --------- {%s} Animal destructor called \n", __LINE__, __FUNCTION__);
 }
 
-vFuncTabImplement;
+vFuncTabImplement(className);
 
 ctorDefine() {
     vptrInit();

@@ -10,7 +10,8 @@ include_directories(
         common
         common/algorithm
         common/framework
-        common/framework/oop_usage
+        common/framework/oop
+        common/framework/oop/oop_usage
         common/structure
         game
         modules
@@ -20,9 +21,9 @@ file(
         GLOB_RECURSE SOURCES
         "common/algorithm/*.c"
         "common/framework/*.c"
-        "common/framework/oop_usage/*.c"
-        "common/framework/oop_usage/class_demo/*.c"
-        "common/framework/oop_usage/class_demo_base/*.c"
+        "common/framework/oop/oop_usage/*.c"
+        "common/framework/oop/oop_usage/class_demo/*.c"
+        "common/framework/oop/oop_usage/class_demo_base/*.c"
         "common/structure/*.c"
         "common/*.c"
         "game/*.c"
