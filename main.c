@@ -12,6 +12,7 @@
  * <h2><center>&copy; COPYRIGHT 20XX XXX Corporation</center></h2>
  *****************************************************************************************
  */
+#include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include "oop_usage.h"
@@ -22,6 +23,7 @@
  */
 
 int main() {
+    system("chcp 65001");
     clock_t start = clock();
 
     oopUsage();
