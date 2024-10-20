@@ -37,17 +37,15 @@ struct className { \
     }; \
 };
 
-#define cThis ((className *)self)
-
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
 #define mFuncName(methodName) CONCAT3(className, _, methodName)
-#define mFuncCall(methodName, ...) mFuncName(methodName)(self, ## __VA_ARGS__)
+#define mFuncCall(methodName, ...) mFuncName(methodName)(cThis, ## __VA_ARGS__)
 
 #define mFuncBaseName(methodName) CONCAT3(classBaseName, _, methodName)
-#define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(self, ## __VA_ARGS__)
+#define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(&cThis->classBaseName, ## __VA_ARGS__)
 
-#define mFuncDeclare(returnType, methodName, ...) returnType mFuncName(methodName)(void *self, ## __VA_ARGS__)
+#define mFuncDeclare(returnType, methodName, ...) returnType mFuncName(methodName)(className *cThis, ## __VA_ARGS__)
 #define mFuncDefine(returnType, methodName, ...) mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
@@ -62,7 +60,7 @@ struct className { \
 static struct vFuncTabName(className) vFuncTabName(className) = {}
 
 #define vFuncDeclare(returnType, methodName, ...) \
-returnType (*methodName)(void *self, ## __VA_ARGS__)
+returnType (*methodName)(className *cThis, ## __VA_ARGS__)
 
 #define vptrInit() \
     cThis->vptr = &vFuncTabName(className)
@@ -77,40 +75,40 @@ returnType (*methodName)(void *self, ## __VA_ARGS__)
 #define vFuncOverride(methodName) \
     vFuncTabName(classBaseName).methodName = mFuncName(methodName)
 
-#define vCtorDeclare(...) void (*ctor)(void *self, ## __VA_ARGS__)
-#define vDtorDeclare() void (*dtor)(void *self)
+#define vCtorDeclare(...) void (*ctor)(className *cThis, ## __VA_ARGS__)
+#define vDtorDeclare() void (*dtor)(className *cThis)
 
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 
 #define mVarDeclare(type, varName) \
-type CONCAT3(className, _get_, varName)(void *self); \
-void CONCAT3(className, _set_, varName)(void *self, type val)
+type CONCAT3(className, _get_, varName)(className *cThis); \
+void CONCAT3(className, _set_, varName)(className *cThis, type val)
 
 #define mVarDefine(type, varName) \
-type CONCAT3(className, _get_, varName)(void *self) { return cThis->varName; } \
-void CONCAT3(className, _set_, varName)(void *self, type val) { cThis->varName = val; }
+type CONCAT3(className, _get_, varName)(className *cThis) { return cThis->varName; } \
+void CONCAT3(className, _set_, varName)(className *cThis, type val) { cThis->varName = val; }
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
 #define ctorName mFuncName(ctor)
-#define ctorDeclare(...) void ctorName(void *self, ## __VA_ARGS__)
+#define ctorDeclare(...) void ctorName(className *cThis, ## __VA_ARGS__)
 #define ctorDefine(...) ctorDeclare(__VA_ARGS__)
-#define ctorCall(methodName, ...) ctorName(self, ## __VA_ARGS__)
+#define ctorCall(methodName, ...) ctorName(cThis, ## __VA_ARGS__)
 
 #define ctorBaseName CONCAT3(classBaseName, _, ctor)
-#define ctorBaseCall(...) ctorBaseName(self, ## __VA_ARGS__)
+#define ctorBaseCall(...) ctorBaseName(&cThis->classBaseName, ## __VA_ARGS__)
 
 #define dtorName mFuncName(dtor)
-#define dtorDeclare() void dtorName(void *self)
+#define dtorDeclare() void dtorName(className *cThis)
 #define dtorDefine() dtorDeclare()
-#define dtorCall(methodName) dtorName(self)
+#define dtorCall(methodName) dtorName(cThis)
 
 #define dtorBaseName CONCAT3(classBaseName, _, dtor)
-#define dtorBaseCall() dtorBaseName(self)
+#define dtorBaseCall() dtorBaseName(&cThis->classBaseName)
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
-/// 难以支持重载, 真要做只能建议在 构造函数 内 通过 self 后面的第一个参数再套一层可变参数
+/// 难以支持重载, 真要做只能建议在 构造函数 内 通过 cThis 后面的第一个参数再套一层可变参数
 #define obj_create(className, varName, ...) \
     className varName; \
     ctorName(&varName, ## __VA_ARGS__)
