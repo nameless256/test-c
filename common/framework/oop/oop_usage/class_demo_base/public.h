@@ -12,11 +12,15 @@
 
 // 公共 继承 include *\public
 
+// 基类
+#undef classBaseName
+#define classBaseName
+
 // 派生类类名 定义
 #undef className
 #define className animal
 
-classDef(className)
+classDef
             vFuncTabDef
                 vFuncDeclare(void, makeSound);
                 vDtorDeclare();

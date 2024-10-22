@@ -23,14 +23,14 @@
  * @details 这是因为 struct 和 class 在 C++ 中除了默认访问控制外，其他方面几乎相同。
  * @details 这种设计有助于避免多个空对象实例共享同一个地址，从而简化了指针和引用的管理，特别是在多态和继承的情况下。
  */
-#define classDef(className, ...) \
+#define classDef \
 struct className; \
 typedef struct className className; \
 struct className { \
     union { \
         char _; \
         struct { \
-            __VA_ARGS__ __VA_ARGS__;
+            classBaseName classBaseName;
 
 #define classDefEnd \
         }; \

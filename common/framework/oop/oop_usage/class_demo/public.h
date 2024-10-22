@@ -13,6 +13,7 @@
 // 公共 继承 include *\public
 #include "class_demo_base/public.h"
 
+// 基类
 #undef classBaseName
 #define classBaseName animal
 
@@ -20,7 +21,7 @@
 #undef className
 #define className dog
 
-classDef(className, classBaseName)
+classDef
 classDefEnd
 
 mFuncDeclare(void, displayInfo);
