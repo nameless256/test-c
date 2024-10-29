@@ -7,8 +7,11 @@
 
 void oopUsage(void) {
     obj_create(dog, obj);
+    obj_create(animal, canidae);
 
+    animal_eat(&canidae);
     dog_displayInfo(&obj);
 
+    obj_destroy(animal, canidae);
     obj_destroy(dog, obj);
 }

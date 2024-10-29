@@ -111,11 +111,11 @@ void CONCAT3(className, _set_, varName)(void *self, type val) { cThis->varName =
 /// 难以支持重载, 真要做只能建议在 构造函数 内 通过 self 后面的第一个参数再套一层可变参数
 #define obj_create(className, varName, ...) \
     className varName; \
-    ctorName(&varName, ## __VA_ARGS__)
+    CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
 
 /// 无法在退出作用域时自动销毁对象 (需要手动调用)
 #define obj_destroy(className, varName) \
-    dtorName(&varName)
+    CONCAT3(className, _, dtor)(&varName)
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
