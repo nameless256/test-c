@@ -27,12 +27,15 @@
 
 #define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOffsetOf(type, member)))
 
-// 不可进行 break 操作
+// 不可进行 break continue 操作
 #define assertActions(action, expression, message, ...) \
         do {if (!(expression)) { fprintf(stderr, message, ##__VA_ARGS__); action;}} while (0)
 
 #define assertReturns(expression, message, ...) \
         assertActions(return, expression, message, ##__VA_ARGS__)
+
+#define ALIAS(function)             __attribute__((alias(#function)))
+#define WEAK                        __attribute__((weak))
 
 uint8_t getNumDigit(uint32_t num);
 
