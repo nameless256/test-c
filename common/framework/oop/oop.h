@@ -37,17 +37,15 @@ struct className { \
     }; \
 };
 
-#define cThis ((className *)self)
-
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
 #define mFuncName(methodName) CONCAT3(className, _, methodName)
 #define mFuncCall(methodName, ...) mFuncName(methodName)(self, ## __VA_ARGS__)
 
 #define mFuncBaseName(methodName) CONCAT3(classBaseName, _, methodName)
-#define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(self, ## __VA_ARGS__)
+#define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(&self->classBaseName, ## __VA_ARGS__)
 
-#define mFuncDeclare(returnType, methodName, ...) returnType mFuncName(methodName)(void *self, ## __VA_ARGS__)
+#define mFuncDeclare(returnType, methodName, ...) returnType mFuncName(methodName)(className *self, ## __VA_ARGS__)
 #define mFuncDefine(returnType, methodName, ...) mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
@@ -62,49 +60,49 @@ struct className { \
 static struct vFuncTabName(className) vFuncTabName(className)
 
 #define vFuncDeclare(returnType, methodName, ...) \
-returnType (*methodName)(void *self, ## __VA_ARGS__)
+returnType (*methodName)(className *self, ## __VA_ARGS__)
 
 #define vptrInit() \
-    cThis->vptr = &vFuncTabName(className)
+    self->vptr = &vFuncTabName(className)
 
 #define vFuncBinding(methodName) \
     vFuncTabName(className).methodName = mFuncName(methodName)
 
 #define vptrBaseInit() \
-    vFuncTabName(classBaseName) = *cThis->classBaseName.vptr; \
-    cThis->classBaseName.vptr = &vFuncTabName(classBaseName)
+    vFuncTabName(classBaseName) = *self->classBaseName.vptr; \
+    self->classBaseName.vptr = &vFuncTabName(classBaseName)
 
-#define vFuncOverride(methodName) \
-    vFuncTabName(classBaseName).methodName = mFuncName(methodName)
+#define vFuncOverride(vfp, methodName) \
+    vFuncTabName(classBaseName).vfp = (void *)methodName
 
-#define vCtorDeclare(...) void (*ctor)(void *self, ## __VA_ARGS__)
-#define vDtorDeclare() void (*dtor)(void *self)
+#define vCtorDeclare(...) void (*ctor)(className *self, ## __VA_ARGS__)
+#define vDtorDeclare() void (*dtor)(className *self)
 
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 
 #define mVarDeclare(type, varName) \
-type CONCAT3(className, _get_, varName)(void *self); \
-void CONCAT3(className, _set_, varName)(void *self, type val)
+type CONCAT3(className, _get_, varName)(className *self); \
+void CONCAT3(className, _set_, varName)(className *self, type val)
 
 #define mVarDefine(type, varName) \
-type CONCAT3(className, _get_, varName)(void *self) { return cThis->varName; } \
-void CONCAT3(className, _set_, varName)(void *self, type val) { cThis->varName = val; }
+type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
+void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
-#define ctorName mFuncName(ctor)
-#define ctorDeclare(...) void ctorName(void *self, ## __VA_ARGS__)
+#define ctorName CONCAT3(className, _, ctor)
+#define ctorDeclare(...) void ctorName(className *self, ## __VA_ARGS__)
 #define ctorDefine(...) ctorDeclare(__VA_ARGS__)
 
 #define ctorBaseName CONCAT3(classBaseName, _, ctor)
-#define ctorBaseCall(...) ctorBaseName(self, ## __VA_ARGS__)
+#define ctorBaseCall(...) ctorBaseName((classBaseName *)self, ## __VA_ARGS__)
 
-#define dtorName mFuncName(dtor)
-#define dtorDeclare() void dtorName(void *self)
+#define dtorName CONCAT3(className, _, dtor)
+#define dtorDeclare() void dtorName(className *self)
 #define dtorDefine() dtorDeclare()
 
 #define dtorBaseName CONCAT3(classBaseName, _, dtor)
-#define dtorBaseCall() dtorBaseName(self)
+#define dtorBaseCall() dtorBaseName((classBaseName *)self)
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
@@ -121,9 +119,9 @@ void CONCAT3(className, _set_, varName)(void *self, type val) { cThis->varName =
 
 #define obj_new(className, varName, ...) \
     className *varName = calloc(1, sizeof(struct className)); \
-    if (varName) ctorName(varName, ## __VA_ARGS__)
+    if (varName) CONCAT3(className, _, ctor)(varName, ## __VA_ARGS__)
 
 #define obj_delete(className, varName) \
-    if (varName) {dtorName(varName); free(varName);}
+    if (varName) {CONCAT3(className, _, dtor)(varName); free(varName);}
 
 #endif //TEST_C_OOP_H
