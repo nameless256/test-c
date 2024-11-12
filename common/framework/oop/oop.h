@@ -39,6 +39,12 @@ struct className { \
 
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
+#define mFuncName(methodName) CONCAT3(className, _, methodName)
+#define mFuncCall(methodName, ...) mFuncName(methodName)(self, ## __VA_ARGS__)
+
+#define mFuncBaseName(methodName) CONCAT3(classBaseName, _, methodName)
+#define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(&self->classBaseName, ## __VA_ARGS__)
+
 #define mFuncDeclare(returnType, methodName, ...) \
 returnType CONCAT3(className, _, methodName)(className *self, ## __VA_ARGS__)
 #define mFuncDefine(returnType, methodName, ...) \
@@ -86,12 +92,14 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
-#define ctorDeclare(...) void CONCAT3(className, _, ctor)(className *self, ## __VA_ARGS__)
+#define ctorName CONCAT3(className, _, ctor)
+#define ctorDeclare(...) void ctorName(className *self, ## __VA_ARGS__)
 #define ctorDefine(...) ctorDeclare(__VA_ARGS__)
 
 #define ctorBaseCall(...) CONCAT3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
 
-#define dtorDeclare() void CONCAT3(className, _, dtor)(className *self)
+#define dtorName CONCAT3(className, _, dtor)
+#define dtorDeclare() void dtorName(className *self)
 #define dtorDefine() dtorDeclare()
 
 #define dtorBaseCall() CONCAT3(classBaseName, _, dtor)((classBaseName *)self)
