@@ -39,14 +39,10 @@ struct className { \
 
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
-#define mFuncName(methodName) CONCAT3(className, _, methodName)
-#define mFuncCall(methodName, ...) mFuncName(methodName)(self, ## __VA_ARGS__)
-
-#define mFuncBaseName(methodName) CONCAT3(classBaseName, _, methodName)
-#define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(&self->classBaseName, ## __VA_ARGS__)
-
-#define mFuncDeclare(returnType, methodName, ...) returnType mFuncName(methodName)(className *self, ## __VA_ARGS__)
-#define mFuncDefine(returnType, methodName, ...) mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
+#define mFuncDeclare(returnType, methodName, ...) \
+returnType CONCAT3(className, _, methodName)(className *self, ## __VA_ARGS__)
+#define mFuncDefine(returnType, methodName, ...) \
+mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
@@ -56,7 +52,7 @@ struct className { \
 
 #define vFuncTabDefEnd } const *vptr;
 
-#define vFuncTabImplement(className) \
+#define vFuncTabDefine(className) \
 static struct vFuncTabName(className) vFuncTabName(className)
 
 #define vFuncDeclare(returnType, methodName, ...) \
@@ -65,8 +61,8 @@ returnType (*methodName)(className *self, ## __VA_ARGS__)
 #define vptrInit() \
     self->vptr = &vFuncTabName(className)
 
-#define vFuncBinding(methodName) \
-    vFuncTabName(className).methodName = mFuncName(methodName)
+#define vFuncBinding(vfp, methodName) \
+    vFuncTabName(className).vfp = methodName
 
 #define vptrBaseInit() \
     vFuncTabName(classBaseName) = *self->classBaseName.vptr; \

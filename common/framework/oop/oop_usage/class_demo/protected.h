@@ -7,8 +7,6 @@
 
 // 保护 公共 继承 include *\protected
 #include "class_demo_base/protected.h"
-#undef classBaseName
-#define classBaseName Animal
 
 #include "public.h"
 

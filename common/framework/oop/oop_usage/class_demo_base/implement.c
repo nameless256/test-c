@@ -16,11 +16,11 @@ dtorDefine() {
     printf("[%d] --------- {%s} Animal destructor called \n", __LINE__, __FUNCTION__);
 }
 
-vFuncTabImplement(className);
+vFuncTabDefine(className);
 
 ctorDefine() {
     vptrInit();
-    vFuncBinding(dtor);
+    vFuncBinding(dtor, animal_dtor);
     printf("[%d] --------- {%s} Animal constructor called \n", __LINE__, __FUNCTION__);
 }
 
