@@ -86,19 +86,15 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
-#define ctorName CONCAT3(className, _, ctor)
-#define ctorDeclare(...) void ctorName(className *self, ## __VA_ARGS__)
+#define ctorDeclare(...) void CONCAT3(className, _, ctor)(className *self, ## __VA_ARGS__)
 #define ctorDefine(...) ctorDeclare(__VA_ARGS__)
 
-#define ctorBaseName CONCAT3(classBaseName, _, ctor)
-#define ctorBaseCall(...) ctorBaseName((classBaseName *)self, ## __VA_ARGS__)
+#define ctorBaseCall(...) CONCAT3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
 
-#define dtorName CONCAT3(className, _, dtor)
-#define dtorDeclare() void dtorName(className *self)
+#define dtorDeclare() void CONCAT3(className, _, dtor)(className *self)
 #define dtorDefine() dtorDeclare()
 
-#define dtorBaseName CONCAT3(classBaseName, _, dtor)
-#define dtorBaseCall() dtorBaseName((classBaseName *)self)
+#define dtorBaseCall() CONCAT3(classBaseName, _, dtor)((classBaseName *)self)
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
