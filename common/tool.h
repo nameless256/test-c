@@ -98,4 +98,10 @@ int isSubPath(const char *base_path, const char *path);
 
 char *concatStrings(char separator, int count, ...);
 
+// 返回处理 utf16 代码单元 个数
+uint8_t utf16ToUtf8(const uint16_t *utf16, uint8_t *utf8);
+
+// 判断字节序的函数
+int checkEndianness();
+
 #endif //GLOBAL_FUNCTION_H

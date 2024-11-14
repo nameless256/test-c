@@ -217,3 +217,55 @@ char *concatStrings(char separator, int count, ...) {
     va_end(args);
     return buffer;
 }
+
+// 返回处理 utf16 代码单元 个数
+uint8_t utf16ToUtf8(const uint16_t *utf16, uint8_t *utf8) {
+    if (utf16 == NULL || utf8 == NULL) return 0;
+    uint32_t codePoint = *utf16;
+    bool isSurrogate = false;
+    if (codePoint >= 0xD800 && codePoint <= 0xDBFF) { // 高代理对
+        uint16_t lowSurrogate = *(utf16 + 1);
+        if (lowSurrogate >= 0xDC00 && lowSurrogate <= 0xDFFF) { // 低代理对
+            codePoint = 0x10000 + ((codePoint - 0xD800) << 10) + (lowSurrogate - 0xDC00);
+            isSurrogate = true;
+        } else {
+            // 无效的代理对，处理错误
+            return 0;
+        }
+    }
+    uint8_t length = 0;
+    if (codePoint <= 0x7F) {
+        utf8[length++] = (uint8_t) (codePoint);
+    } else if (codePoint <= 0x7FF) {
+        utf8[length++] = (uint8_t) ((codePoint >> 6) | 0xC0);
+        utf8[length++] = (uint8_t) ((codePoint & 0x3F) | 0x80);
+    } else if (codePoint <= 0xFFFF) {
+        utf8[length++] = (uint8_t) ((codePoint >> 12) | 0xE0);
+        utf8[length++] = (uint8_t) (((codePoint >> 6) & 0x3F) | 0x80);
+        utf8[length++] = (uint8_t) ((codePoint & 0x3F) | 0x80);
+    } else if (codePoint <= 0x10FFFF) {
+        utf8[length++] = (uint8_t) ((codePoint >> 18) | 0xF0);
+        utf8[length++] = (uint8_t) (((codePoint >> 12) & 0x3F) | 0x80);
+        utf8[length++] = (uint8_t) (((codePoint >> 6) & 0x3F) | 0x80);
+        utf8[length++] = (uint8_t) ((codePoint & 0x3F) | 0x80);
+    } else {
+        // 无效的代码点，处理错误
+        return 0;
+    }
+    utf8[length] = '\0';
+    return isSurrogate ? 2 : 1;
+}
+
+// 判断字节序的函数
+int checkEndianness() {
+    uint32_t num = 0x12345678;
+    uint8_t *ptr = (uint8_t *)&num;
+
+    if (*ptr == 0x12) {
+        return 1; // Big-Endian
+    } else if (*ptr == 0x78) {
+        return 0; // Little-Endian
+    } else {
+        return -1; // Unknown Endianness
+    }
+}
