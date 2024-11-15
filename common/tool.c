@@ -269,3 +269,34 @@ int checkEndianness() {
         return -1; // Unknown Endianness
     }
 }
+
+static void print_byte_as_hex(unsigned char byte) {
+    // 高4位
+    unsigned char high_nibble = (byte >> 4) & 0x0F;
+    // 低4位
+    unsigned char low_nibble = byte & 0x0F;
+
+    // 将高4位转换为16进制字符
+    putchar(high_nibble < 10 ? '0' + high_nibble : 'A' + high_nibble - 10);
+    // 将低4位转换为16进制字符
+    putchar(low_nibble < 10 ? '0' + low_nibble : 'A' + low_nibble - 10);
+}
+
+#include <ctype.h>
+
+static void print_buffer(const unsigned char *buff, size_t length) {
+    for (size_t i = 0; i < length; i++) {
+//        print_byte_as_hex(buff[i]);
+        if (isprint(buff[i])) {
+            putchar(buff[i]);
+        } else {
+            if (buff[i]) print_byte_as_hex(buff[i]);
+            else putchar(' ');
+        }
+        putchar(' ');
+        if (i % 16 == 0 && i != 0) {
+            putchar('\n');
+        }
+    }
+    putchar('\n');
+}
