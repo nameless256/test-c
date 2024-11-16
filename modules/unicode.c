@@ -26,7 +26,7 @@ static inline uint32_t uft8GetValByByte(uint8_t byte, enum utf8ByteFormat format
     return byte & ((1 << sgUtf8ByteValidBits[format]) - 1);
 }
 
-uint32_t unicodeGetUtf32CharByUtf8(const uint8_t **const utf8) {
+uint32_t unicodeGetCodePointByUtf8(const uint8_t **const utf8) {
     if (utf8 == NULL || *utf8 == NULL) return 0;
     uint8_t bytes = 0;
     for (enum utf8ByteFormat i = utf8ByteFormat_Illegal; i < utf8ByteFormat_Max; ++i) {
@@ -45,11 +45,11 @@ uint32_t unicodeGetUtf32CharByUtf8(const uint8_t **const utf8) {
         codePoint |= uft8GetValByByte((*utf8)[i], utf8ByteFormat_continue);
     }
     *utf8 += bytes;
-    if (codePoint > UTF32_MAX) codePoint = UTF32_ERROR;
+    if (codePoint > UNICODE_MAX) codePoint = UNICODE_ERROR;
     return codePoint;
     error:
     *utf8 += 1;
-    return UTF32_ERROR;
+    return UNICODE_ERROR;
 }
 
 static inline uint8_t utf8GetCharBitsByFormat(enum utf8ByteFormat format) {
@@ -73,8 +73,8 @@ static inline void utf8SetBytePrefix(uint8_t *const byte, enum utf8ByteFormat fo
     *byte &= ~(1 << sgUtf8ByteValidBits[format]);
 }
 
-bool unicodeSetUtf8ByUtf32Char(uint32_t codePoint, uint8_t **const utf8, size_t utf8Size) {
-    if (utf8 == NULL || *utf8 == NULL || codePoint > UTF32_MAX) goto error;
+bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **const utf8, size_t utf8Size) {
+    if (utf8 == NULL || *utf8 == NULL || codePoint > UNICODE_MAX) goto error;
     uint8_t bytes = utf8GetBytesByCodePoint(codePoint);
     if (bytes == 0) goto error;
     if (bytes > utf8Size) goto error;
@@ -91,7 +91,7 @@ bool unicodeSetUtf8ByUtf32Char(uint32_t codePoint, uint8_t **const utf8, size_t 
     return true;
 }
 
-uint32_t unicodeGetUtf32CharByUtf16(const uint16_t **const utf16) {
+uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
     if (utf16 == NULL || *utf16 == NULL) return 0;
     uint32_t codePoint = (*utf16)[0];
     if (codePoint >= 0xD800 && codePoint <= 0xDBFF) { // 高代理对
@@ -101,17 +101,17 @@ uint32_t unicodeGetUtf32CharByUtf16(const uint16_t **const utf16) {
             *utf16 += 1;
         } else {
             // 无效的代理对，处理错误
-            codePoint = UTF32_ERROR;
+            codePoint = UNICODE_ERROR;
         }
     } else if (codePoint >= 0xDC00 && codePoint <= 0xDFFF) {
-        codePoint = UTF32_ERROR;
+        codePoint = UNICODE_ERROR;
     }
     *utf16 += 1;
     return codePoint;
 }
 
-bool unicodeSetUtf16ByUtf32Char(uint32_t codePoint, uint16_t **const utf16, size_t utf16Size) {
-    if (utf16 == NULL || *utf16 == NULL || codePoint > UTF32_MAX) goto error;
+bool unicodeSetUtf16ByCodePoint(uint32_t codePoint, uint16_t **const utf16, size_t utf16Size) {
+    if (utf16 == NULL || *utf16 == NULL || codePoint > UNICODE_MAX) goto error;
     if (codePoint >= 0x10000) {
         if (utf16Size < 2) goto error;
         (*utf16)[0] = 0xD800 + codePoint / 0x400;
