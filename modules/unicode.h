@@ -13,9 +13,9 @@
 
 uint32_t unicodeGetUtf32CharByUtf8(const uint8_t **utf8);
 
-uint32_t unicodeGetUtf32CharByUtf16(const uint16_t **utf16);
-
 bool unicodeSetUtf8ByUtf32Char(uint32_t codePoint, uint8_t **utf8, size_t utf8Size);
+
+uint32_t unicodeGetUtf32CharByUtf16(const uint16_t **utf16);
 
 bool unicodeSetUtf16ByUtf32Char(uint32_t codePoint, uint16_t **utf16, size_t utf16Size);
 

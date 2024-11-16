@@ -52,6 +52,45 @@ uint32_t unicodeGetUtf32CharByUtf8(const uint8_t **const utf8) {
     return UTF32_ERROR;
 }
 
+static inline uint8_t utf8GetCharBitsByFormat(enum utf8ByteFormat format) {
+    if (!(utf8ByteFormat_Illegal < format && format < utf8ByteFormat_Max)) return 0;
+    uint8_t bits = sgUtf8ByteValidBits[format];
+    for (enum utf8ByteFormat i = utf8ByteFormat_1; i < format; ++i) {
+        bits += sgUtf8ByteValidBits[utf8ByteFormat_continue];
+    }
+    return bits;
+}
+
+static inline uint8_t utf8GetBytesByCodePoint(uint32_t codePoint) {
+    for (enum utf8ByteFormat i = utf8ByteFormat_1; i < utf8ByteFormat_Max; ++i) {
+        if (codePoint <= (1 << utf8GetCharBitsByFormat(i)) - 1) return i;
+    }
+    return 0;
+}
+
+static inline void utf8SetBytePrefix(uint8_t *const byte, enum utf8ByteFormat format) {
+    *byte |= ~((1 << sgUtf8ByteValidBits[format]) - 1);
+    *byte &= ~(1 << sgUtf8ByteValidBits[format]);
+}
+
+bool unicodeSetUtf8ByUtf32Char(uint32_t codePoint, uint8_t **const utf8, size_t utf8Size) {
+    if (utf8 == NULL || *utf8 == NULL || codePoint > UTF32_MAX) goto error;
+    uint8_t bytes = utf8GetBytesByCodePoint(codePoint);
+    if (bytes == 0) goto error;
+    if (bytes > utf8Size) goto error;
+    (*utf8)[0] = codePoint >> (sgUtf8ByteValidBits[utf8ByteFormat_continue] * (bytes - 0 - 1));
+    utf8SetBytePrefix(&(*utf8)[0], bytes);
+    for (uint8_t i = 1; i < bytes; ++i) {
+        (*utf8)[i] = codePoint >> (sgUtf8ByteValidBits[utf8ByteFormat_continue] * (bytes - i - 1));
+        utf8SetBytePrefix(&(*utf8)[i], utf8ByteFormat_continue);
+    }
+    *utf8 += bytes;
+    return false;
+    error:
+    *utf8 += 1;
+    return true;
+}
+
 uint32_t unicodeGetUtf32CharByUtf16(const uint16_t **const utf16) {
     if (utf16 == NULL || *utf16 == NULL) return 0;
     uint32_t codePoint = (*utf16)[0];
@@ -69,40 +108,6 @@ uint32_t unicodeGetUtf32CharByUtf16(const uint16_t **const utf16) {
     }
     *utf16 += 1;
     return codePoint;
-}
-
-static inline uint8_t getUtf8CharBitsByFormat(enum utf8ByteFormat format) {
-    if (!(utf8ByteFormat_Illegal < format && format < utf8ByteFormat_Max)) return 0;
-    uint8_t bits = sgUtf8ByteValidBits[format];
-    for (enum utf8ByteFormat i = utf8ByteFormat_1; i < format; ++i) {
-        bits += sgUtf8ByteValidBits[utf8ByteFormat_continue];
-    }
-    return bits;
-}
-
-static inline uint8_t getUtf8BytesByCodePoint(uint32_t codePoint) {
-    for (enum utf8ByteFormat i = utf8ByteFormat_1; i < utf8ByteFormat_Max; ++i) {
-        if (codePoint <= (1 << getUtf8CharBitsByFormat(i)) - 1) return i;
-    }
-    return 0;
-}
-
-bool unicodeSetUtf8ByUtf32Char(uint32_t codePoint, uint8_t **const utf8, size_t utf8Size) {
-    if (utf8 == NULL || *utf8 == NULL || codePoint > UTF32_MAX) goto error;
-    uint8_t bytes = getUtf8BytesByCodePoint(codePoint);
-    if (bytes == 0) goto error;
-    if (bytes > utf8Size) goto error;
-    (*utf8)[0] = codePoint >> (sgUtf8ByteValidBits[utf8ByteFormat_continue] * (bytes - 0 - 1));
-    if (bytes > 1) (*utf8)[0] |= (1 << (sgUtf8ByteValidBits[bytes] + 1)) - 1;
-    for (uint8_t i = 1; i < bytes; ++i) {
-        (*utf8)[i] = codePoint >> (sgUtf8ByteValidBits[utf8ByteFormat_continue] * (bytes - i - 1));
-        (*utf8)[i] |= (1 << (sgUtf8ByteValidBits[utf8ByteFormat_continue] + 1)) - 1;
-    }
-    *utf8 += bytes;
-    return false;
-    error:
-    *utf8 += 1;
-    return true;
 }
 
 bool unicodeSetUtf16ByUtf32Char(uint32_t codePoint, uint16_t **const utf16, size_t utf16Size) {
