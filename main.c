@@ -28,7 +28,6 @@ int main() {
     clock_t start = clock();
 
 //    oopUsage();
-//    testUnicodeGetUtf32CharByUtf8();
 
     clock_t stop = clock();
     double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
