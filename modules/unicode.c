@@ -127,7 +127,7 @@ size_t unicodeUtf8ToUtf16(const uint8_t *utf8, size_t utf8Size, uint16_t *utf16,
     const uint8_t *const utf8End = utf8 + utf8Size;
     const uint16_t *const utf16End = utf16 + utf16Size;
     memset(utf16, 0, utf16Size * sizeof(uint16_t));
-    while (utf8 < utf8End && *utf8 != '\0') {
+    while (utf8 < utf8End && utf16 < utf16End && *utf8) {
         uint32_t codePoint = unicodeGetCodePointByUtf8(&utf8);
         if (unicodeSetUtf16ByCodePoint(codePoint, &utf16, utf16End - utf16)) break;
     }
@@ -138,7 +138,7 @@ size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Size, uint8_t *utf8
     const uint16_t *const utf16End = utf16 + utf16Size;
     const uint8_t *const utf8End = utf8 + utf8Size;
     memset(utf8, 0, utf8Size * sizeof(uint8_t));
-    while (utf16 < utf16End && *utf16 != '\0') {
+    while (utf16 < utf16End && utf8 < utf8End && *utf16) {
         uint32_t codePoint = unicodeGetCodePointByUtf16(&utf16);
         if (unicodeSetUtf8ByCodePoint(codePoint, &utf8, utf8End - utf8)) break;
     }
