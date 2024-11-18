@@ -270,7 +270,7 @@ int checkEndianness() {
     }
 }
 
-static void print_byte_as_hex(unsigned char byte) {
+void print_byte_as_hex(unsigned char byte) {
     // 高4位
     unsigned char high_nibble = (byte >> 4) & 0x0F;
     // 低4位
@@ -284,15 +284,17 @@ static void print_byte_as_hex(unsigned char byte) {
 
 #include <ctype.h>
 
-static void print_buffer(const unsigned char *buff, size_t length) {
+void print_buffer(const unsigned char *buff, size_t length) {
     for (size_t i = 0; i < length; i++) {
-//        print_byte_as_hex(buff[i]);
+        print_byte_as_hex(buff[i]);
+/*
         if (isprint(buff[i])) {
             putchar(buff[i]);
         } else {
             if (buff[i]) print_byte_as_hex(buff[i]);
             else putchar(' ');
         }
+*/
         putchar(' ');
         if (i % 16 == 0 && i != 0) {
             putchar('\n');

@@ -2,24 +2,25 @@
 // Created by xiaoxianghui on 2024/11/15.
 //
 
-#include <assert.h>
+#include <string.h>
 #include "unicode.h"
-#include "tool.h"
 
 enum utf8ByteFormat {
     utf8ByteFormat_Illegal = 0,
     utf8ByteFormat_continue = 0,
     utf8ByteFormat_1,
-    utf8ByteFormat_2 UNUSED,
-    utf8ByteFormat_3 UNUSED,
-    utf8ByteFormat_4 UNUSED,
+    utf8ByteFormat_2,
+    utf8ByteFormat_3,
+    utf8ByteFormat_4,
     utf8ByteFormat_Max = 5,
 };
 
 static const uint8_t sgUtf8ByteValidBits[utf8ByteFormat_Max] = {6, 7, 5, 4, 3};
 
 static inline bool utf8CheckByte(uint8_t byte, enum utf8ByteFormat format) {
-    return ((byte >> sgUtf8ByteValidBits[format]) & ((1 << sgUtf8ByteValidBits[format]) - 1)) == 1;
+    uint8_t byteFormat = ~(byte | ((1 << sgUtf8ByteValidBits[format]) - 1));
+    uint8_t checkBit = 1 << sgUtf8ByteValidBits[format];
+    return byteFormat == checkBit;
 }
 
 static inline uint32_t uft8GetValByByte(uint8_t byte, enum utf8ByteFormat format) {
@@ -74,10 +75,10 @@ static inline void utf8SetBytePrefix(uint8_t *const byte, enum utf8ByteFormat fo
 }
 
 bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **const utf8, size_t utf8Size) {
-    if (utf8 == NULL || *utf8 == NULL || codePoint > UNICODE_MAX) goto error;
+    if (utf8 == NULL || *utf8 == NULL || codePoint > UNICODE_MAX) return true;
     uint8_t bytes = utf8GetBytesByCodePoint(codePoint);
-    if (bytes == 0) goto error;
-    if (bytes > utf8Size) goto error;
+    if (bytes == 0) return true;
+    if (bytes > utf8Size) return true;
     (*utf8)[0] = codePoint >> (sgUtf8ByteValidBits[utf8ByteFormat_continue] * (bytes - 0 - 1));
     utf8SetBytePrefix(&(*utf8)[0], bytes);
     for (uint8_t i = 1; i < bytes; ++i) {
@@ -86,9 +87,6 @@ bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **const utf8, size_t 
     }
     *utf8 += bytes;
     return false;
-    error:
-    *utf8 += 1;
-    return true;
 }
 
 uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
@@ -111,19 +109,39 @@ uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
 }
 
 bool unicodeSetUtf16ByCodePoint(uint32_t codePoint, uint16_t **const utf16, size_t utf16Size) {
-    if (utf16 == NULL || *utf16 == NULL || codePoint > UNICODE_MAX) goto error;
+    if (utf16 == NULL || *utf16 == NULL || codePoint > UNICODE_MAX) return true;
     if (codePoint >= 0x10000) {
-        if (utf16Size < 2) goto error;
-        (*utf16)[0] = 0xD800 + codePoint / 0x400;
-        (*utf16)[1] = 0xDC00 + codePoint & 0x400;
+        if (utf16Size < 2) return true;
+        (*utf16)[0] = 0xD800 + (codePoint - 0x10000) / 0x400;
+        (*utf16)[1] = 0xDC00 + (codePoint - 0x10000) % 0x400;
         *utf16 += 2;
     } else {
-        if (utf16Size < 1) goto error;
+        if (utf16Size < 1) return true;
         (*utf16)[0] = codePoint;
+        *utf16 += 1;
     }
     return false;
-    error:
-    *utf16 += 1;
-    return true;
+}
+
+size_t unicodeUtf8ToUtf16(const uint8_t *utf8, size_t utf8Size, uint16_t *utf16, size_t utf16Size) {
+    const uint8_t *const utf8End = utf8 + utf8Size;
+    const uint16_t *const utf16End = utf16 + utf16Size;
+    memset(utf16, 0, utf16Size * sizeof(uint16_t));
+    while (utf8 < utf8End && *utf8 != '\0') {
+        uint32_t codePoint = unicodeGetCodePointByUtf8(&utf8);
+        if (unicodeSetUtf16ByCodePoint(codePoint, &utf16, utf16End - utf16)) break;
+    }
+    return utf16Size - (utf16End - utf16);
+}
+
+size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Size, uint8_t *utf8, size_t utf8Size) {
+    const uint16_t *const utf16End = utf16 + utf16Size;
+    const uint8_t *const utf8End = utf8 + utf8Size;
+    memset(utf8, 0, utf8Size * sizeof(uint8_t));
+    while (utf16 < utf16End && *utf16 != '\0') {
+        uint32_t codePoint = unicodeGetCodePointByUtf16(&utf16);
+        if (unicodeSetUtf8ByCodePoint(codePoint, &utf8, utf8End - utf8)) break;
+    }
+    return utf8Size - (utf8End - utf8);
 }
 

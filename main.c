@@ -15,8 +15,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "oop_usage.h"
-#include "unicode.h"
 
 /**
  * @defgroup Main

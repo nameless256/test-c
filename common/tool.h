@@ -105,8 +105,8 @@ uint8_t utf16ToUtf8(const uint16_t *utf16, uint8_t *utf8);
 // 判断字节序的函数
 int checkEndianness();
 
-static void print_byte_as_hex(unsigned char byte);
+void print_byte_as_hex(unsigned char byte);
 
-static void print_buffer(const unsigned char *buff, size_t length);
+void print_buffer(const unsigned char *buff, size_t length);
 
 #endif //GLOBAL_FUNCTION_H
