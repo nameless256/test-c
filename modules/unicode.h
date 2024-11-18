@@ -47,18 +47,18 @@ uint32_t unicodeGetCodePointByUtf16(const uint16_t **utf16);
 bool unicodeSetUtf16ByCodePoint(uint32_t codePoint, uint16_t **utf16, size_t utf16Size);
 
 /**
- * @param utf8 传入utf8码流
+ * @param[in] utf8 传入utf8码流
  * @param utf8Size utf8码流长度
- * @param utf16 utf16缓冲区
+ * @param[out] utf16 utf16缓冲区
  * @param utf16Size utf16缓冲区大小 (码元个数)
  * @return 转换码元个数
  */
 size_t unicodeUtf8ToUtf16(const uint8_t *utf8, size_t utf8Size, uint16_t *utf16, size_t utf16Size);
 
 /**
- * @param utf16 传入utf16码流
+ * @param[in] utf16 传入utf16码流
  * @param utf16Size utf16码流长度
- * @param utf8 utf8缓冲区
+ * @param[out] utf8 utf8缓冲区
  * @param utf8Size utf8缓冲区大小 (码元个数)
  * @return 转换码元个数
  */
