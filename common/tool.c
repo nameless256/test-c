@@ -270,35 +270,40 @@ int checkEndianness() {
     }
 }
 
-void print_byte_as_hex(unsigned char byte) {
+void printByteAsHex(unsigned char byte) {
     // 高4位
-    unsigned char high_nibble = (byte >> 4) & 0x0F;
+    unsigned char highNibble = (byte >> 4) & 0x0F;
     // 低4位
-    unsigned char low_nibble = byte & 0x0F;
-
+    unsigned char lowNibble = byte & 0x0F;
     // 将高4位转换为16进制字符
-    putchar(high_nibble < 10 ? '0' + high_nibble : 'A' + high_nibble - 10);
+    putchar(highNibble < 10 ? '0' + highNibble : 'A' + highNibble - 10);
     // 将低4位转换为16进制字符
-    putchar(low_nibble < 10 ? '0' + low_nibble : 'A' + low_nibble - 10);
+    putchar(lowNibble < 10 ? '0' + lowNibble : 'A' + lowNibble - 10);
 }
 
 #include <ctype.h>
 
-void print_buffer(const unsigned char *buff, size_t length) {
+void printBuffer(const unsigned char *buff, size_t length) {
     for (size_t i = 0; i < length; i++) {
-        print_byte_as_hex(buff[i]);
-/*
+#if 1
+        printByteAsHex(buff[i]);
+#else
         if (isprint(buff[i])) {
             putchar(buff[i]);
+            putchar(' ');
         } else {
-            if (buff[i]) print_byte_as_hex(buff[i]);
-            else putchar(' ');
+            if (buff[i]) {
+                printByteAsHex(buff[i]);
+            } else {
+                putchar(' ');
+                putchar(' ');
+            }
         }
-*/
+#endif
         putchar(' ');
-        if (i % 16 == 0 && i != 0) {
+        if (i % 16 == 15) {
             putchar('\n');
         }
     }
-    putchar('\n');
+    if (length % 16 != 0) putchar('\n');
 }

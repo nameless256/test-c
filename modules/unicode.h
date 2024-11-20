@@ -64,4 +64,6 @@ size_t unicodeUtf8ToUtf16(const uint8_t *utf8, size_t utf8Size, uint16_t *utf16,
  */
 size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Size, uint8_t *utf8, size_t utf8Size);
 
+void unicodeUsage(void);
+
 #endif //TEST_C_UNICODE_H

@@ -92,16 +92,15 @@ bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **const utf8, size_t 
 uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
     if (utf16 == NULL || *utf16 == NULL) return 0;
     uint32_t codePoint = (*utf16)[0];
-    if (codePoint >= 0xD800 && codePoint <= 0xDBFF) { // 高代理对
-        uint16_t lowSurrogate = (*utf16)[1];
-        if (lowSurrogate >= 0xDC00 && lowSurrogate <= 0xDFFF) { // 低代理对
-            codePoint = 0x10000 + ((codePoint - 0xD800) << 10) + (lowSurrogate - 0xDC00);
+    if (0xD800 <= (*utf16)[0] && (*utf16)[0] - 0xD800 < 0x400) { // 高代理对
+        if (0xDC00 <= (*utf16)[1] && (*utf16)[1] - 0xDC00 < 0x400) { // 低代理对
+            codePoint = 0x10000 + (((*utf16)[0] - 0xD800) << 10) + ((*utf16)[1] - 0xDC00);
             *utf16 += 1;
         } else {
             // 无效的代理对，处理错误
             codePoint = UNICODE_ERROR;
         }
-    } else if (codePoint >= 0xDC00 && codePoint <= 0xDFFF) {
+    } else if (0xDC00 <= (*utf16)[0] && (*utf16)[0] - 0xDC00 < 0x400) {
         codePoint = UNICODE_ERROR;
     }
     *utf16 += 1;
@@ -143,5 +142,29 @@ size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Size, uint8_t *utf8
         if (unicodeSetUtf8ByCodePoint(codePoint, &utf8, utf8End - utf8)) break;
     }
     return utf8Size - (utf8End - utf8);
+}
+
+#include "tool.h"
+#include <stdio.h>
+
+void unicodeUsage(void) {
+    char *demoTexts[] = {
+        "Hello, World! 🌍",  // 包含 ASCII 和 BMP 字符
+        "👩‍💻👨‍👩‍👧‍👦",  // 包含补充平面中的表情符号
+        "你好，世界！",  // 包含中文字符
+        "😀😂😍",  // 更多表情符号
+    };
+    uint16_t utf16[256];
+    uint8_t utf8[256];
+    for (size_t i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
+        printf("Demo %zu: \n", i + 1);
+        printBuffer((uint8_t *) demoTexts[i], strlen(demoTexts[i]));
+        size_t utf16Size = unicodeUtf8ToUtf16((uint8_t *) demoTexts[i], strlen(demoTexts[i]), utf16, ARRAY_SIZE(utf16));
+        size_t utf8Size = unicodeUtf16ToUtf8(utf16, utf16Size, utf8, ARRAY_SIZE(utf8));
+        printf("UTF-16: \n");
+        printBuffer((uint8_t *) utf16, utf16Size * 2);
+        printf("UTF-8: \n");
+        printBuffer(utf8, utf8Size);
+    }
 }
 
