@@ -94,7 +94,7 @@ uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
     uint32_t codePoint = (*utf16)[0];
     if (0xD800 <= (*utf16)[0] && (*utf16)[0] - 0xD800 < 0x400) { // 高代理对
         if (0xDC00 <= (*utf16)[1] && (*utf16)[1] - 0xDC00 < 0x400) { // 低代理对
-            codePoint = 0x10000 + (((*utf16)[0] - 0xD800) << 10) + ((*utf16)[1] - 0xDC00);
+            codePoint = 0x10000 + (((*utf16)[0] - 0xD800) * 0x400) + ((*utf16)[1] - 0xDC00);
             *utf16 += 1;
         } else {
             // 无效的代理对，处理错误
