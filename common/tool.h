@@ -37,6 +37,7 @@
 #define ALIAS(function)             __attribute__((alias(#function)))
 #define WEAK                        __attribute__((weak))
 #define UNUSED                      __attribute__((unused))
+#define CLEANUP(function)           __attribute__((cleanup(function)))
 
 uint8_t getNumDigit(uint32_t num);
 

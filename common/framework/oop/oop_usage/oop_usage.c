@@ -12,6 +12,6 @@ void oopUsage(void) {
     animal_eat(&canidae);
     dog_displayInfo(&obj);
 
-    obj_destroy(animal, canidae);
-    obj_destroy(dog, obj);
+//    obj_destroy(animal, canidae);
+//    obj_destroy(dog, obj);
 }

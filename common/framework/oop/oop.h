@@ -107,6 +107,12 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
 /// 难以支持重载, 真要做只能建议在 构造函数 内 通过 self 后面的第一个参数再套一层可变参数
+#if 1
+/// 借助 C99 的 __attribute__((cleanup())) 实现
+#define obj_create(className, varName, ...) \
+    className varName __attribute__((cleanup(CONCAT3(className, _, dtor)))); \
+    CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
+#else
 #define obj_create(className, varName, ...) \
     className varName; \
     CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
@@ -114,6 +120,7 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 /// 无法在退出作用域时自动销毁对象 (需要手动调用)
 #define obj_destroy(className, varName) \
     CONCAT3(className, _, dtor)(&varName)
+#endif
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
