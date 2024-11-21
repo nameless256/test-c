@@ -285,19 +285,23 @@ void printByteAsHex(unsigned char byte) {
 
 void printBuffer(const unsigned char *buff, size_t length) {
     for (size_t i = 0; i < length; i++) {
-#if 1
+#if 0
         printByteAsHex(buff[i]);
 #else
         if (isprint(buff[i])) {
             putchar(buff[i]);
             putchar(' ');
         } else {
+#if 1
+            printByteAsHex(buff[i]);
+#else
             if (buff[i]) {
                 printByteAsHex(buff[i]);
             } else {
                 putchar(' ');
                 putchar(' ');
             }
+#endif
         }
 #endif
         putchar(' ');
