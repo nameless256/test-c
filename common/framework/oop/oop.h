@@ -108,7 +108,7 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 
 /// 难以支持重载, 真要做只能建议在 构造函数 内 通过 self 后面的第一个参数再套一层可变参数
 #if 1
-/// 借助 C99 的 __attribute__((cleanup())) 实现
+/// 借助 GCC 的 __attribute__((cleanup())) 实现
 #define obj_create(className, varName, ...) \
     className varName __attribute__((cleanup(CONCAT3(className, _, dtor)))); \
     CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
