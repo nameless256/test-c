@@ -18,9 +18,8 @@ enum utf8ByteFormat {
 static const uint8_t sgUtf8ByteValidBits[utf8ByteFormat_Max] = {6, 7, 5, 4, 3};
 
 static inline bool utf8CheckByte(uint8_t byte, enum utf8ByteFormat format) {
-    uint8_t byteFormat = ~(byte | ((1 << sgUtf8ByteValidBits[format]) - 1));
     uint8_t checkBit = 1 << sgUtf8ByteValidBits[format];
-    return byteFormat == checkBit;
+    return (uint8_t) (~(byte | (checkBit - 1))) == checkBit;
 }
 
 static inline uint32_t uft8GetValByByte(uint8_t byte, enum utf8ByteFormat format) {
