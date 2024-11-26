@@ -20,7 +20,7 @@ vFuncTabDefine(className);
 
 ctorDefine() {
     vptrInit();
-    vFuncBinding(dtor, dtorName);
+    vIfBinding(dtor, dtorName);
     printf("[%d] --------- {%s} Animal constructor called \n", __LINE__, __FUNCTION__);
 }
 

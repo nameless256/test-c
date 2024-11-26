@@ -54,27 +54,27 @@ mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 
 #define vFuncTabName(className) CONCAT3(className, _, vFuncTab)
 
-#define vFuncTabDef struct vFuncTabName(className) {
+#define vPtrDef struct vFuncTabName(className) {
 
-#define vFuncTabDefEnd } const *vptr;
+#define vPtrDefEnd } const *vptr;
 
 #define vFuncTabDefine(className) \
 static struct vFuncTabName(className) vFuncTabName(className)
 
-#define vFuncDeclare(returnType, methodName, ...) \
+#define vIfDeclare(returnType, methodName, ...) \
 returnType (*methodName)(className *self, ## __VA_ARGS__)
 
 #define vptrInit() \
     self->vptr = &vFuncTabName(className)
 
-#define vFuncBinding(vfp, methodName) \
+#define vIfBinding(vfp, methodName) \
     vFuncTabName(className).vfp = methodName
 
 #define vptrBaseInit() \
     vFuncTabName(classBaseName) = *self->classBaseName.vptr; \
     self->classBaseName.vptr = &vFuncTabName(classBaseName)
 
-#define vFuncOverride(vfp, methodName) \
+#define vIfOverride(vfp, methodName) \
     vFuncTabName(classBaseName).vfp = (void *)methodName
 
 #define vCtorDeclare(...) void (*ctor)(className *self, ## __VA_ARGS__)

@@ -21,10 +21,10 @@
 #define className animal
 
 classDef
-            vFuncTabDef
-                vFuncDeclare(void, makeSound);
+            vPtrDef
+                vIfDeclare(void, makeSound);
                 vDtorDeclare();
-            vFuncTabDefEnd
+            vPtrDefEnd
             char *name;
             uint8_t age;
 classDefEnd

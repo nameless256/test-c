@@ -24,7 +24,7 @@ vFuncTabDefine(classBaseName);
 ctorDefine() {
     ctorBaseCall();
     vptrBaseInit();
-    vFuncOverride(makeSound, mFuncName(makeSound));
+    vIfOverride(makeSound, mFuncName(makeSound));
     printf("[%d] --------- {%s} Dog constructor called \n", __LINE__, __FUNCTION__);
     mFuncBaseCall(set_name, "Rex");
 }
