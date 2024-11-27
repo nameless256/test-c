@@ -12,15 +12,20 @@ mFuncDefine(void, eat) {
     printf("[%d] --------- {%s} Eating... \n", __LINE__, __FUNCTION__);
 }
 
-dtorDefine() {
+vFuncImplement(void, dtor, className) {
     printf("[%d] --------- {%s} Animal destructor called \n", __LINE__, __FUNCTION__);
+}
+
+dtorDefine() {
+    // 需要套层壳进行虚函数调用
+    self->vptr->dtor(self);
 }
 
 vFuncTabDefine(className);
 
 ctorDefine() {
     vptrInit();
-    vIfBinding(dtor, dtorName);
+    vFuncBinding(className, dtor);
     printf("[%d] --------- {%s} Animal constructor called \n", __LINE__, __FUNCTION__);
 }
 

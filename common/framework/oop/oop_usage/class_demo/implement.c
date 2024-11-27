@@ -4,7 +4,7 @@
 
 #include "private.h"
 
-mFuncDefine(void, makeSound) {
+vFuncImplement(void, makeSound, classBaseName) {
     printf("[%d] --------- {%s} Barking... \n", __LINE__, __FUNCTION__);
 }
 
@@ -24,7 +24,7 @@ vFuncTabDefine(classBaseName);
 ctorDefine() {
     ctorBaseCall();
     vptrBaseInit();
-    vIfOverride(makeSound, mFuncName(makeSound));
+    vFuncBinding(classBaseName, makeSound);
     printf("[%d] --------- {%s} Dog constructor called \n", __LINE__, __FUNCTION__);
     mFuncBaseCall(set_name, "Rex");
 }

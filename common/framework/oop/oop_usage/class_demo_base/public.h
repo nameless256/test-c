@@ -22,7 +22,7 @@
 
 classDef
             vPtrDef
-                vIfDeclare(void, makeSound);
+                vFuncDeclare(void, makeSound);
                 vDtorDeclare();
             vPtrDefEnd
             char *name;

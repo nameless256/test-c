@@ -46,7 +46,7 @@ struct className { \
 #define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(&self->classBaseName, ## __VA_ARGS__)
 
 #define mFuncDeclare(returnType, methodName, ...) \
-returnType CONCAT3(className, _, methodName)(className *self, ## __VA_ARGS__)
+returnType mFuncName(methodName)(className *self, ## __VA_ARGS__)
 #define mFuncDefine(returnType, methodName, ...) \
 mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 
@@ -61,24 +61,25 @@ mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
 #define vFuncTabDefine(className) \
 static struct vFuncTabName(className) vFuncTabName(className)
 
-#define vIfDeclare(returnType, methodName, ...) \
+#define vFuncDeclare(returnType, methodName, ...) \
 returnType (*methodName)(className *self, ## __VA_ARGS__)
+
+#define vCtorDeclare(...) void (*ctor)(className *self, ## __VA_ARGS__)
+#define vDtorDeclare() void (*dtor)(className *self)
 
 #define vptrInit() \
     self->vptr = &vFuncTabName(className)
-
-#define vIfBinding(vfp, methodName) \
-    vFuncTabName(className).vfp = methodName
 
 #define vptrBaseInit() \
     vFuncTabName(classBaseName) = *self->classBaseName.vptr; \
     self->classBaseName.vptr = &vFuncTabName(classBaseName)
 
-#define vIfOverride(vfp, methodName) \
-    vFuncTabName(classBaseName).vfp = (void *)methodName
+#define vFuncBinding(className, methodName) \
+    vFuncTabName(className).methodName = methodName
 
-#define vCtorDeclare(...) void (*ctor)(className *self, ## __VA_ARGS__)
-#define vDtorDeclare() void (*dtor)(className *self)
+/// 需要套层壳包装虚函数具体实现的调用, 并通过壳的声明位置决定作用域是 公共、私有还是受保护
+#define vFuncImplement(returnType, methodName, vFuncClassName, ...) \
+static returnType methodName(vFuncClassName *self, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 
@@ -92,6 +93,7 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
+/// 无法支持重载, 无论是通过 宏魔法 (Morn 库 的思路) 还是 可变参 都需要 手动增加代码, 往往还不利于维护, 甚至隐藏风险
 #define ctorName CONCAT3(className, _, ctor)
 #define ctorDeclare(...) void ctorName(className *self, ## __VA_ARGS__)
 #define ctorDefine(...) ctorDeclare(__VA_ARGS__)
@@ -106,7 +108,6 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
-/// 难以支持重载, 真要做只能建议在 构造函数 内 通过 self 后面的第一个参数再套一层可变参数
 #if 1
 /// 借助 GCC 的 __attribute__((cleanup())) 实现
 #define obj_create(className, varName, ...) \
