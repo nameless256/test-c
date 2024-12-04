@@ -34,6 +34,12 @@
 #define assertReturns(expression, message, ...) \
         assertActions(return, expression, message, ##__VA_ARGS__)
 
+#define autoReleaseBuffer(type, name, size) \
+    for (type name = malloc(name ## Size); name != NULL; free(name), name = NULL)
+
+#define autoReleaseFile(name, path, args) \
+    for (FILE *name = fopen(path, args); name != NULL; fclose(name), name = NULL)
+
 #define ALIAS(function)             __attribute__((alias(#function)))
 #define WEAK                        __attribute__((weak))
 #define UNUSED                      __attribute__((unused))
