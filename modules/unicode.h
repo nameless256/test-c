@@ -64,17 +64,17 @@ size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Length, uint8_t *ut
 
 /**
  * @param[in] utf8 传入utf8码流
- * @param[out] length utf8码元个数
- * @retval true 失败
+ * @return utf8码元个数
+ * @retval 0 失败
  */
-bool unicodeGetUtf8Length(const uint8_t *utf8, size_t *length);
+size_t unicodeGetUtf8Length(const uint8_t *utf8);
 
 /**
  * @param[in] utf16 传入utf16码流
- * @param[out] length utf16码元个数
- * @retval true 失败
+ * @return 传入utf16码元个数
+ * @retval 0 失败
  */
-bool unicodeGetUtf16Length(const uint16_t *utf16, size_t *length);
+size_t unicodeGetUtf16Length(const uint16_t *utf16);
 
 /**
  * @param[in] utf8 传入utf8码流
