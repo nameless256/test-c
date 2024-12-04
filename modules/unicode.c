@@ -174,7 +174,7 @@ size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Length, uint8_t *ut
 }
 
 size_t unicodeGetUtf8Length(const uint8_t *utf8) {
-    if (utf8 == NULL) return true;
+    if (utf8 == NULL) return 0;
     size_t length = 0;
     while (*utf8) {
         uint8_t bytes = utf8GetCharacterCodeElements(utf8);
@@ -189,7 +189,7 @@ size_t unicodeGetUtf8Length(const uint8_t *utf8) {
 }
 
 size_t unicodeGetUtf16Length(const uint16_t *utf16) {
-    if (utf16 == NULL) return true;
+    if (utf16 == NULL) return 0;
     size_t length = 0;
     while (*utf16) {
         uint8_t codeElements = utf16GetCharacterCodeElements(utf16);
@@ -203,38 +203,40 @@ size_t unicodeGetUtf16Length(const uint16_t *utf16) {
     return length;
 }
 
-bool unicodeGetUtf8LengthByUtf16(const uint16_t *utf16, size_t *const length) {
-    if (utf16 == NULL || length == NULL) return true;
-    *length = 0;
-    bool characterIllegal = false;
+size_t unicodeGetUtf8LengthByUtf16(const uint16_t *utf16) {
+    if (utf16 == NULL) return 0;
+    size_t length = 0;
     while (*utf16) {
         uint8_t codeElements = utf16GetCharacterCodeElements(utf16);
-        characterIllegal = codeElements == 0;
-        if (characterIllegal) break;
+        if (codeElements == 0) {
+            length = 0;
+            break;
+        }
         utf16 += codeElements;
-        *length += codeElements == 2 ? 4 : utf8GetBytesByCodePoint(utf16[0]);
+        length += codeElements == 2 ? 4 : utf8GetBytesByCodePoint(utf16[0]);
     }
-    return characterIllegal;
+    return length;
 }
 
-bool unicodeGetUtf16LengthByUtf8(const uint8_t *utf8, size_t *const length) {
-    if (utf8 == NULL || length == NULL) return true;
-    *length = 0;
-    bool characterIllegal = false;
+size_t unicodeGetUtf16LengthByUtf8(const uint8_t *utf8) {
+    if (utf8 == NULL) return 0;
+    size_t length = 0;
     while (*utf8) {
         uint8_t bytes = utf8GetCharacterCodeElements(utf8);
-        characterIllegal = bytes == 0;
-        if (characterIllegal) break;
-        *length += bytes > 3 ? 2 : 1;
+        if (bytes == 0) {
+            length = 0;
+            break;
+        }
+        length += bytes > 3 ? 2 : 1;
         utf8 += bytes;
     }
-    return characterIllegal;
+    return length;
 }
 
 uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16) {
     if (utf16 == NULL) return NULL;
-    size_t length = 0;
-    if (unicodeGetUtf8LengthByUtf16(utf16, &length)) return NULL;
+    size_t length = unicodeGetUtf8LengthByUtf16(utf16);
+    if (length == 0) return NULL;
     length++;
     uint8_t *utf8 = calloc(length, sizeof(uint8_t));
     unicodeUtf16ToUtf8(utf16, strlen((char *) utf16), utf8, length);
@@ -243,8 +245,8 @@ uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16) {
 
 uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8) {
     if (utf8 == NULL) return NULL;
-    size_t length = 0;
-    if (unicodeGetUtf16LengthByUtf8(utf8, &length)) return NULL;
+    size_t length = unicodeGetUtf16LengthByUtf8(utf8);
+    if (length == 0) return NULL;
     length++;
     uint16_t *utf16 = calloc(length, sizeof(uint16_t));
     unicodeUtf8ToUtf16(utf8, strlen((char *) utf8), utf16, length);
