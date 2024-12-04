@@ -24,7 +24,6 @@ uint32_t unicodeGetCodePointByUtf8(const uint8_t **utf8);
  * @param codePoint unicode 码点
  * @param[out] utf8 传入写指针的地址 方便连续操作 指针会自动后移
  * @param utf8Length 剩余缓冲区码元个数 (sizeof(buffer) / sizeof(uint8_t))
- * @return 错误码
  * @retval true 失败
  */
 bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **utf8, size_t utf8Length);
@@ -41,7 +40,6 @@ uint32_t unicodeGetCodePointByUtf16(const uint16_t **utf16);
  * @param codePoint unicode 码点
  * @param[out] utf16 传入写指针的地址 方便连续操作 指针会自动后移
  * @param utf16Length 剩余缓冲区码元个数 (sizeof(buffer) / sizeof(uint16_t))
- * @return 错误码
  * @retval true 失败
  */
 bool unicodeSetUtf16ByCodePoint(uint32_t codePoint, uint16_t **utf16, size_t utf16Length);
@@ -66,8 +64,21 @@ size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Length, uint8_t *ut
 
 /**
  * @param[in] utf8 传入utf8码流
+ * @param[out] length utf8码元个数
+ * @retval true 失败
+ */
+bool unicodeGetUtf8Length(const uint8_t *utf8, size_t *length);
+
+/**
+ * @param[in] utf16 传入utf16码流
+ * @param[out] length utf16码元个数
+ * @retval true 失败
+ */
+bool unicodeGetUtf16Length(const uint16_t *utf16, size_t *length);
+
+/**
+ * @param[in] utf8 传入utf8码流
  * @param[out] length 转换到utf16所需的utf16码元个数
- * @return 错误码
  * @retval true 失败
  */
 bool unicodeGetUtf16LengthByUtf8(const uint8_t *utf8, size_t *length);
@@ -75,10 +86,23 @@ bool unicodeGetUtf16LengthByUtf8(const uint8_t *utf8, size_t *length);
 /**
  * @param[in] utf16 传入utf16码流
  * @param[out] length 转换到utf8所需的utf8码元个数
- * @return 错误码
  * @retval true 失败
  */
 bool unicodeGetUtf8LengthByUtf16(const uint16_t *utf16, size_t *length);
+
+/**
+ * @param utf16 传入utf16码流
+ * @return utf8码流
+ * @attention 需释放内存
+ */
+uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16);
+
+/**
+ * @param utf8 传入utf8码流
+ * @return utf16码流
+ * @attention 需释放内存
+ */
+uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8);
 
 void unicodeUsage(void);
 

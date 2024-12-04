@@ -3,6 +3,11 @@
 //
 
 #include <string.h>
+#include <malloc.h>
+#include <stdio.h>
+
+#include "tool.h"
+
 #include "unicode.h"
 
 enum utf8ByteFormat {
@@ -27,7 +32,7 @@ static inline uint32_t uft8GetValByByte(uint8_t byte, enum utf8ByteFormat format
 }
 
 uint32_t unicodeGetCodePointByUtf8(const uint8_t **const utf8) {
-    if (utf8 == NULL || *utf8 == NULL) return 0;
+    if (utf8 == NULL || *utf8 == NULL) return UNICODE_ERROR;
     uint8_t bytes = 0;
     for (enum utf8ByteFormat i = utf8ByteFormat_Illegal; i < utf8ByteFormat_Max; ++i) {
         if (!utf8CheckByte((*utf8)[0], i)) continue;
@@ -98,7 +103,7 @@ static inline bool utf16CheckLowSurrogate(uint16_t codeElement) {
 }
 
 uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
-    if (utf16 == NULL || *utf16 == NULL) return 0;
+    if (utf16 == NULL || *utf16 == NULL) return UNICODE_ERROR;
     uint32_t codePoint = (*utf16)[0];
     if (utf16CheckHighSurrogate((*utf16)[0])) {
         if (utf16CheckLowSurrogate((*utf16)[1])) {
@@ -131,6 +136,7 @@ bool unicodeSetUtf16ByCodePoint(uint32_t codePoint, uint16_t **const utf16, size
 }
 
 size_t unicodeUtf8ToUtf16(const uint8_t *utf8, size_t utf8Length, uint16_t *utf16, size_t utf16Length) {
+    if (utf8 == NULL || utf16 == NULL) return 0;
     const uint8_t *const utf8End = utf8 + utf8Length;
     const uint16_t *const utf16End = utf16 + utf16Length;
     memset(utf16, 0, utf16Length * sizeof(uint16_t));
@@ -142,6 +148,7 @@ size_t unicodeUtf8ToUtf16(const uint8_t *utf8, size_t utf8Length, uint16_t *utf1
 }
 
 size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Length, uint8_t *utf8, size_t utf8Length) {
+    if (utf16 == NULL || utf8 == NULL) return 0;
     const uint16_t *const utf16End = utf16 + utf16Length;
     const uint8_t *const utf8End = utf8 + utf8Length;
     memset(utf8, 0, utf8Length * sizeof(uint8_t));
@@ -152,9 +159,8 @@ size_t unicodeUtf16ToUtf8(const uint16_t *utf16, size_t utf16Length, uint8_t *ut
     return utf8Length - (utf8End - utf8);
 }
 
-/// \todo 待验证
-bool unicodeGetUtf16LengthByUtf8(const uint8_t *utf8, size_t *const length) {
-    if (utf8 == NULL) return 0;
+bool unicodeGetUtf8Length(const uint8_t *utf8, size_t *const length) {
+    if (utf8 == NULL || length == NULL) return true;
     *length = 0;
     bool characterIllegal = false;
     while (*utf8) {
@@ -171,16 +177,38 @@ bool unicodeGetUtf16LengthByUtf8(const uint8_t *utf8, size_t *const length) {
             if (characterIllegal) break;
         }
         if (characterIllegal) break;
-        if (bytes > 3) *length += 2;
-        else *length += 1;
+        *length += bytes;
         utf8 += bytes;
     }
     return characterIllegal;
 }
 
-/// \todo 待验证
+bool unicodeGetUtf16Length(const uint16_t *utf16, size_t *const length) {
+    if (utf16 == NULL || length == NULL) return true;
+    *length = 0;
+    bool characterIllegal = false;
+    while (*utf16) {
+        uint8_t codeElements;
+        if (utf16CheckHighSurrogate(utf16[0])) {
+            if (utf16CheckLowSurrogate(utf16[1])) {
+                codeElements = 2;
+            } else {
+                characterIllegal = true;
+            }
+        } else if (utf16CheckLowSurrogate(utf16[0])) {
+            characterIllegal = true;
+        } else {
+            codeElements = 1;
+        }
+        if (characterIllegal) break;
+        *length += codeElements;
+        utf16 += codeElements;
+    }
+    return characterIllegal;
+}
+
 bool unicodeGetUtf8LengthByUtf16(const uint16_t *utf16, size_t *const length) {
-    if (utf16 == NULL) return 0;
+    if (utf16 == NULL || length == NULL) return true;
     *length = 0;
     bool characterIllegal = false;
     while (*utf16) {
@@ -205,8 +233,52 @@ bool unicodeGetUtf8LengthByUtf16(const uint16_t *utf16, size_t *const length) {
     return characterIllegal;
 }
 
-#include "tool.h"
-#include <stdio.h>
+bool unicodeGetUtf16LengthByUtf8(const uint8_t *utf8, size_t *const length) {
+    if (utf8 == NULL || length == NULL) return true;
+    *length = 0;
+    bool characterIllegal = false;
+    while (*utf8) {
+        uint8_t bytes = 0;
+        for (enum utf8ByteFormat i = utf8ByteFormat_Illegal; i < utf8ByteFormat_Max; ++i) {
+            if (!utf8CheckByte(utf8[0], i)) continue;
+            bytes = i;
+            break;
+        }
+        characterIllegal = bytes == utf8ByteFormat_Illegal;
+        if (characterIllegal) break;
+        for (uint8_t i = 1; i < bytes; ++i) {
+            characterIllegal = !utf8CheckByte(utf8[i], utf8ByteFormat_continue);
+            if (characterIllegal) break;
+        }
+        if (characterIllegal) break;
+        if (bytes > 3) *length += 2;
+        else *length += 1;
+        utf8 += bytes;
+    }
+    return characterIllegal;
+}
+
+uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16) {
+    if (utf16 == NULL) return NULL;
+    size_t length = 0;
+    if (unicodeGetUtf8LengthByUtf16(utf16, &length)) return NULL;
+    length++;
+    uint8_t *utf8 = calloc(length, sizeof(uint8_t));
+    if (utf8 == NULL) return NULL;
+    unicodeUtf16ToUtf8(utf16, strlen((char *) utf16), utf8, length);
+    return utf8;
+}
+
+uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8) {
+    if (utf8 == NULL) return NULL;
+    size_t length = 0;
+    if (unicodeGetUtf16LengthByUtf8(utf8, &length)) return NULL;
+    length++;
+    uint16_t *utf16 = calloc(length, sizeof(uint16_t));
+    if (utf16 == NULL) return NULL;
+    unicodeUtf8ToUtf16(utf8, strlen((char *) utf8), utf16, length);
+    return utf16;
+}
 
 void unicodeUsage(void) {
     char *demoTexts[] = {
@@ -220,12 +292,12 @@ void unicodeUsage(void) {
     for (size_t i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
         printf("Demo %zu: \n", i + 1);
         printBuffer((uint8_t *) demoTexts[i], strlen(demoTexts[i]));
-        size_t utf16Size = unicodeUtf8ToUtf16((uint8_t *) demoTexts[i], strlen(demoTexts[i]), utf16, ARRAY_SIZE(utf16));
-        size_t utf8Size = unicodeUtf16ToUtf8(utf16, utf16Size, utf8, ARRAY_SIZE(utf8));
+        size_t utf16Length = unicodeUtf8ToUtf16((uint8_t *) demoTexts[i], strlen(demoTexts[i]), utf16, 256);
+        size_t utf8Length = unicodeUtf16ToUtf8(utf16, utf16Length, utf8, 256);
         printf("UTF-16: \n");
-        printBuffer((uint8_t *) utf16, utf16Size * 2);
+        printBuffer((uint8_t *) utf16, utf16Length * sizeof(uint16_t));
         printf("UTF-8: \n");
-        printBuffer(utf8, utf8Size);
+        printBuffer(utf8, utf8Length);
     }
 }
 
