@@ -4,9 +4,6 @@
 
 #include <string.h>
 #include <malloc.h>
-#include <stdio.h>
-
-#include "tool.h"
 
 #include "unicode.h"
 
@@ -14,9 +11,9 @@ enum utf8ByteFormat {
     utf8ByteFormat_Illegal = 0,
     utf8ByteFormat_continue = 0,
     utf8ByteFormat_1,
-    utf8ByteFormat_2,
-    utf8ByteFormat_3,
-    utf8ByteFormat_4,
+    utf8ByteFormat_2 __attribute__((unused)),
+    utf8ByteFormat_3 __attribute__((unused)),
+    utf8ByteFormat_4 __attribute__((unused)),
     utf8ByteFormat_Max = 5,
 };
 
@@ -212,8 +209,8 @@ size_t unicodeGetUtf8LengthByUtf16(const uint16_t *utf16) {
             length = 0;
             break;
         }
-        utf16 += codeElements;
         length += codeElements == 2 ? 4 : utf8GetBytesByCodePoint(utf16[0]);
+        utf16 += codeElements;
     }
     return length;
 }
@@ -239,7 +236,7 @@ uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16) {
     if (length == 0) return NULL;
     length++;
     uint8_t *utf8 = calloc(length, sizeof(uint8_t));
-    unicodeUtf16ToUtf8(utf16, strlen((char *) utf16), utf8, length);
+    unicodeUtf16ToUtf8(utf16, unicodeGetUtf16Length(utf16), utf8, length);
     return utf8;
 }
 
@@ -249,9 +246,12 @@ uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8) {
     if (length == 0) return NULL;
     length++;
     uint16_t *utf16 = calloc(length, sizeof(uint16_t));
-    unicodeUtf8ToUtf16(utf8, strlen((char *) utf8), utf16, length);
+    unicodeUtf8ToUtf16(utf8, unicodeGetUtf8Length(utf8), utf16, length);
     return utf16;
 }
+
+#include <stdio.h>
+#include "tool.h"
 
 void unicodeUsage(void) {
     char *demoTexts[] = {
@@ -260,6 +260,7 @@ void unicodeUsage(void) {
         "你好，世界！",  // 包含中文字符
         "😀😂😍",  // 更多表情符号
     };
+#if 0
     uint16_t utf16[256];
     uint8_t utf8[256];
     for (size_t i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
@@ -272,5 +273,28 @@ void unicodeUsage(void) {
         printf("UTF-8: \n");
         printBuffer(utf8, utf8Length);
     }
+#else
+    for (size_t i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
+        printf("Demo %zu: \n", i + 1);
+        printBuffer((uint8_t *) demoTexts[i], strlen(demoTexts[i]));
+        uint16_t *utf16 = unicodeGetUtf16ByUtf8((uint8_t *) demoTexts[i]);
+        if (utf16 == NULL) {
+            printf("UTF-16: NULL\n");
+            continue;
+        }
+        uint8_t *utf8 = unicodeGetUtf8ByUtf16(utf16);
+        if (utf8 == NULL) {
+            printf("UTF-8: NULL\n");
+            free(utf16), utf16 = NULL;
+            continue;
+        }
+        printf("UTF-16: \n");
+        printBuffer((uint8_t *) utf16, unicodeGetUtf16Length(utf16) * sizeof(uint16_t));
+        printf("UTF-8: \n");
+        printBuffer(utf8, unicodeGetUtf8Length(utf8));
+        free(utf16), utf16 = NULL;
+        free(utf8), utf8 = NULL;
+    }
+#endif
 }
 
