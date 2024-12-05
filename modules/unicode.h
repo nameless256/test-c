@@ -23,7 +23,7 @@ uint32_t unicodeGetCodePointByUtf8(const uint8_t **utf8);
 /**
  * @param codePoint unicode 码点
  * @param[out] utf8 传入写指针的地址 方便连续操作 指针会自动后移
- * @param utf8Length 剩余缓冲区码元个数 (sizeof(buffer) / sizeof(uint8_t))
+ * @param utf8Length 剩余缓冲区码元个数
  * @retval true 失败
  */
 bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **utf8, size_t utf8Length);
@@ -39,7 +39,7 @@ uint32_t unicodeGetCodePointByUtf16(const uint16_t **utf16);
 /**
  * @param codePoint unicode 码点
  * @param[out] utf16 传入写指针的地址 方便连续操作 指针会自动后移
- * @param utf16Length 剩余缓冲区码元个数 (sizeof(buffer) / sizeof(uint16_t))
+ * @param utf16Length 剩余缓冲区码元个数
  * @retval true 失败
  */
 bool unicodeSetUtf16ByCodePoint(uint32_t codePoint, uint16_t **utf16, size_t utf16Length);
