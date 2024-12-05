@@ -98,12 +98,17 @@ bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **const utf8, size_t 
     return false;
 }
 
+#define SUR_START_HIGH  0xD800
+#define SUR_START_LOW   0xDC00
+#define SUR_SIZE    0x400
+#define SP_START    0x10000
+
 static inline bool utf16CheckHighSurrogate(uint16_t codeElement) {
-    return 0xD800 <= codeElement && codeElement - 0xD800 < 0x400;
+    return SUR_START_HIGH <= codeElement && codeElement - SUR_START_HIGH < SUR_SIZE;
 }
 
 static inline bool utf16CheckLowSurrogate(uint16_t codeElement) {
-    return 0xDC00 <= codeElement && codeElement - 0xDC00 < 0x400;
+    return SUR_START_LOW <= codeElement && codeElement - SUR_START_LOW < SUR_SIZE;
 }
 
 static inline uint8_t utf16GetCharacterCodeElements(const uint16_t *utf16) {
@@ -123,7 +128,7 @@ uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
     uint32_t codePoint = (*utf16)[0];
     uint8_t codeElements = utf16GetCharacterCodeElements(*utf16);
     if (codeElements == 2) {
-        codePoint = 0x10000 + (((*utf16)[0] - 0xD800) * 0x400) + ((*utf16)[1] - 0xDC00);
+        codePoint = SP_START + (((*utf16)[0] - SUR_START_HIGH) * SUR_SIZE) + ((*utf16)[1] - SUR_START_LOW);
     } else if (codeElements == 0) {
         codePoint = UNICODE_ERROR;
     }
@@ -133,10 +138,10 @@ uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
 
 bool unicodeSetUtf16ByCodePoint(uint32_t codePoint, uint16_t **const utf16, size_t utf16Length) {
     if (utf16 == NULL || *utf16 == NULL || codePoint > UNICODE_MAX) return true;
-    if (codePoint >= 0x10000) {
+    if (codePoint >= SP_START) {
         if (utf16Length < 2) return true;
-        (*utf16)[0] = 0xD800 + (codePoint - 0x10000) / 0x400;
-        (*utf16)[1] = 0xDC00 + (codePoint - 0x10000) % 0x400;
+        (*utf16)[0] = SUR_START_HIGH + (codePoint - SP_START) / SUR_SIZE;
+        (*utf16)[1] = SUR_START_LOW + (codePoint - SP_START) % SUR_SIZE;
         *utf16 += 2;
     } else {
         if (utf16Length < 1) return true;
