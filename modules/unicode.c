@@ -255,6 +255,24 @@ uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8) {
     return utf16;
 }
 
+enum utfBOM unicodeUtfCheckBom(const uint8_t *stream) {
+    enum utfBOM bomType = UTF_BOM_NONE;
+    if (stream != NULL) {
+        if (stream[0] == 0xef && stream[1] == 0xbb && stream[2] == 0xbf) {
+            bomType = UTF_BOM_UTF8;
+        } else if (stream[0] == 0xff && stream[1] == 0xfe) {
+            bomType = UTF_BOM_UTF16_LE;
+        } else if (stream[0] == 0xfe && stream[1] == 0xff) {
+            bomType = UTF_BOM_UTF16_BE;
+        } else if (stream[0] == 0xff && stream[1] == 0xfe && stream[2] == 0x00 && stream[3] == 0x00) {
+            bomType = UTF_BOM_UTF32_LE;
+        } else if (stream[0] == 0x00 && stream[1] == 0x00 && stream[2] == 0xfe && stream[3] == 0xfe) {
+            bomType = UTF_BOM_UTF32_BE;
+        }
+    }
+    return bomType;
+}
+
 #include <stdio.h>
 #include "tool.h"
 

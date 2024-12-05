@@ -104,6 +104,18 @@ uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16);
  */
 uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8);
 
+enum utfBOM {
+    UTF_BOM_NONE,
+    UTF_BOM_UTF8,
+    UTF_BOM_UTF16_LE,
+    UTF_BOM_UTF16_BE,
+    UTF_BOM_UTF32_LE,
+    UTF_BOM_UTF32_BE,
+    UTF_BOM_MAX,
+};
+
+enum utfBOM unicodeUtfCheckBom(const uint8_t *stream);
+
 void unicodeUsage(void);
 
 #endif //TEST_C_UNICODE_H
