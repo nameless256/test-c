@@ -104,21 +104,21 @@ uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16);
  */
 uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8);
 
-enum utfBOM {
-    utfBOM_None,
-    utfBOM_Utf8,
-    utfBOM_Utf16_LE,
-    utfBOM_Utf16_BE,
-    utfBOM_Utf32_LE,
-    utfBOM_Utf32_BE,
-    utfBOM_Max,
+enum utfBom {
+    utfBom_None,
+    utfBom_Utf8,
+    utfBom_Utf16_LE,
+    utfBom_Utf16_BE,
+    utfBom_Utf32_LE,
+    utfBom_Utf32_BE,
+    utfBom_Max,
 };
 
-enum utfBOM unicodeUtfCheckBom(const uint8_t *stream, size_t streamLength);
+enum utfBom unicodeUtfCheckBom(const uint8_t *stream, size_t streamLength);
 
-uint8_t unicodeUtfGetBomSize(enum utfBOM bom);
+uint8_t unicodeUtfGetBomSize(enum utfBom bom);
 
-uint8_t const *unicodeUtfGetBomBytes(enum utfBOM bom);
+uint8_t const *unicodeUtfGetBomBytes(enum utfBom bom);
 
 void unicodeUsage(void);
 

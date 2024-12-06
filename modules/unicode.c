@@ -258,7 +258,7 @@ uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8) {
 struct utfBOMInfo {
     uint8_t size;
     uint8_t const *bytes;
-} static const sgUtfBOM[utfBOM_Max] = {
+} static const sgUtfBOM[utfBom_Max] = {
     {0, (const uint8_t[]) {},},
     {3, (const uint8_t[]) {0xef, 0xbb, 0xbf},},
     {2, (const uint8_t[]) {0xff, 0xfe},},
@@ -267,28 +267,28 @@ struct utfBOMInfo {
     {4, (const uint8_t[]) {0x00, 0x00, 0xfe, 0xff},},
 };
 
-static inline bool utfCheckBom(const uint8_t *stream, enum utfBOM checkBOM) {
-    if (checkBOM == utfBOM_Utf16_LE && (stream[2] == 0x00 && stream[3] == 0x00)) return false;
+static inline bool utfCheckBom(const uint8_t *stream, enum utfBom checkBOM) {
+    if (checkBOM == utfBom_Utf16_LE && (stream[2] == 0x00 && stream[3] == 0x00)) return false;
     for (int i = 0; i < sgUtfBOM[checkBOM].size; ++i) {
         if (stream[i] != sgUtfBOM[checkBOM].bytes[i]) return false;
     }
     return true;
 }
 
-enum utfBOM unicodeUtfCheckBom(const uint8_t *stream, size_t streamLength) {
-    if (stream == NULL) return utfBOM_None;
-    for (enum utfBOM checkBOM = utfBOM_Utf8; checkBOM < utfBOM_Max; ++checkBOM) {
+enum utfBom unicodeUtfCheckBom(const uint8_t *stream, size_t streamLength) {
+    if (stream == NULL) return utfBom_None;
+    for (enum utfBom checkBOM = utfBom_Utf8; checkBOM < utfBom_Max; ++checkBOM) {
         if (streamLength < sgUtfBOM[checkBOM].size) continue;
         if (utfCheckBom(stream, checkBOM)) return checkBOM;
     }
-    return utfBOM_None;
+    return utfBom_None;
 }
 
-uint8_t unicodeUtfGetBomSize(enum utfBOM bom) {
+uint8_t unicodeUtfGetBomSize(enum utfBom bom) {
     return sgUtfBOM[bom].size;
 }
 
-uint8_t const *unicodeUtfGetBomBytes(enum utfBOM bom) {
+uint8_t const *unicodeUtfGetBomBytes(enum utfBom bom) {
     return sgUtfBOM[bom].bytes;
 }
 
@@ -341,19 +341,19 @@ void unicodeUsage(void) {
     /// \attention 不以二进制文件打开，而是以文本文件打开，会更据不同的平台对换行符进行转换，如'\n'->'\r\n'
     /// \attention 读的时候也会进行逆转换，如'\r\n'->'\n'，从而导致后面读取到错误的数据
     autoReleaseFile(fp, "..\\ignore\\test.txt", "wb+") {
-        fwrite(unicodeUtfGetBomBytes(utfBOM_Utf8), unicodeUtfGetBomSize(utfBOM_Utf8), 1, fp);
+        fwrite(unicodeUtfGetBomBytes(utfBom_Utf8), unicodeUtfGetBomSize(utfBom_Utf8), 1, fp);
         for (int i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
             fprintf(fp, "%s\n", demoTexts[i]);
         }
     }
-    autoReleaseFile(fp, "..\\ignore\\test.txt", "rb") {
+    autoReleaseFile(fp, "..\\ignore\\test.txt", "r") {
         fseek(fp, 0, SEEK_END);
         long size = ftell(fp);
         fseek(fp, 0, SEEK_SET); // 重置文件指针到开头
         uint8_t buffer[size + 1];
         fread(buffer, 1, size, fp);
         buffer[size] = '\0';
-        enum utfBOM bom = unicodeUtfCheckBom(buffer, size);
+        enum utfBom bom = unicodeUtfCheckBom(buffer, size);
         printf("[%d] --------- {%s} bom %d \n", __LINE__, __FUNCTION__, bom);
         uint8_t *reader = buffer + unicodeUtfGetBomSize(bom);
         printf("%s", reader);
