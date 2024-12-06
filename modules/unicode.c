@@ -346,7 +346,7 @@ void unicodeUsage(void) {
             fprintf(fp, "%s\n", demoTexts[i]);
         }
     }
-    autoReleaseFile(fp, "..\\ignore\\test.txt", "r") {
+    autoReleaseFile(fp, "..\\ignore\\test.txt", "rb") {
         fseek(fp, 0, SEEK_END);
         long size = ftell(fp);
         fseek(fp, 0, SEEK_SET); // 重置文件指针到开头
