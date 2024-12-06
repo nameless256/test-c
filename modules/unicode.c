@@ -11,9 +11,9 @@ enum utf8ByteFormat {
     utf8ByteFormat_Illegal = 0,
     utf8ByteFormat_continue = 0,
     utf8ByteFormat_1,
-    utf8ByteFormat_2 __attribute__((unused)),
-    utf8ByteFormat_3 __attribute__((unused)),
-    utf8ByteFormat_4 __attribute__((unused)),
+    utf8ByteFormat_2,
+    utf8ByteFormat_3,
+    utf8ByteFormat_4,
     utf8ByteFormat_Max = 5,
 };
 
@@ -255,22 +255,41 @@ uint16_t *unicodeGetUtf16ByUtf8(const uint8_t *utf8) {
     return utf16;
 }
 
-enum utfBOM unicodeUtfCheckBom(const uint8_t *stream) {
-    enum utfBOM bomType = UTF_BOM_NONE;
-    if (stream != NULL) {
-        if (stream[0] == 0xef && stream[1] == 0xbb && stream[2] == 0xbf) {
-            bomType = UTF_BOM_UTF8;
-        } else if (stream[0] == 0xff && stream[1] == 0xfe && stream[2] == 0x00 && stream[3] == 0x00) {
-            bomType = UTF_BOM_UTF32_LE;
-        } else if (stream[0] == 0x00 && stream[1] == 0x00 && stream[2] == 0xfe && stream[3] == 0xff) {
-            bomType = UTF_BOM_UTF32_BE;
-        } else if (stream[0] == 0xff && stream[1] == 0xfe) {
-            bomType = UTF_BOM_UTF16_LE;
-        } else if (stream[0] == 0xfe && stream[1] == 0xff) {
-            bomType = UTF_BOM_UTF16_BE;
-        }
+struct utfBOMInfo {
+    uint8_t size;
+    uint8_t const *bytes;
+} static const sgUtfBOM[utfBOM_Max] = {
+    {0, (const uint8_t[]) {},},
+    {3, (const uint8_t[]) {0xef, 0xbb, 0xbf},},
+    {2, (const uint8_t[]) {0xff, 0xfe},},
+    {2, (const uint8_t[]) {0xfe, 0xff},},
+    {4, (const uint8_t[]) {0xff, 0xfe, 0x00, 0x00},},
+    {4, (const uint8_t[]) {0x00, 0x00, 0xfe, 0xff},},
+};
+
+static inline bool utfCheckBom(const uint8_t *stream, enum utfBOM checkBOM) {
+    if (checkBOM == utfBOM_Utf16_LE && (stream[2] == 0x00 && stream[3] == 0x00)) return false;
+    for (int i = 0; i < sgUtfBOM[checkBOM].size; ++i) {
+        if (stream[i] != sgUtfBOM[checkBOM].bytes[i]) return false;
     }
-    return bomType;
+    return true;
+}
+
+enum utfBOM unicodeUtfCheckBom(const uint8_t *stream, size_t streamLength) {
+    if (stream == NULL) return utfBOM_None;
+    for (enum utfBOM checkBOM = utfBOM_Utf8; checkBOM < utfBOM_Max; ++checkBOM) {
+        if (streamLength < sgUtfBOM[checkBOM].size) continue;
+        if (utfCheckBom(stream, checkBOM)) return checkBOM;
+    }
+    return utfBOM_None;
+}
+
+uint8_t unicodeUtfGetBomSize(enum utfBOM bom) {
+    return sgUtfBOM[bom].size;
+}
+
+uint8_t const *unicodeUtfGetBomBytes(enum utfBOM bom) {
+    return sgUtfBOM[bom].bytes;
 }
 
 #include <stdio.h>
@@ -296,7 +315,7 @@ void unicodeUsage(void) {
         printf("UTF-8: \n");
         printBuffer(utf8, utf8Length);
     }
-#else
+#elif 0
     for (size_t i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
         printf("Demo %zu: \n", i + 1);
         printBuffer((uint8_t *) demoTexts[i], strlen(demoTexts[i]));
@@ -317,6 +336,26 @@ void unicodeUsage(void) {
         printBuffer(utf8, unicodeGetUtf8Length(utf8));
         free(utf16), utf16 = NULL;
         free(utf8), utf8 = NULL;
+    }
+#elif 1
+    autoReleaseFile(fp, "..\\ignore\\test.txt", "w+") {
+        fwrite(unicodeUtfGetBomBytes(utfBOM_Utf8), unicodeUtfGetBomSize(utfBOM_Utf8), 1, fp);
+        for (int i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
+            fprintf(fp, "%s\n", demoTexts[i]);
+        }
+    }
+    autoReleaseFile(fp, "..\\ignore\\test.txt", "r") {
+        fseek(fp, 0, SEEK_END);
+        long size = ftell(fp);
+        fseek(fp, 0, SEEK_SET); // 重置文件指针到开头
+        uint8_t buffer[size + 1];
+        fread(buffer, 1, size, fp);
+        buffer[size] = '\0';
+        enum utfBOM bom = unicodeUtfCheckBom(buffer, size);
+        printf("[%d] --------- {%s} bom %d \n", __LINE__, __FUNCTION__, bom);
+        uint8_t *reader = buffer + unicodeUtfGetBomSize(bom);
+        printf("%s", reader);
+        printBuffer(buffer, size);
     }
 #endif
 }
