@@ -338,13 +338,15 @@ void unicodeUsage(void) {
         free(utf8), utf8 = NULL;
     }
 #elif 1
-    autoReleaseFile(fp, "..\\ignore\\test.txt", "w+") {
+    /// \attention 不以二进制文件打开，而是以文本文件打开，会更据不同的平台对换行符进行转换，如'\n'->'\r\n'
+    /// \attention 读的时候也会进行逆转换，如'\r\n'->'\n'，从而导致后面读取到错误的数据
+    autoReleaseFile(fp, "..\\ignore\\test.txt", "wb+") {
         fwrite(unicodeUtfGetBomBytes(utfBOM_Utf8), unicodeUtfGetBomSize(utfBOM_Utf8), 1, fp);
         for (int i = 0; i < ARRAY_SIZE(demoTexts); ++i) {
             fprintf(fp, "%s\n", demoTexts[i]);
         }
     }
-    autoReleaseFile(fp, "..\\ignore\\test.txt", "r") {
+    autoReleaseFile(fp, "..\\ignore\\test.txt", "rb") {
         fseek(fp, 0, SEEK_END);
         long size = ftell(fp);
         fseek(fp, 0, SEEK_SET); // 重置文件指针到开头
