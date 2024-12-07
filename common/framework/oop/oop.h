@@ -114,6 +114,8 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
+/// 全局对象 的 构造析构 需要在 程序开始 及 结束时 手动调用 略显麻烦 且 不方便使用 这是一个无法避免的痛点
+/// 且 __attribute__((cleanup(CONCAT3(className, _, dtor)))) 在 有 goto语句 的函数上可能会报错 这也是一个无法避免的痛点
 #if 1
 /// 借助 GCC 的 __attribute__((cleanup())) 实现
 #define obj_create(className, varName, ...) \
