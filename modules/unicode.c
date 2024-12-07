@@ -269,7 +269,7 @@ struct utfBOMInfo {
 
 static inline bool utfCheckBom(const uint8_t *stream, enum utfBom checkBOM) {
     if (checkBOM == utfBom_Utf16_LE && (stream[2] == 0x00 && stream[3] == 0x00)) return false;
-    for (int i = 0; i < sgUtfBOM[checkBOM].size; ++i) {
+    for (uint8_t i = 0; i < sgUtfBOM[checkBOM].size; ++i) {
         if (stream[i] != sgUtfBOM[checkBOM].bytes[i]) return false;
     }
     return true;
