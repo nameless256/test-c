@@ -31,3 +31,6 @@ file(
 )
 
 add_executable(test_c main.c ${SOURCES})
+
+# 链接 pthread 库
+target_link_libraries(test_c pthread)
