@@ -91,14 +91,14 @@ size_t unicodeGetUtf8LengthByUtf16(const uint16_t *utf16);
 size_t unicodeGetUtf16LengthByUtf8(const uint8_t *utf8);
 
 /**
- * @param utf16 传入utf16码流
+ * @param[in] utf16 传入utf16码流
  * @return utf8码流
  * @attention 需释放内存
  */
 uint8_t *unicodeGetUtf8ByUtf16(const uint16_t *utf16);
 
 /**
- * @param utf8 传入utf8码流
+ * @param[in] utf8 传入utf8码流
  * @return utf16码流
  * @attention 需释放内存
  */
