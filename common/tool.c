@@ -219,9 +219,7 @@ char *concatStrings(char separator, int count, ...) {
 }
 
 bool checkLittleEndian() {
-    uint16_t num = 0x1234;
-    uint8_t *ptr = (uint8_t *)&num;
-    return *ptr == 0x34;
+    return *(uint8_t *)&(uint16_t){0x0123} == 0x23;
 }
 
 void printByteAsHex(unsigned char byte) {
