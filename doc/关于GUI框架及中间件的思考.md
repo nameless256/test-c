@@ -1,7 +1,5 @@
 
 * ## 关于GUI框架及中间件的思考
-* @author xiaoxianghui
-* @date 2024/12/13
 
 #### 需要模块化、跨平台
 

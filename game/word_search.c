@@ -222,7 +222,7 @@ void wordSearchUsage(void) {
     wordSearch *obj = wordSearchCreate();
 //    wordSearchPrintAlphabet(obj);
 #ifdef DEBUG
-    for (int i = 11; i < 16; ++i) {
+    for (int i = 12; i < 16; ++i) {
         wordSearchSetLevel(obj, i + 1);
         gameLog("[%d] --------- {%s} %d \n", __LINE__, __FUNCTION__, i + 1);
         gameLog("Words:\n");
