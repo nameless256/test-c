@@ -87,20 +87,21 @@ static const char *getRandWord(uint8_t i) {
 }
 
 static bool placeWord(wordSearch *obj, uint8_t i) {
+    wordInfo *info = &obj->wordTab[i];
     for (int j = 0; j < i; ++j) {
-        if (obj->wordTab[j].area.length == obj->wordTab[i].area.length) {
-            if (0 == strcmp(obj->wordTab[j].word, obj->wordTab[i].word)) return true;
+        if (obj->wordTab[j].area.length == info->area.length) {
+            if (0 == strcmp(obj->wordTab[j].word, info->word)) return true;
         }
     }
-    for (int j = 0; j < obj->wordTab[i].area.length; ++j) {
-        int x = obj->wordTab[i].area.ofs, y = obj->wordTab[i].area.x + (obj->wordTab[i].area.dir.positive ? j : -j);
-        if (obj->wordTab[i].area.dir.horizontal) SWAP(x, y);
-        if (obj->alphabet[y][x] != 0 && obj->alphabet[y][x] != obj->wordTab[i].word[j]) return true;
+    for (int j = 0; j < info->area.length; ++j) {
+        int x = info->area.ofs, y = info->area.x + (info->area.dir.positive ? j : -j);
+        if (info->area.dir.horizontal) SWAP(x, y);
+        if (obj->alphabet[y][x] != 0 && obj->alphabet[y][x] != info->word[j]) return true;
     }
-    for (int j = 0; j < obj->wordTab[i].area.length; ++j) {
-        int x = obj->wordTab[i].area.ofs, y = obj->wordTab[i].area.x + (obj->wordTab[i].area.dir.positive ? j : -j);
-        if (obj->wordTab[i].area.dir.horizontal) SWAP(x, y);
-        obj->alphabet[y][x] = obj->wordTab[i].word[j];
+    for (int j = 0; j < info->area.length; ++j) {
+        int x = info->area.ofs, y = info->area.x + (info->area.dir.positive ? j : -j);
+        if (info->area.dir.horizontal) SWAP(x, y);
+        obj->alphabet[y][x] = info->word[j];
     }
     return false;
 }
@@ -119,7 +120,9 @@ void wordSearchDestroy(wordSearch **pObj) {
 void wordSearchSetLevel(wordSearch *obj, uint8_t level) {
     memset(obj, 0, sizeof(wordSearch));
     obj->level = level;
-    uint8_t wordBaseIdx = obj->level > 12 ? 2 : (obj->level > 4 ? 1 : 0);
+    uint8_t wordBaseIdx = 0;
+    if (obj->level > 12) wordBaseIdx = 2;
+    else if (obj->level > 4) wordBaseIdx = 1;
     if (wordBaseIdx == 0) obj->row = 5, obj->col = 5;
     else if (wordBaseIdx == 1) obj->row = 6, obj->col = 6;
     else obj->row = ALPHA_TAB_H, obj->col = ALPHA_TAB_W;
@@ -135,7 +138,7 @@ void wordSearchSetLevel(wordSearch *obj, uint8_t level) {
             info->area.length = strlen(info->word);
             info->area.ofs = rand() % (info->area.dir.horizontal ? obj->col : obj->row);
             uint8_t lengthMax = ((info->area.dir.horizontal ? obj->row : obj->col) - info->area.length);
-            obj->wordTab[i].area.x = rand() % lengthMax + (info->area.dir.positive ? 0 : (info->area.length - 1));
+            info->area.x = rand() % lengthMax + (info->area.dir.positive ? 0 : (info->area.length - 1));
         } while (placeWord(obj, i));
     }
 }
