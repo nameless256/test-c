@@ -35,7 +35,7 @@
         assertActions(return, expression, message, ##__VA_ARGS__)
 
 #define autoReleaseBuffer(type, name, size) \
-    for (type name = malloc(name ## Size); name != NULL; free(name), name = NULL)
+    for (type *name = (type *) malloc(sizeof(type) * size); name != NULL; free(name), name = NULL)
 
 #define autoReleaseFile(name, path, args) \
     for (FILE *name = fopen(path, args); name != NULL; fclose(name), name = NULL)
