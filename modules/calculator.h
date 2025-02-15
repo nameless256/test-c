@@ -5,7 +5,7 @@
 #ifndef CALCULATOR_H
 #define CALCULATOR_H
 
-#include "tool.h"
+#include "util.h"
 
 typedef enum {
     calcEqnErr_Null = 0,

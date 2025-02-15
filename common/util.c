@@ -2,7 +2,7 @@
 // Created by xiaoxianghui on 2023/3/9.
 //
 
-#include "tool.h"
+#include "util.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

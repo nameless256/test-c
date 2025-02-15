@@ -293,7 +293,7 @@ uint8_t const *unicodeUtfGetBomBytes(enum utfBom bom) {
 }
 
 #include <stdio.h>
-#include "tool.h"
+#include "util.h"
 
 void unicodeUsage(void) {
     char *demoTexts[] = {

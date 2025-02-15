@@ -6,7 +6,7 @@
 #define TEST_C_PUBLIC_H
 
 #include "oop.h"
-#include "tool.h"
+#include "util.h"
 #include <stdlib.h>
 #include <stdio.h>
 

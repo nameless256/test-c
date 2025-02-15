@@ -5,7 +5,7 @@
 #ifndef TEST_C_WORD_SEARCH_H
 #define TEST_C_WORD_SEARCH_H
 
-#include "tool.h"
+#include "util.h"
 
 struct wordSearch;
 
