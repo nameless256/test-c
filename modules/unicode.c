@@ -9,7 +9,7 @@
 
 enum utf8ByteFormat {
     utf8ByteFormat_Illegal = 0,
-    utf8ByteFormat_continue = 0,
+    utf8ByteFormat_Continue = 0,
     utf8ByteFormat_1,
     utf8ByteFormat_2,
     utf8ByteFormat_3,
@@ -17,18 +17,18 @@ enum utf8ByteFormat {
     utf8ByteFormat_Max = 5,
 };
 
-static const uint8_t sgUtf8ByteValidBits[utf8ByteFormat_Max] = {6, 7, 5, 4, 3};
+static const uint8_t sUtf8ByteValidBits[utf8ByteFormat_Max] = {6, 7, 5, 4, 3};
 
 static inline bool utf8CheckByte(uint8_t byte, enum utf8ByteFormat format) {
-    uint8_t checkBit = 1 << sgUtf8ByteValidBits[format];
+    uint8_t checkBit = 1 << sUtf8ByteValidBits[format];
     return (uint8_t) (~(byte | (checkBit - 1))) == checkBit;
 }
 
 static inline uint32_t uft8GetValByByte(uint8_t byte, enum utf8ByteFormat format) {
-    return byte & ((1 << sgUtf8ByteValidBits[format]) - 1);
+    return byte & ((1 << sUtf8ByteValidBits[format]) - 1);
 }
 
-static inline uint8_t utf8GetCharacterCodeElements(const uint8_t *utf8) {
+static uint8_t utf8GetCharacterCodeElements(const uint8_t *utf8) {
     uint8_t bytes = 0;
     for (enum utf8ByteFormat i = utf8ByteFormat_Illegal; i < utf8ByteFormat_Max; ++i) {
         if (!utf8CheckByte(utf8[0], i)) continue;
@@ -36,7 +36,7 @@ static inline uint8_t utf8GetCharacterCodeElements(const uint8_t *utf8) {
         break;
     }
     for (uint8_t i = 1; i < bytes; ++i) {
-        if (utf8CheckByte(utf8[i], utf8ByteFormat_continue)) continue;
+        if (utf8CheckByte(utf8[i], utf8ByteFormat_Continue)) continue;
         bytes = 0;
         break;
     }
@@ -50,8 +50,8 @@ uint32_t unicodeGetCodePointByUtf8(const uint8_t **const utf8) {
     uint32_t codePoint = 0;
     codePoint |= uft8GetValByByte((*utf8)[0], bytes);
     for (uint8_t i = 1; i < bytes; ++i) {
-        codePoint <<= sgUtf8ByteValidBits[utf8ByteFormat_continue];
-        codePoint |= uft8GetValByByte((*utf8)[i], utf8ByteFormat_continue);
+        codePoint <<= sUtf8ByteValidBits[utf8ByteFormat_Continue];
+        codePoint |= uft8GetValByByte((*utf8)[i], utf8ByteFormat_Continue);
     }
     *utf8 += bytes;
     if (codePoint > UNICODE_MAX) codePoint = UNICODE_ERROR;
@@ -63,9 +63,9 @@ uint32_t unicodeGetCodePointByUtf8(const uint8_t **const utf8) {
 
 static inline uint8_t utf8GetCharBitsByFormat(enum utf8ByteFormat format) {
     if (!(utf8ByteFormat_Illegal < format && format < utf8ByteFormat_Max)) return 0;
-    uint8_t bits = sgUtf8ByteValidBits[format];
+    uint8_t bits = sUtf8ByteValidBits[format];
     for (enum utf8ByteFormat i = utf8ByteFormat_1; i < format; ++i) {
-        bits += sgUtf8ByteValidBits[utf8ByteFormat_continue];
+        bits += sUtf8ByteValidBits[utf8ByteFormat_Continue];
     }
     return bits;
 }
@@ -79,8 +79,8 @@ static inline uint8_t utf8GetBytesByCodePoint(uint32_t codePoint) {
 }
 
 static inline void utf8SetBytePrefix(uint8_t *const byte, enum utf8ByteFormat format) {
-    *byte |= ~((1 << sgUtf8ByteValidBits[format]) - 1);
-    *byte &= ~(1 << sgUtf8ByteValidBits[format]);
+    *byte |= ~((1 << sUtf8ByteValidBits[format]) - 1);
+    *byte &= ~(1 << sUtf8ByteValidBits[format]);
 }
 
 bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **const utf8, size_t utf8Length) {
@@ -88,11 +88,11 @@ bool unicodeSetUtf8ByCodePoint(uint32_t codePoint, uint8_t **const utf8, size_t 
     uint8_t bytes = utf8GetBytesByCodePoint(codePoint);
     if (bytes == 0) return true;
     if (bytes > utf8Length) return true;
-    (*utf8)[0] = codePoint >> (sgUtf8ByteValidBits[utf8ByteFormat_continue] * (bytes - 0 - 1));
+    (*utf8)[0] = codePoint >> (sUtf8ByteValidBits[utf8ByteFormat_Continue] * (bytes - 0 - 1));
     utf8SetBytePrefix(&(*utf8)[0], bytes);
     for (uint8_t i = 1; i < bytes; ++i) {
-        (*utf8)[i] = codePoint >> (sgUtf8ByteValidBits[utf8ByteFormat_continue] * (bytes - i - 1));
-        utf8SetBytePrefix(&(*utf8)[i], utf8ByteFormat_continue);
+        (*utf8)[i] = codePoint >> (sUtf8ByteValidBits[utf8ByteFormat_Continue] * (bytes - i - 1));
+        utf8SetBytePrefix(&(*utf8)[i], utf8ByteFormat_Continue);
     }
     *utf8 += bytes;
     return false;
