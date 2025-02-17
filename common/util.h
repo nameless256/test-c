@@ -110,6 +110,8 @@ bool checkLittleEndian();
 
 void printByteAsHex(unsigned char byte);
 
+bool printEscapes(unsigned char byte);
+
 void printBuffer(const unsigned char *buff, size_t length);
 
 #endif //GLOBAL_FUNCTION_H

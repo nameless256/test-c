@@ -219,7 +219,7 @@ char *concatStrings(char separator, int count, ...) {
 }
 
 bool checkLittleEndian() {
-    return *(uint8_t *)&(uint16_t){0x0123} == 0x23;
+    return *(uint8_t *) &(uint16_t) {0x0123} == 0x23;
 }
 
 void printByteAsHex(unsigned char byte) {
@@ -235,6 +235,19 @@ void printByteAsHex(unsigned char byte) {
 
 #include <ctype.h>
 
+bool printEscapes(unsigned char byte) {
+// @formatter:off
+// clang-format off
+    switch (byte) {
+        case '\r': putchar('\\'); putchar('r'); return false;
+        case '\n': putchar('\\'); putchar('n'); return false;
+        case '\0': putchar('\\'); putchar('0'); return false;
+        default: return true;
+    }
+// @formatter:on
+// clang-format on
+}
+
 void printBuffer(const unsigned char *buff, size_t length) {
     for (size_t i = 0; i < length; i++) {
 #if 0
@@ -244,16 +257,7 @@ void printBuffer(const unsigned char *buff, size_t length) {
             putchar(buff[i]);
             putchar(' ');
         } else {
-#if 1
-            printByteAsHex(buff[i]);
-#else
-            if (buff[i]) {
-                printByteAsHex(buff[i]);
-            } else {
-                putchar(' ');
-                putchar(' ');
-            }
-#endif
+            if (printEscapes(buff[i])) printByteAsHex(buff[i]);
         }
 #endif
         putchar(' ');
