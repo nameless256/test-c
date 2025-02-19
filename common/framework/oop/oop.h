@@ -46,11 +46,6 @@ struct className { \
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
 #define mFuncName(methodName) CONCAT3(className, _, methodName)
-#define mFuncCall(methodName, ...) mFuncName(methodName)(self, ## __VA_ARGS__)
-
-#define mFuncBaseName(methodName) CONCAT3(classBaseName, _, methodName)
-#define mFuncBaseCall(methodName, ...) mFuncBaseName(methodName)(&self->classBaseName, ## __VA_ARGS__)
-
 #define mFuncDeclare(returnType, methodName, ...) \
 returnType mFuncName(methodName)(className *self, ## __VA_ARGS__)
 #define mFuncDefine(returnType, methodName, ...) \
