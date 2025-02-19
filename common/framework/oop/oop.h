@@ -91,7 +91,7 @@ static returnType methodName(vFuncClassName *self, ## __VA_ARGS__)
 
 #define mVarDeclare(type, varName) \
 type CONCAT3(className, _get_, varName)(className *self); \
-void CONCAT3(className, _set_, varName)(className *self, type val)
+void CONCAT3(className, _set_, varName)(className *self, type val);
 
 #define mVarDefine(type, varName) \
 type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
