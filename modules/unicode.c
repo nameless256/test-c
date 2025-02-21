@@ -112,27 +112,27 @@ static inline bool utf16CheckLowSurrogate(uint16_t codeElement) {
 }
 
 static inline uint8_t utf16GetCharCodingUnit(const uint16_t *utf16) {
-    uint8_t CodingUnit = 0;
+    uint8_t codingUnit = 0;
     if (utf16CheckHighSurrogate(utf16[0])) {
         if (utf16CheckLowSurrogate(utf16[1])) {
-            CodingUnit = 2;
+            codingUnit = 2;
         }
     } else if (!utf16CheckLowSurrogate(utf16[0])) {
-        CodingUnit = 1;
+        codingUnit = 1;
     }
-    return CodingUnit;
+    return codingUnit;
 }
 
 uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
     if (utf16 == NULL || *utf16 == NULL) return UNICODE_ERROR;
     uint32_t codePoint = (*utf16)[0];
-    uint8_t CodingUnit = utf16GetCharCodingUnit(*utf16);
-    if (CodingUnit == 2) {
+    uint8_t codingUnit = utf16GetCharCodingUnit(*utf16);
+    if (codingUnit == 2) {
         codePoint = SP_START + (((*utf16)[0] - SUR_START_HIGH) * SUR_SIZE) + ((*utf16)[1] - SUR_START_LOW);
-    } else if (CodingUnit == 0) {
+    } else if (codingUnit == 0) {
         codePoint = UNICODE_ERROR;
     }
-    *utf16 += CodingUnit == 2 ? 2 : 1;
+    *utf16 += codingUnit == 2 ? 2 : 1;
     return codePoint;
 }
 
@@ -194,13 +194,13 @@ size_t unicodeGetUtf16Length(const uint16_t *utf16) {
     if (utf16 == NULL) return 0;
     size_t length = 0;
     while (*utf16) {
-        uint8_t CodingUnit = utf16GetCharCodingUnit(utf16);
-        if (CodingUnit == 0) {
+        uint8_t codingUnit = utf16GetCharCodingUnit(utf16);
+        if (codingUnit == 0) {
             length = 0;
             break;
         }
-        length += CodingUnit;
-        utf16 += CodingUnit;
+        length += codingUnit;
+        utf16 += codingUnit;
     }
     return length;
 }
@@ -209,13 +209,13 @@ size_t unicodeGetUtf8LengthByUtf16(const uint16_t *utf16) {
     if (utf16 == NULL) return 0;
     size_t length = 0;
     while (*utf16) {
-        uint8_t CodingUnit = utf16GetCharCodingUnit(utf16);
-        if (CodingUnit == 0) {
+        uint8_t codingUnit = utf16GetCharCodingUnit(utf16);
+        if (codingUnit == 0) {
             length = 0;
             break;
         }
-        length += CodingUnit == 2 ? 4 : utf8GetBytesByCodePoint(utf16[0]);
-        utf16 += CodingUnit;
+        length += codingUnit == 2 ? 4 : utf8GetBytesByCodePoint(utf16[0]);
+        utf16 += codingUnit;
     }
     return length;
 }
