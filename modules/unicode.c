@@ -28,7 +28,7 @@ static inline uint32_t uft8GetValByByte(uint8_t byte, enum utf8ByteFormat format
     return byte & ((1 << sUtf8ByteValidBits[format]) - 1);
 }
 
-static uint8_t utf8GetCharacterCodeElements(const uint8_t *utf8) {
+static uint8_t utf8GetCharCodingUnit(const uint8_t *utf8) {
     uint8_t bytes = 0;
     for (enum utf8ByteFormat i = utf8ByteFormat_Illegal; i < utf8ByteFormat_Max; ++i) {
         if (!utf8CheckByte(utf8[0], i)) continue;
@@ -45,7 +45,7 @@ static uint8_t utf8GetCharacterCodeElements(const uint8_t *utf8) {
 
 uint32_t unicodeGetCodePointByUtf8(const uint8_t **const utf8) {
     if (utf8 == NULL || *utf8 == NULL) return UNICODE_ERROR;
-    uint8_t bytes = utf8GetCharacterCodeElements(*utf8);
+    uint8_t bytes = utf8GetCharCodingUnit(*utf8);
     if (bytes == 0) goto error;
     uint32_t codePoint = 0;
     codePoint |= uft8GetValByByte((*utf8)[0], bytes);
@@ -111,28 +111,28 @@ static inline bool utf16CheckLowSurrogate(uint16_t codeElement) {
     return SUR_START_LOW <= codeElement && codeElement - SUR_START_LOW < SUR_SIZE;
 }
 
-static inline uint8_t utf16GetCharacterCodeElements(const uint16_t *utf16) {
-    uint8_t codeElements = 0;
+static inline uint8_t utf16GetCharCodingUnit(const uint16_t *utf16) {
+    uint8_t CodingUnit = 0;
     if (utf16CheckHighSurrogate(utf16[0])) {
         if (utf16CheckLowSurrogate(utf16[1])) {
-            codeElements = 2;
+            CodingUnit = 2;
         }
     } else if (!utf16CheckLowSurrogate(utf16[0])) {
-        codeElements = 1;
+        CodingUnit = 1;
     }
-    return codeElements;
+    return CodingUnit;
 }
 
 uint32_t unicodeGetCodePointByUtf16(const uint16_t **const utf16) {
     if (utf16 == NULL || *utf16 == NULL) return UNICODE_ERROR;
     uint32_t codePoint = (*utf16)[0];
-    uint8_t codeElements = utf16GetCharacterCodeElements(*utf16);
-    if (codeElements == 2) {
+    uint8_t CodingUnit = utf16GetCharCodingUnit(*utf16);
+    if (CodingUnit == 2) {
         codePoint = SP_START + (((*utf16)[0] - SUR_START_HIGH) * SUR_SIZE) + ((*utf16)[1] - SUR_START_LOW);
-    } else if (codeElements == 0) {
+    } else if (CodingUnit == 0) {
         codePoint = UNICODE_ERROR;
     }
-    *utf16 += codeElements == 2 ? 2 : 1;
+    *utf16 += CodingUnit == 2 ? 2 : 1;
     return codePoint;
 }
 
@@ -179,7 +179,7 @@ size_t unicodeGetUtf8Length(const uint8_t *utf8) {
     if (utf8 == NULL) return 0;
     size_t length = 0;
     while (*utf8) {
-        uint8_t bytes = utf8GetCharacterCodeElements(utf8);
+        uint8_t bytes = utf8GetCharCodingUnit(utf8);
         if (bytes == 0) {
             length = 0;
             break;
@@ -194,13 +194,13 @@ size_t unicodeGetUtf16Length(const uint16_t *utf16) {
     if (utf16 == NULL) return 0;
     size_t length = 0;
     while (*utf16) {
-        uint8_t codeElements = utf16GetCharacterCodeElements(utf16);
-        if (codeElements == 0) {
+        uint8_t CodingUnit = utf16GetCharCodingUnit(utf16);
+        if (CodingUnit == 0) {
             length = 0;
             break;
         }
-        length += codeElements;
-        utf16 += codeElements;
+        length += CodingUnit;
+        utf16 += CodingUnit;
     }
     return length;
 }
@@ -209,13 +209,13 @@ size_t unicodeGetUtf8LengthByUtf16(const uint16_t *utf16) {
     if (utf16 == NULL) return 0;
     size_t length = 0;
     while (*utf16) {
-        uint8_t codeElements = utf16GetCharacterCodeElements(utf16);
-        if (codeElements == 0) {
+        uint8_t CodingUnit = utf16GetCharCodingUnit(utf16);
+        if (CodingUnit == 0) {
             length = 0;
             break;
         }
-        length += codeElements == 2 ? 4 : utf8GetBytesByCodePoint(utf16[0]);
-        utf16 += codeElements;
+        length += CodingUnit == 2 ? 4 : utf8GetBytesByCodePoint(utf16[0]);
+        utf16 += CodingUnit;
     }
     return length;
 }
@@ -224,7 +224,7 @@ size_t unicodeGetUtf16LengthByUtf8(const uint8_t *utf8) {
     if (utf8 == NULL) return 0;
     size_t length = 0;
     while (*utf8) {
-        uint8_t bytes = utf8GetCharacterCodeElements(utf8);
+        uint8_t bytes = utf8GetCharCodingUnit(utf8);
         if (bytes == 0) {
             length = 0;
             break;
