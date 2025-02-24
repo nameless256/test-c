@@ -76,11 +76,11 @@ returnType (*methodName)(className *self, ## __VA_ARGS__)
     self->classBaseName.vptr = &vFuncTabName(classBaseName)
 
 #define vFuncBinding(className, methodName) \
-    vFuncTabName(className).methodName = methodName
+    vFuncTabName(className).methodName = (void *) methodName
 
 /// 需要套层壳包装虚函数具体实现的调用, 并通过壳的声明位置决定作用域是 公共、私有还是受保护
-#define vFuncImplement(returnType, methodName, vFuncClassName, ...) \
-static returnType methodName(vFuncClassName *self, ## __VA_ARGS__)
+#define vFuncImplement(returnType, methodName, ...) \
+static returnType methodName(className *self, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 

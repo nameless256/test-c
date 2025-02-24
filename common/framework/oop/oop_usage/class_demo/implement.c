@@ -4,7 +4,7 @@
 
 #include "private.h"
 
-vFuncImplement(void, makeSound, classBaseName) {
+vFuncImplement(void, makeSound) {
     printf("[%d] --------- {%s} Barking... \n", __LINE__, __FUNCTION__);
 }
 

@@ -12,7 +12,7 @@ mFuncDefine(void, eat) {
     printf("[%d] --------- {%s} Eating... \n", __LINE__, __FUNCTION__);
 }
 
-vFuncImplement(void, dtor, className) {
+vFuncImplement(void, dtor) {
     printf("[%d] --------- {%s} Animal destructor called \n", __LINE__, __FUNCTION__);
 }
 
