@@ -6,8 +6,6 @@
 ##### 标题 3
 ###### 标题 4
 
-- 不同的 Markdown 应用程序处理 `#` 和标题之间的空格方式并不一致。为了兼容考虑，请用一个空格在 `#` 和标题之间进行分隔。
-
 ## 强调
 
 - **粗体**
@@ -17,4 +15,29 @@
 ## 引用
 
 > 引用
->> 嵌套引用
+> > 嵌套引用
+
+## 列表
+
+1. 有序列表项1
+   - 无序嵌套列表项1
+   - 无序嵌套列表项2
+2. 有序列表项2
+
+## 链接
+
+这是一个链接 [Markdown语法](https://markdown.com.cn)。
+
+这是一个链接 [Markdown语法](https://markdown.com.cn "最好的markdown教程")。
+
+<https://markdown.com.cn>
+
+<fake@example.com>
+
+[hobbit-hole][1]
+
+[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle
+
+## 图片
+
+这是一个链接 [![img.png](img.png)](https://markdown.com.cn "最好的markdown教程")。
