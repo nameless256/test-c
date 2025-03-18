@@ -41,3 +41,40 @@
 ## 图片
 
 这是一个链接 [![img.png](img.png)](https://markdown.com.cn "最好的markdown教程")。
+
+## 表格
+
+| Syntax      | Description | Test Text     |
+| :---        |    :----:   |          ---: |
+| Header      | Title       | Here's this   |
+| Paragraph   | Text        | And more      |
+
+## 代码块
+
+`行间代码`
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25
+}
+```
+
+## 脚注
+
+Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+
+[^1]: This is the first footnote.
+
+[^bignote]: Here's one with multiple paragraphs and code.
+
+    Indent paragraphs to include them in the footnote.
+
+    `{ my code }`
+
+    Add as many paragraphs as you like.
+
+## 标题编号
+
+### My Great Heading {#t1}
