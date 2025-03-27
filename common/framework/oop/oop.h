@@ -135,4 +135,11 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 #define obj_delete(className, varName) \
     if (varName) {CONCAT3(className, _, dtor)(varName); free(varName);}
 
+/******************************************************************/ // 引用
+
+/// 相对鸡肋
+#define ref(arg) (&(arg))
+#define quote(arg) (*const (arg))
+#define dequote(arg) (*(arg))
+
 #endif //TEST_C_OOP_H
