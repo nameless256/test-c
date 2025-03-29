@@ -43,24 +43,36 @@ struct className { \
     }; \
 };
 
+/******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
+
+#define mVar(type, varName) \
+static inline type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
+static inline void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
+
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
-#define mFuncName(methodName) CONCAT3(className, _, methodName)
-#define mFuncDeclare(returnType, methodName, ...) \
-returnType mFuncName(methodName)(className *self, ## __VA_ARGS__)
-#define mFuncDefine(returnType, methodName, ...) \
-mFuncDeclare(returnType, methodName, ## __VA_ARGS__)
+#define mFunc(returnType, methodName, ...) \
+returnType methodName(className *self, ## __VA_ARGS__)
+
+#define mFuncPublic(returnType, methodName, ...) \
+mFunc(returnType, CONCAT3(className, _, methodName), ## __VA_ARGS__)
+
+#define mFuncProtected(returnType, methodName, ...) \
+mFuncPublic(returnType, methodName, ## __VA_ARGS__)
+
+#define mFuncPrivate(returnType, methodName, ...) \
+static mFunc(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
-#define vFuncTabName(className) CONCAT3(className, _, vFuncTab)
+#define vTabName(className) CONCAT3(className, _, vTab)
 
-#define vPtrDef struct vFuncTabName(className) {
+#define vPtrDef struct vTabName(className) {
 
 #define vPtrDefEnd } const *vptr;
 
-#define vFuncTabDefine(className) \
-static struct vFuncTabName(className) vFuncTabName(className)
+#define vTab(className) \
+static struct vTabName(className) vTabName(className)
 
 #define vFuncDeclare(returnType, methodName, ...) \
 returnType (*methodName)(className *self, ## __VA_ARGS__)
@@ -68,29 +80,22 @@ returnType (*methodName)(className *self, ## __VA_ARGS__)
 #define vCtorDeclare(...) void (*ctor)(className *self, ## __VA_ARGS__)
 #define vDtorDeclare() void (*dtor)(className *self)
 
-#define vptrInit() \
-    self->vptr = &vFuncTabName(className)
+#define vPtrInit() \
+    self->vptr = &vTabName(className)
 
-#define vptrBaseInit() \
-    vFuncTabName(classBaseName) = *self->classBaseName.vptr; \
-    self->classBaseName.vptr = &vFuncTabName(classBaseName)
+#define vPtrBaseInit() \
+    vTabName(classBaseName) = *self->classBaseName.vptr; \
+    self->classBaseName.vptr = &vTabName(classBaseName)
 
-#define vFuncBinding(className, methodName) \
-    vFuncTabName(className).methodName = (void *) methodName
+#define vFuncBinding(methodName) \
+    vTabName(className).methodName = methodName
+
+#define vFuncOverride(methodName) \
+    vTabName(classBaseName).methodName = (void *) methodName
 
 /// 需要套层壳包装虚函数具体实现的调用, 并通过壳的声明位置决定作用域是 公共、私有还是受保护
-#define vFuncImplement(returnType, methodName, ...) \
+#define vFuncImpl(returnType, methodName, ...) \
 static returnType methodName(className *self, ## __VA_ARGS__)
-
-/******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
-
-#define mVarDeclare(type, varName) \
-type CONCAT3(className, _get_, varName)(className *self); \
-void CONCAT3(className, _set_, varName)(className *self, type val);
-
-#define mVarDefine(type, varName) \
-type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
-void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
@@ -113,26 +118,26 @@ void CONCAT3(className, _set_, varName)(className *self, type val) { self->varNa
 /// 且 __attribute__((cleanup(CONCAT3(className, _, dtor)))) 在 有 goto语句 的函数上可能会报错 这也是一个无法避免的痛点
 #if 1
 /// 借助 GCC 的 __attribute__((cleanup())) 实现
-#define obj_create(className, varName, ...) \
+#define objCreate(className, varName, ...) \
     className varName __attribute__((cleanup(CONCAT3(className, _, dtor)))); \
     CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
 #else
-#define obj_create(className, varName, ...) \
+#define objCreate(className, varName, ...) \
     className varName; \
     CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
 
 /// 无法在退出作用域时自动销毁对象 (需要手动调用)
-#define obj_destroy(className, varName) \
+#define objDestroy(className, varName) \
     CONCAT3(className, _, dtor)(&varName)
 #endif
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
-#define obj_new(className, varName, ...) \
+#define objNew(className, varName, ...) \
     className *varName = calloc(1, sizeof(struct className)); \
     if (varName) CONCAT3(className, _, ctor)(varName, ## __VA_ARGS__)
 
-#define obj_delete(className, varName) \
+#define objDelete(className, varName) \
     if (varName) {CONCAT3(className, _, dtor)(varName); free(varName);}
 
 /******************************************************************/ // 引用

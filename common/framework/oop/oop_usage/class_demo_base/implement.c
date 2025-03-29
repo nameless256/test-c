@@ -4,15 +4,11 @@
 
 #include "private.h"
 
-mVarDefine(char *, name)
-
-mVarDefine(uint8_t, age)
-
-mFuncDefine(void, eat) {
+mFuncPublic(void, eat) {
     printf("[%d] --------- {%s} Eating... \n", __LINE__, __FUNCTION__);
 }
 
-vFuncImplement(void, dtor) {
+vFuncImpl(void, dtor) {
     printf("[%d] --------- {%s} Animal destructor called \n", __LINE__, __FUNCTION__);
 }
 
@@ -21,11 +17,11 @@ dtorDefine() {
     self->vptr->dtor(self);
 }
 
-vFuncTabDefine(className);
+vTab(className);
 
 ctorDefine() {
-    vptrInit();
-    vFuncBinding(className, dtor);
+    vPtrInit();
+    vFuncBinding(dtor);
     printf("[%d] --------- {%s} Animal constructor called \n", __LINE__, __FUNCTION__);
 }
 

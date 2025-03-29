@@ -10,8 +10,8 @@ static void test(int quote(arg)) {
 }
 
 void oopUsage(void) {
-    obj_create(dog, obj);
-    obj_create(animal, canidae);
+    objCreate(dog, obj);
+    objCreate(animal, canidae);
 
     animal_eat(&canidae);
     dog_displayInfo(&obj);

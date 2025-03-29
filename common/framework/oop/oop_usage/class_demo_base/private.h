@@ -9,6 +9,6 @@
 
 #include "protected.h"
 
-mVarDeclare(uint8_t, age)
+mVar(uint8_t, age)
 
 #endif //TEST_C_PRIVATE_H

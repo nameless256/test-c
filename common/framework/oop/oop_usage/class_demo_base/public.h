@@ -29,7 +29,7 @@ classDef
             uint8_t age;
 classDefEnd
 
-mFuncDeclare(void, eat);
+mFuncPublic(void, eat);
 
 ctorDeclare();
 

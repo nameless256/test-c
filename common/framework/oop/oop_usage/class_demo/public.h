@@ -24,7 +24,7 @@
 classDef
 classDefEnd
 
-mFuncDeclare(void, displayInfo);
+mFuncPublic(void, displayInfo);
 
 ctorDeclare();
 
