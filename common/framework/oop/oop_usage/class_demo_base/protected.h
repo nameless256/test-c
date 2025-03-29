@@ -9,6 +9,6 @@
 
 #include "public.h"
 
-mVar(char *, name)
+mVarAccessor(char *, name)
 
 #endif //TEST_C_CLASS_DEMO_BASE_PROTECTED_H

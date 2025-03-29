@@ -45,7 +45,7 @@ struct className { \
 
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 
-#define mVar(type, varName) \
+#define mVarAccessor(type, varName) \
 static inline type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
 static inline void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
 
