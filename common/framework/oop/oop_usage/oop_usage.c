@@ -5,19 +5,19 @@
 #include "oop_usage.h"
 #include "class_demo/public.h"
 
-static void test(int quote(arg)) {
-    dequote(arg)++;
+static void test(int oopQuote(arg)) {
+    oopDequote(arg)++;
 }
 
 void oopUsage(void) {
-    objCreate(dog, obj);
-    objCreate(animal, canidae);
+    oopObjCreate(dog, obj);
+    oopObjCreate(animal, canidae);
 
     animal_eat(&canidae);
     dog_displayInfo(&obj);
 
     int a = 0;
-    test(ref(a));
+    test(oopRef(a));
     printf("[%d] --------- {%s} %d \n", __LINE__, __FUNCTION__, a);
 
 //    obj_destroy(animal, canidae);

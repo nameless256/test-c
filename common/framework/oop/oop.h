@@ -129,33 +129,33 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /// 且 __attribute__((cleanup(CONCAT3(className, _, dtor)))) 在 有 goto语句 的函数上可能会报错 这也是一个无法避免的痛点
 #if 1
 /// 借助 GCC 的 __attribute__((cleanup())) 实现
-#define objCreate(className, varName, ...) \
+#define oopObjCreate(className, varName, ...) \
     className varName __attribute__((cleanup(CONCAT3(className, _, dtor)))); \
     CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
 #else
-#define objCreate(className, varName, ...) \
+#define oopObjCreate(className, varName, ...) \
     className varName; \
     CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
 
 /// 无法在退出作用域时自动销毁对象 (需要手动调用)
-#define objDestroy(className, varName) \
+#define oopObjDestroy(className, varName) \
     CONCAT3(className, _, dtor)(&varName)
 #endif
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
-#define objNew(className, varName, ...) \
+#define oopObjNew(className, varName, ...) \
     className *varName = calloc(1, sizeof(struct className)); \
     if (varName) CONCAT3(className, _, ctor)(varName, ## __VA_ARGS__)
 
-#define objDelete(className, varName) \
+#define oopObjDelete(className, varName) \
     if (varName) {CONCAT3(className, _, dtor)(varName); free(varName);}
 
 /******************************************************************/ // 引用
 
 /// 相对鸡肋
-#define ref(arg) (&(arg))
-#define quote(arg) (*const (arg))
-#define dequote(arg) (*(arg))
+#define oopRef(arg) (&(arg))
+#define oopQuote(arg) (*const (arg))
+#define oopDequote(arg) (*(arg))
 
 #endif //TEST_C_OOP_H
