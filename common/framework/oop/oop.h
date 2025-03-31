@@ -45,7 +45,7 @@ struct className { \
 
 /**
  * @details 为在C语言下确保封装及简洁，在public.h声明，在源文件定义
- * @details 因定义位置变更，无法支持虚表及栈上创建对象
+ * @details 因定义位置变更，无法支持继承、虚表及栈上创建对象
  */
 #define oopClassDeclare() \
 struct className; \
@@ -53,8 +53,6 @@ typedef struct className className;
 
 #define oopClassDefine() \
 struct className
-
-#define oopInherit() classBaseName classBaseName;
 
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 
@@ -145,7 +143,7 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define oopObjNew(className, varName, ...) \
-    className *varName = calloc(1, sizeof(struct className)); \
+    varName = calloc(1, sizeof(struct className)); \
     if (varName) CONCAT3(className, _, ctor)(varName, ## __VA_ARGS__)
 
 #define oopObjDelete(className, varName) \

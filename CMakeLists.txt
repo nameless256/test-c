@@ -12,6 +12,7 @@ include_directories(
         common/framework
         common/framework/oop
         common/framework/oop/oop_usage
+        common/framework/oop/oop_heap_usage
         common/structure
         game
         modules
@@ -24,6 +25,9 @@ file(
         "common/framework/oop/oop_usage/*.c"
         "common/framework/oop/oop_usage/class_demo/*.c"
         "common/framework/oop/oop_usage/class_demo_base/*.c"
+        "common/framework/oop/oop_heap_usage/*.c"
+        "common/framework/oop/oop_heap_usage/rect/*.c"
+        "common/framework/oop/oop_heap_usage/shape/*.c"
         "common/structure/*.c"
         "common/*.c"
         "game/*.c"
