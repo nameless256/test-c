@@ -21,13 +21,13 @@
 #undef className
 #define className dog
 
-classDef
-classDefEnd
+oopClassDef
+oopClassDefEnd
 
-mFuncPublic(void, displayInfo);
+oopFuncPublic(void, displayInfo);
 
-ctorDeclare();
+oopCtor();
 
-dtorDeclare();
+oopDtor();
 
 #endif //TEST_C_CLASS_DEMO_PUBLIC_H

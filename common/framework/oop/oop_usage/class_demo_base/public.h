@@ -20,19 +20,19 @@
 #undef className
 #define className animal
 
-classDef
-            vPtrDef
-                vFuncDeclare(void, makeSound);
-                vDtorDeclare();
-            vPtrDefEnd
+oopClassDef
+            oopVPtrDef
+                oopVFuncDeclare(void, makeSound);
+                oopVDtorDeclare();
+            oopVPtrDefEnd
             char *name;
             uint8_t age;
-classDefEnd
+oopClassDefEnd
 
-mFuncPublic(void, eat);
+oopFuncPublic(void, eat);
 
-ctorDeclare();
+oopCtor();
 
-dtorDeclare();
+oopDtor();
 
 #endif //TEST_C_PUBLIC_H

@@ -29,7 +29,7 @@
  * @details 这是因为 struct 和 class 在 C++ 中除了默认访问控制外，其他方面几乎相同。
  * @details 这种设计有助于避免多个空对象实例共享同一个地址，从而简化了指针和引用的管理，特别是在多态和继承的情况下。
  */
-#define classDef \
+#define oopClassDef \
 struct className; \
 typedef struct className className; \
 struct className { \
@@ -38,79 +38,90 @@ struct className { \
         struct { \
             classBaseName classBaseName;
 
-#define classDefEnd \
+#define oopClassDefEnd \
         }; \
     }; \
 };
 
+/**
+ * @details 为在C语言下确保封装及简洁，在public.h声明，在源文件定义
+ * @details 因定义位置变更，无法支持虚表及栈上创建对象
+ */
+#define oopClassDeclare() \
+struct className; \
+typedef struct className className;
+
+#define oopClassDefine() \
+struct className
+
+#define oopInherit() classBaseName classBaseName;
+
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 
-#define mVarAccessor(type, varName) \
+#define oopVarAccessor(type, varName) \
 static inline type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
 static inline void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
 
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
-#define mFunc(returnType, methodName, ...) \
+#define oopFunc(returnType, methodName, ...) \
 returnType methodName(className *self, ## __VA_ARGS__)
 
-#define mFuncPublic(returnType, methodName, ...) \
-mFunc(returnType, CONCAT3(className, _, methodName), ## __VA_ARGS__)
+#define oopFuncPublic(returnType, methodName, ...) \
+oopFunc(returnType, CONCAT3(className, _, methodName), ## __VA_ARGS__)
 
-#define mFuncProtected(returnType, methodName, ...) \
-mFuncPublic(returnType, methodName, ## __VA_ARGS__)
+#define oopFuncProtected(returnType, methodName, ...) \
+oopFuncPublic(returnType, methodName, ## __VA_ARGS__)
 
-#define mFuncPrivate(returnType, methodName, ...) \
-static mFunc(returnType, methodName, ## __VA_ARGS__)
+#define oopFuncPrivate(returnType, methodName, ...) \
+static oopFunc(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
-#define vTabName(className) CONCAT3(className, _, vTab)
+#define oopVTabName(className) CONCAT3(className, _, oopVTab)
 
-#define vPtrDef struct vTabName(className) {
+#define oopVPtrDef struct oopVTabName(className) {
 
-#define vPtrDefEnd } const *vptr;
+#define oopVPtrDefEnd } const *vptr;
 
-#define vTab(className) \
-static struct vTabName(className) vTabName(className)
+#define oopVTab(className) \
+static struct oopVTabName(className) oopVTabName(className)
 
-#define vFuncDeclare(returnType, methodName, ...) \
+#define oopVFuncDeclare(returnType, methodName, ...) \
 returnType (*methodName)(className *self, ## __VA_ARGS__)
 
-#define vCtorDeclare(...) void (*ctor)(className *self, ## __VA_ARGS__)
-#define vDtorDeclare() void (*dtor)(className *self)
+#define oopVCtorDeclare(...) void (*ctor)(className *self, ## __VA_ARGS__)
+#define oopVDtorDeclare() void (*dtor)(className *self)
 
-#define vPtrInit() \
-    self->vptr = &vTabName(className)
+#define oopVPtrInit() \
+    self->vptr = &oopVTabName(className)
 
-#define vPtrBaseInit() \
-    vTabName(classBaseName) = *self->classBaseName.vptr; \
-    self->classBaseName.vptr = &vTabName(classBaseName)
+#define oopVPtrBaseInit() \
+    oopVTabName(classBaseName) = *self->classBaseName.vptr; \
+    self->classBaseName.vptr = &oopVTabName(classBaseName)
 
-#define vFuncBinding(methodName) \
-    vTabName(className).methodName = methodName
+#define oopVFuncBinding(methodName) \
+    oopVTabName(className).methodName = methodName
 
-#define vFuncOverride(methodName) \
-    vTabName(classBaseName).methodName = (void *) methodName
+#define oopVFuncOverride(methodName) \
+    oopVTabName(classBaseName).methodName = (void *) methodName
 
 /// 需要套层壳包装虚函数具体实现的调用, 并通过壳的声明位置决定作用域是 公共、私有还是受保护
-#define vFuncImpl(returnType, methodName, ...) \
+#define oopVFuncImpl(returnType, methodName, ...) \
 static returnType methodName(className *self, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
 /// 无法支持重载, 无论是通过 宏魔法 (Morn 库 的思路) 还是 可变参 都需要 手动增加代码, 往往还不利于维护, 甚至隐藏风险
-#define ctorName CONCAT3(className, _, ctor)
-#define ctorDeclare(...) void ctorName(className *self, ## __VA_ARGS__)
-#define ctorDefine(...) ctorDeclare(__VA_ARGS__)
+#define oopCtorName CONCAT3(className, _, ctor)
+#define oopCtor(...) void oopCtorName(className *self, ## __VA_ARGS__)
 
-#define ctorBaseCall(...) CONCAT3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
+#define oopCtorBaseCall(...) CONCAT3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
 
-#define dtorName CONCAT3(className, _, dtor)
-#define dtorDeclare() void dtorName(className *self)
-#define dtorDefine() dtorDeclare()
+#define oopDtorName CONCAT3(className, _, dtor)
+#define oopDtor() void oopDtorName(className *self)
 
-#define dtorBaseCall() CONCAT3(classBaseName, _, dtor)((classBaseName *)self)
+#define oopDtorBaseCall() CONCAT3(classBaseName, _, dtor)((classBaseName *)self)
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 

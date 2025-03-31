@@ -5,7 +5,7 @@
 #ifndef TEST_C_SHAPE_H
 #define TEST_C_SHAPE_H
 
-#include "oop_heap.h"
+#include "oop.h"
 
 
 
