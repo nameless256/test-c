@@ -35,4 +35,8 @@ oopCtor();
 
 oopDtor();
 
+oopObjMemAlloc();
+
+oopObjMemFree();
+
 #endif //TEST_C_PUBLIC_H

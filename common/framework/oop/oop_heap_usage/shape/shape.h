@@ -12,7 +12,7 @@ typedef struct {
     uint32_t x, y;
 } point;
 
-#define className Shape
+#define className shape
 
 oopClassDeclare()
 
@@ -20,6 +20,12 @@ oopCtor(uint32_t count, point *set);
 
 oopDtor();
 
+oopFuncPublic(void, setPointSet, uint32_t count, point *set);
+
 oopFuncPublic(void, print);
+
+oopObjMemAlloc();
+
+oopObjMemFree();
 
 #endif //TEST_C_SHAPE_H

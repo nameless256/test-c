@@ -30,4 +30,8 @@ oopCtor();
 
 oopDtor();
 
+oopObjMemAlloc();
+
+oopObjMemFree();
+
 #endif //TEST_C_CLASS_DEMO_PUBLIC_H

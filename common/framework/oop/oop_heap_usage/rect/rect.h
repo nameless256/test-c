@@ -10,7 +10,7 @@
 #include "shape/shape.h"
 
 #undef className
-#define className Rect
+#define className rect
 
 oopClassDeclare()
 
@@ -19,5 +19,9 @@ oopCtor(point pos, uint32_t w, uint32_t h);
 oopDtor();
 
 oopFuncPublic(void, print);
+
+oopObjMemAlloc();
+
+oopObjMemFree();
 
 #endif //TEST_C_RECT_H

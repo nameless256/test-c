@@ -54,6 +54,8 @@ typedef struct className className;
 #define oopClassDefine() \
 struct className
 
+#define oopInherit() classBaseName *base
+
 /******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
 
 #define oopVarAccessor(type, varName) \
@@ -140,14 +142,24 @@ static returnType methodName(className *self, ## __VA_ARGS__)
     CONCAT3(className, _, dtor)(&varName)
 #endif
 
+/******************************************************************/ // [malloc / free]
+
+#define oopMemAlloc malloc
+
+#define oopMemFree free
+
+#define oopObjMemAlloc() className *CONCAT3(className, _, memAlloc)()
+
+#define oopObjMemFree() void CONCAT3(className, _, memFree)(className *objPtr)
+
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define oopObjNew(className, varName, ...) \
-    varName = calloc(1, sizeof(struct className)); \
-    if (varName) CONCAT3(className, _, ctor)(varName, ## __VA_ARGS__)
+    varName = CONCAT3(className, _, memAlloc)(); \
+    do {if (varName) CONCAT3(className, _, ctor)(varName, ## __VA_ARGS__);} while (0)
 
 #define oopObjDelete(className, varName) \
-    if (varName) {CONCAT3(className, _, dtor)(varName); free(varName);}
+    do {if (varName) {CONCAT3(className, _, dtor)(varName); CONCAT3(className, _, memFree)(varName);}} while (0)
 
 /******************************************************************/ // 引用
 
