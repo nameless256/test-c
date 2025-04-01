@@ -28,11 +28,3 @@ oopCtor() {
     printf("[%d] --------- {%s} Dog constructor called \n", __LINE__, __FUNCTION__);
     animal_set_name(&self->animal, "Rex");
 }
-
-oopObjMemAlloc() {
-    return oopMemAlloc(sizeof(className));
-}
-
-oopObjMemFree() {
-    oopMemFree(objPtr);
-}

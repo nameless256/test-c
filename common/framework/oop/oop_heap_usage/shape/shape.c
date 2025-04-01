@@ -19,14 +19,20 @@ oopFuncPublic(void, setPointSet, uint32_t count, point *set) {
     if (self->set) memcpy(self->set, set, count * sizeof(point)), self->count = count;
 }
 
-oopCtor(uint32_t count, point *set) {
+oopCreate(uint32_t count, point *set) {
     printf("[%d] --------- {%s} \n", __LINE__, __FUNCTION__);
-    memset(self, 0, sizeof(shape));
-    shape_setPointSet(self, count, set);
+    className *self = oopMemAlloc(sizeof(className));
+    if (self) {
+        memset(self, 0, sizeof(className));
+        shape_setPointSet(self, count, set);
+    }
+    return self;
 }
 
-oopDtor(){
+oopDestroy(){
     printf("[%d] --------- {%s} \n", __LINE__, __FUNCTION__);
+    if (self->set) free(self->set), self->set = NULL;
+    oopMemFree(self);
 }
 
 oopFuncPublic(void, print) {
@@ -35,12 +41,4 @@ oopFuncPublic(void, print) {
         printf("(%d, %d)", self->set[i].x, self->set[i].y);
         printf(i < self->count - 1 ? ", " : "\n");
     }
-}
-
-oopObjMemAlloc() {
-    return oopMemAlloc(sizeof(className));
-}
-
-oopObjMemFree() {
-    oopMemFree(objPtr);
 }

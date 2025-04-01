@@ -14,14 +14,10 @@
 
 oopClassDeclare()
 
-oopCtor(point pos, uint32_t w, uint32_t h);
+oopCreate(point pos, uint32_t w, uint32_t h);
 
-oopDtor();
+oopDestroy();
 
 oopFuncPublic(void, print);
-
-oopObjMemAlloc();
-
-oopObjMemFree();
 
 #endif //TEST_C_RECT_H

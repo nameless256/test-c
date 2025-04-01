@@ -16,16 +16,12 @@ typedef struct {
 
 oopClassDeclare()
 
-oopCtor(uint32_t count, point *set);
+oopCreate(uint32_t count, point *set);
 
-oopDtor();
+oopDestroy();
 
 oopFuncPublic(void, setPointSet, uint32_t count, point *set);
 
 oopFuncPublic(void, print);
-
-oopObjMemAlloc();
-
-oopObjMemFree();
 
 #endif //TEST_C_SHAPE_H

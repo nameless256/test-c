@@ -22,6 +22,8 @@
  * @warning 没有 对应 虚函数实现 的 类(抽象类) 不能 实例化 虽然没有做实际限制 但通过多态调用时 可能会调用空指针
  */
 
+/******************************************************************/ // { 完整对象声明支持 }
+
 /**
  * @details 空类的对象占用 1 字节的原因是为了保证每个对象在内存中有唯一的地址。
  * @details 这是 C++ 标准的规定，以确保即使对于空类，不同对象的指针也可以区分。
@@ -42,39 +44,6 @@ struct className { \
         }; \
     }; \
 };
-
-/**
- * @details 为在C语言下确保封装及简洁，在public.h声明，在源文件定义
- * @details 因定义位置变更，无法支持继承、虚表及栈上创建对象
- */
-#define oopClassDeclare() \
-struct className; \
-typedef struct className className;
-
-#define oopClassDefine() \
-struct className
-
-#define oopInherit() classBaseName *base
-
-/******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
-
-#define oopVarAccessor(type, varName) \
-static inline type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
-static inline void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
-
-/******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
-
-#define oopFunc(returnType, methodName, ...) \
-returnType methodName(className *self, ## __VA_ARGS__)
-
-#define oopFuncPublic(returnType, methodName, ...) \
-oopFunc(returnType, CONCAT3(className, _, methodName), ## __VA_ARGS__)
-
-#define oopFuncProtected(returnType, methodName, ...) \
-oopFuncPublic(returnType, methodName, ## __VA_ARGS__)
-
-#define oopFuncPrivate(returnType, methodName, ...) \
-static oopFunc(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
@@ -126,31 +95,11 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
 /// 全局对象 的 构造析构 需要在 程序开始 及 结束时 手动调用 略显麻烦 且 不方便使用 这是一个无法避免的痛点
-/// 且 __attribute__((cleanup(CONCAT3(className, _, dtor)))) 在 有 goto语句 的函数上可能会报错 这也是一个无法避免的痛点
-#if 1
+/// 且 __attribute__((cleanup(CONCAT3(className, _, dtor)))) 在 有 goto语句 的函数上可能会报错
 /// 借助 GCC 的 __attribute__((cleanup())) 实现
-#define oopObjCreate(className, varName, ...) \
+#define oopObj(className, varName, ...) \
     className varName __attribute__((cleanup(CONCAT3(className, _, dtor)))); \
     CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
-#else
-#define oopObjCreate(className, varName, ...) \
-    className varName; \
-    CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
-
-/// 无法在退出作用域时自动销毁对象 (需要手动调用)
-#define oopObjDestroy(className, varName) \
-    CONCAT3(className, _, dtor)(&varName)
-#endif
-
-/******************************************************************/ // [malloc / free]
-
-#define oopMemAlloc malloc
-
-#define oopMemFree free
-
-#define oopObjMemAlloc() className *CONCAT3(className, _, memAlloc)()
-
-#define oopObjMemFree() void CONCAT3(className, _, memFree)(className *objPtr)
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
@@ -160,6 +109,63 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 
 #define oopObjDelete(className, varName) \
     do {if (varName) {CONCAT3(className, _, dtor)(varName); CONCAT3(className, _, memFree)(varName);}} while (0)
+
+/******************************************************************/ // { 简洁封装支持 }
+
+/**
+ * @details 为在C语言下确保封装及简洁，在public.h声明，在源文件定义
+ * @details 因定义位置变更，无法支持继承、虚表及栈上创建对象
+ */
+#define oopClassDeclare() \
+struct className; \
+typedef struct className className;
+
+#define oopClassDefine() \
+struct className
+
+#define oopInherit() classBaseName *base
+
+/******************************************************************/ // [ 创建 / 销毁 ] 的 声明 及 定义
+
+#define oopCreate(...) \
+    className *CONCAT3(className, _, create)(__VA_ARGS__)
+
+#define oopDestroy() \
+    void CONCAT3(className, _, destroy)(className *self)
+
+/******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
+
+#define oopObjCreate(className, varName) \
+    varName = CONCAT3(className, _, create)
+
+#define oopObjDestroy(className, varName) \
+    CONCAT3(className, _, destroy)(varName)
+
+/******************************************************************/ // { 公共定义 }
+
+#define oopMemAlloc malloc
+
+#define oopMemFree free
+
+/******************************************************************/ // [ 成员变量 访问器 ] 的 声明 及 定义
+
+#define oopVarAccessor(type, varName) \
+static inline type CONCAT3(className, _get_, varName)(className *self) { return self->varName; } \
+static inline void CONCAT3(className, _set_, varName)(className *self, type val) { self->varName = val; }
+
+/******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
+
+#define oopFunc(returnType, methodName, ...) \
+returnType methodName(className *self, ## __VA_ARGS__)
+
+#define oopFuncPublic(returnType, methodName, ...) \
+oopFunc(returnType, CONCAT3(className, _, methodName), ## __VA_ARGS__)
+
+#define oopFuncProtected(returnType, methodName, ...) \
+oopFuncPublic(returnType, methodName, ## __VA_ARGS__)
+
+#define oopFuncPrivate(returnType, methodName, ...) \
+static oopFunc(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // 引用
 

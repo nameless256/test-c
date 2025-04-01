@@ -10,8 +10,8 @@ static void test(int oopQuote(arg)) {
 }
 
 void oopUsage(void) {
-    oopObjCreate(dog, obj);
-    oopObjCreate(animal, canidae);
+    oopObj(dog, obj);
+    oopObj(animal, canidae);
 
     animal_eat(&canidae);
     dog_displayInfo(&obj);
@@ -19,7 +19,4 @@ void oopUsage(void) {
     int a = 0;
     test(oopRef(a));
     printf("[%d] --------- {%s} %d \n", __LINE__, __FUNCTION__, a);
-
-//    obj_destroy(animal, canidae);
-//    obj_destroy(dog, obj);
 }
