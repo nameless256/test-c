@@ -77,7 +77,7 @@ returnType (*methodName)(className *self, ## __VA_ARGS__)
 
 /// 需要套层壳包装虚函数具体实现的调用, 并通过壳的声明位置决定作用域是 公共、私有还是受保护
 #define oopVFuncImpl(returnType, methodName, ...) \
-static returnType methodName(className *self, ## __VA_ARGS__)
+oopFuncPrivate(returnType, methodName, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
