@@ -47,7 +47,7 @@ struct className { \
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
-#define oopVTabName(className) CONCAT3(className, _, oopVTab)
+#define oopVTabName(className) CONCAT3(className, _, vTab)
 
 #define oopVPtrDef struct oopVTabName(className) {
 
@@ -82,13 +82,11 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
 /// 无法支持重载, 无论是通过 宏魔法 (Morn 库 的思路) 还是 可变参 都需要 手动增加代码, 往往还不利于维护, 甚至隐藏风险
-#define oopCtorName CONCAT3(className, _, ctor)
-#define oopCtor(...) void oopCtorName(className *self, ## __VA_ARGS__)
+#define oopCtor(...) void CONCAT3(className, _, ctor)(className *self, ## __VA_ARGS__)
 
 #define oopCtorBaseCall(...) CONCAT3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
 
-#define oopDtorName CONCAT3(className, _, dtor)
-#define oopDtor() void oopDtorName(className *self)
+#define oopDtor() void CONCAT3(className, _, dtor)(className *self)
 
 #define oopDtorBaseCall() CONCAT3(classBaseName, _, dtor)((classBaseName *)self)
 

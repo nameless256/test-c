@@ -28,7 +28,7 @@ int main() {
     clock_t start = clock();
 
     oopHeapUsage();
-//    oopUsage();
+    oopUsage();
 
     clock_t stop = clock();
     double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
