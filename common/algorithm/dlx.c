@@ -56,75 +56,56 @@ static dlxNode *dlxNodeRemove(dlxNode *node) {
     return node;
 }
 
-void dlxHide(dlxCol *col) {
+oopFuncPrivate(void, hideColById, uint16_t colId) {
+    dlxCol *col = &self->col[colId];
     dlxCursor r, c;
     dlxNodeHHide(&col->node);
     for (r = col->node.down; r != &col->node; r = r->down)
         for (c = r->right; c != r; c = c->right) dlxNodeVHide(c), --(c->col->size);
 }
 
-void dlxShow(dlxCol *col) {
+oopFuncPrivate(void, showColById, uint16_t colId) {
+    dlxCol *col = &self->col[colId];
     dlxCursor r, c;
     for (r = col->node.down; r != &col->node; r = r->down)
         for (c = r->right; c != r; c = c->right) dlxNodeVShow(c), ++(c->col->size);
     dlxNodeHShow(&col->node);
 }
 
-void dlxRowDel(dlx *obj, uint16_t rowId) {
-    while (obj->first[rowId]) {
-        dlxNode *node = obj->first[rowId];
-        if (node->right == node) obj->first[rowId] = NULL;
-        else obj->first[rowId] = node->right;
-        free(dlxNodeRemove(node));
-    }
-}
-
-void dlxColDelRow(dlx *obj, uint16_t colId) {
-    while (!dlxIsEmptyV(&obj->col[colId].node)) dlxRowDel(obj, obj->col[colId].node.down->rowId);
-}
-
-dlxCol *dlxGetMinCol(dlx *obj) {
-    dlxNode *minCol = obj->col[0].node.right;
-    for (dlxCursor i = minCol; i != &obj->col[0].node; i = i->right)
+oopFuncPrivate(dlxCol *, getMinCol) {
+    dlxNode *minCol = self->col[0].node.right;
+    for (dlxCursor i = minCol; i != &self->col[0].node; i = i->right)
         if (i->col->size < minCol->col->size) minCol = i;
     return minCol->col;
 }
 
-uint16_t dlxGetColSizeById(dlx *obj, uint16_t colId) {
-    return obj->col[colId].size;
+oopFuncPrivate(bool, isEmpty) {
+    return dlxIsEmptyH(&self->col[0].node);
 }
 
-bool dlxColIsEmpty(dlx *obj, uint16_t colNum) {
-    return dlxIsEmptyV(&obj->col[colNum].node);
-}
-
-bool dlxIsEmpty(dlx *obj) {
-    return dlxIsEmptyH(&obj->col[0].node);
-}
-
-static uint16_t dlxDance(dlx *obj, uint16_t idx, uint16_t count) {
+oopFuncPrivate(uint16_t, dance, uint16_t idx, uint16_t count) {
     uint16_t resultCount = 0; // 0: 无解
-    if (dlxIsEmpty(obj)) { // 有解
-        if (obj->result != NULL) {
-            memset(obj->result, 0, obj->resultLen * sizeof(uint16_t));
-            memcpy(obj->result, obj->stack, obj->resultLen * sizeof(uint16_t));
+    if (isEmpty(self)) { // 有解
+        if (self->result != NULL) {
+            memset(self->result, 0, self->resultLen * sizeof(uint16_t));
+            memcpy(self->result, self->stack, self->resultLen * sizeof(uint16_t));
         }
         return 1;
-    } else if (idx >= obj->resultLen) {
+    } else if (idx >= self->resultLen) {
         printf("[%d] --------- {%s} not enough results cached ! \n", __LINE__, __FUNCTION__);
         return 0;
     }
-    dlxCol *minCol = dlxGetMinCol(obj);
-    dlxHide(minCol);
+    dlxCol *minCol = getMinCol(self);
+    hideColById(self, minCol->id);
     dlxCursor r, c;
     for (r = minCol->node.down; r != &minCol->node; r = r->down) {
-        for (c = r->right; c != r; c = c->right) dlxHide(c->col);
-        obj->stack[idx] = r->rowId; // 按递归调用顺序依次记录解的行号
-        resultCount += dlxDance(obj, idx + 1, count);
-        for (c = r->left; c != r; c = c->left) dlxShow(c->col);
+        for (c = r->right; c != r; c = c->right) hideColById(self, c->col->id);
+        self->stack[idx] = r->rowId; // 按递归调用顺序依次记录解的行号
+        resultCount += dance(self, idx + 1, count);
+        for (c = r->left; c != r; c = c->left) showColById(self, c->col->id);
         if (count == resultCount) break; // 需要的解都已找到
     }
-    dlxShow(minCol);
+    showColById(self, minCol->id);
     return resultCount; // 无解返回0并在下一分支搜索解
 }
 
@@ -170,7 +151,7 @@ oopFuncPublic(bool, nodeAdd, uint16_t rowId, uint16_t colId) {
 }
 
 oopFuncPublic(uint16_t, search, uint16_t count) {
-    return dlxDance(self, 0, count);
+    return dance(self, 0, count);
 }
 
 __attribute__((unused))
