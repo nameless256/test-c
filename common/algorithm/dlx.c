@@ -85,7 +85,7 @@ oopPrivate(bool, isEmpty) {
 
 oopPrivate(uint16_t, dance, uint16_t idx, uint16_t count) {
     uint16_t resultCount = 0; // 0: 无解
-    if (isEmpty(self)) { // 有解
+    if (dlx_isEmpty(self)) { // 有解
         if (self->result != NULL) {
             memset(self->result, 0, self->resultLen * sizeof(uint16_t));
             memcpy(self->result, self->stack, self->resultLen * sizeof(uint16_t));
@@ -95,17 +95,17 @@ oopPrivate(uint16_t, dance, uint16_t idx, uint16_t count) {
         printf("[%d] --------- {%s} not enough results cached ! \n", __LINE__, __FUNCTION__);
         return 0;
     }
-    dlxCol *minCol = getMinCol(self);
-    hideColById(self, minCol->id);
+    dlxCol *minCol = dlx_getMinCol(self);
+    dlx_hideColById(self, minCol->id);
     dlxCursor r, c;
     for (r = minCol->node.down; r != &minCol->node; r = r->down) {
-        for (c = r->right; c != r; c = c->right) hideColById(self, c->col->id);
+        for (c = r->right; c != r; c = c->right) dlx_hideColById(self, c->col->id);
         self->stack[idx] = r->rowId; // 按递归调用顺序依次记录解的行号
-        resultCount += dance(self, idx + 1, count);
-        for (c = r->left; c != r; c = c->left) showColById(self, c->col->id);
+        resultCount += dlx_dance(self, idx + 1, count);
+        for (c = r->left; c != r; c = c->left) dlx_showColById(self, c->col->id);
         if (count == resultCount) break; // 需要的解都已找到
     }
-    showColById(self, minCol->id);
+    dlx_showColById(self, minCol->id);
     return resultCount; // 无解返回0并在下一分支搜索解
 }
 
@@ -151,7 +151,7 @@ oopPublic(bool, nodeAdd, uint16_t rowId, uint16_t colId) {
 }
 
 oopPublic(uint16_t, search, uint16_t count) {
-    return dance(self, 0, count);
+    return dlx_dance(self, 0, count);
 }
 
 __attribute__((unused))
