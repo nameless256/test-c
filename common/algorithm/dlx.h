@@ -35,69 +35,31 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "oop.h"
 
-struct dlxCol;
+#define className dlx
 
-typedef struct dlxNode {
-    struct dlxNode *up, *down;
-    struct dlxNode *left, *right;
-    struct dlxCol *col;
-    uint16_t rowId;
-} dlxNode, *dlxCursor;
-
-typedef struct dlxCol {
-    struct dlxNode node;
-    uint16_t id, size;
-} dlxCol;
-
-typedef struct dlx{
-    dlxCol *col; ///< 列首节点数组
-    dlxCursor *first; ///< 行首节点指针数组
-    uint16_t *stack; ///< 解答栈
-    uint16_t *result; ///< 存放搜索到的最后一个解
-    uint16_t resultLen;
-    uint16_t colCount; ///< 创建时确认的 列的个数
-    uint16_t rowCount; ///< 创建时确认的 行的个数
-} dlx;
-
-/// 隐藏 col 列 及 其相关的行
-void dlxHide(dlxCol *col);
-
-/// 恢复 col 列 及 其相关的行
-void dlxShow(dlxCol *col);
+oopClassDeclare()
 
 /**
  * @brief 创建 一个有 rowCount 行 colCount 列 的 dlx
- * @return 创建的对象指针
  */
-dlx *dlxCreate(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resultLen);
+oopCreate(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resultLen);
 
-void dlxDestroy(dlx **pObj);
+oopDestroy();
 
 /**
  * @brief 在 rowId 行 colId 列 插入一个节点
  * @return 节点是否已存在
  */
-bool dlxNodeAdd(dlx *obj, uint16_t rowId, uint16_t colId);
-
-void dlxRowDel(dlx *obj, uint16_t rowId);
-
-void dlxColDelRow(dlx *obj, uint16_t colId);
-
-dlxCol *dlxGetMinCol(dlx *obj);
-
-uint16_t dlxGetColSizeById(dlx *obj, uint16_t colId);
-
-bool dlxColIsEmpty(dlx *obj, uint16_t colNum);
-
-bool dlxIsEmpty(dlx *obj);
+oopFuncPublic(bool, nodeAdd, uint16_t rowId, uint16_t colId);
 
 /**
  * @brief 在 解空间 内 搜索 可行解
  * @param count 需要找到的解的个数
  * @return 找到的解的个数
  */
-uint16_t dlxSearch(dlx *obj, uint16_t count);
+oopFuncPublic(uint16_t, search, uint16_t count);
 
 /**
  * @note 决策化作行
