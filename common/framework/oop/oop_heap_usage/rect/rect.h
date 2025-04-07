@@ -18,6 +18,6 @@ oopCreate(point pos, uint32_t w, uint32_t h);
 
 oopDestroy();
 
-oopFuncPublic(void, print);
+oopPublic(void, print);
 
 #endif //TEST_C_RECT_H

@@ -9,6 +9,4 @@
 
 #include "protected.h"
 
-oopVarAccessor(uint8_t, age)
-
 #endif //TEST_C_PRIVATE_H

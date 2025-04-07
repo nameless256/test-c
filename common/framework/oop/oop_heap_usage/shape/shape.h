@@ -20,8 +20,8 @@ oopCreate(uint32_t count, point *set);
 
 oopDestroy();
 
-oopFuncPublic(void, setPointSet, uint32_t count, point *set);
+oopPublic(void, setPointSet, uint32_t count, point *set);
 
-oopFuncPublic(void, print);
+oopPublic(void, print);
 
 #endif //TEST_C_SHAPE_H

@@ -9,6 +9,4 @@
 
 #include "public.h"
 
-oopVarAccessor(char *, name)
-
 #endif //TEST_C_CLASS_DEMO_BASE_PROTECTED_H

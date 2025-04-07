@@ -12,7 +12,7 @@ oopClassDefine() {
     point *set;
 };
 
-oopFuncPublic(void, setPointSet, uint32_t count, point *set) {
+oopPublic(void, setPointSet, uint32_t count, point *set) {
     if (self->set) free(self->set), self->set = NULL;
     self->count = 0;
     if (set) self->set = calloc(count, sizeof(point));
@@ -35,7 +35,7 @@ oopDestroy(){
     oopMemFree(self);
 }
 
-oopFuncPublic(void, print) {
+oopPublic(void, print) {
     printf("[%d] --------- {%s} \n", __LINE__, __FUNCTION__);
     for (uint32_t i = 0; i < self->count; ++i) {
         printf("(%d, %d)", self->set[i].x, self->set[i].y);

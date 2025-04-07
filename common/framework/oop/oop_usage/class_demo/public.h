@@ -24,7 +24,7 @@
 oopClassDef
 oopClassDefEnd
 
-oopFuncPublic(void, displayInfo);
+oopPublic(void, displayInfo);
 
 oopCtor();
 
