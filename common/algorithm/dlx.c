@@ -97,12 +97,12 @@ oopPrivate(uint16_t, dance, uint16_t idx, uint16_t count) {
     }
     dlxCol *minCol = dlx_getMinCol(self);
     dlx_hideColById(self, minCol->id);
-    dlxCursor r, c;
-    for (r = minCol->node.down; r != &minCol->node; r = r->down) {
-        for (c = r->right; c != r; c = c->right) dlx_hideColById(self, c->col->id);
-        self->stack[idx] = r->rowId; // 按递归调用顺序依次记录解的行号
+    dlxCursor v, h;
+    for (v = minCol->node.down; v != &minCol->node; v = v->down) {
+        for (h = v->right; h != v; h = h->right) dlx_hideColById(self, h->col->id);
+        self->stack[idx] = v->rowId; // 按递归调用顺序依次记录解的行号
         resultCount += dlx_dance(self, idx + 1, count);
-        for (c = r->left; c != r; c = c->left) dlx_showColById(self, c->col->id);
+        for (h = v->left; h != v; h = h->left) dlx_showColById(self, h->col->id);
         if (count == resultCount) break; // 需要的解都已找到
     }
     dlx_showColById(self, minCol->id);
