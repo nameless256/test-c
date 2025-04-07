@@ -26,8 +26,8 @@ typedef struct dlxCol {
 #define dlxNodeHHide(node) (node)->left->right = (node)->right, (node)->right->left = (node)->left
 #define dlxNodeVShow(node) (node)->up->down = (node), (node)->down->up = (node)
 #define dlxNodeHShow(node) (node)->left->right = (node), (node)->right->left = (node)
-#define dlxIsEmptyV(node) ((node)->up == (node) && (node)->down == (node))
-#define dlxIsEmptyH(node) ((node)->left == (node) && (node)->right == (node))
+#define dlxNodeVIsEmpty(node) ((node)->up == (node) && (node)->down == (node))
+#define dlxNodeHIsEmpty(node) ((node)->left == (node) && (node)->right == (node))
 #define dlxNodeInit(node) (node)->up = (node)->down = (node)->left = (node)->right = (node)
 
 oopClassDefine() {
@@ -80,7 +80,7 @@ oopPrivate(dlxCol *, getMinCol) {
 }
 
 oopPrivate(bool, isEmpty) {
-    return dlxIsEmptyH(&self->col[0].node);
+    return dlxNodeHIsEmpty(&self->col[0].node);
 }
 
 oopPrivate(uint16_t, dance, uint16_t idx, uint16_t count) {
@@ -133,7 +133,7 @@ oopCreate(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resul
 oopDestroy() {
     if (self == NULL) return;
     for (uint16_t i = 0; i < self->colCount; ++i) // 销毁 列首 的 垂直链表
-        while (!dlxIsEmptyV(&self->col[i].node)) free(dlxNodeRemove(self->col[i].node.down));
+        while (!dlxNodeVIsEmpty(&self->col[i].node)) free(dlxNodeRemove(self->col[i].node.down));
     free(self->stack), free(self->first), free(self->col), free(self);
 }
 
