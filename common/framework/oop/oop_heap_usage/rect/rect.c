@@ -32,7 +32,7 @@ oopDestroy() {
     oopMemFree(self);
 }
 
-oopPublic(void, print) {
+oopFunc(void, print) {
     printf("[%d] --------- {%s} pos (%d, %d) w %d h %d\n", __LINE__, __FUNCTION__,
            self->pos.x, self->pos.y, self->w, self->h);
     shape_print(self->base);

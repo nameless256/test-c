@@ -56,7 +56,7 @@ static dlxNode *dlxNodeRemove(dlxNode *node) {
     return node;
 }
 
-oopPrivate(void, hideColById, uint16_t colId) {
+static oopFunc(void, hideColById, uint16_t colId) {
     dlxCol *col = &self->col[colId];
     dlxCursor r, c;
     dlxNodeHHide(&col->node);
@@ -64,7 +64,7 @@ oopPrivate(void, hideColById, uint16_t colId) {
         for (c = r->right; c != r; c = c->right) dlxNodeVHide(c), --(c->col->size);
 }
 
-oopPrivate(void, showColById, uint16_t colId) {
+static oopFunc(void, showColById, uint16_t colId) {
     dlxCol *col = &self->col[colId];
     dlxCursor r, c;
     for (r = col->node.down; r != &col->node; r = r->down)
@@ -72,18 +72,18 @@ oopPrivate(void, showColById, uint16_t colId) {
     dlxNodeHShow(&col->node);
 }
 
-oopPrivate(dlxCol *, getMinCol) {
+static oopFunc(dlxCol *, getMinCol) {
     dlxNode *minCol = self->col[0].node.right;
     for (dlxCursor i = minCol; i != &self->col[0].node; i = i->right)
         if (i->col->size < minCol->col->size) minCol = i;
     return minCol->col;
 }
 
-oopPrivate(bool, isEmpty) {
+static oopFunc(bool, isEmpty) {
     return dlxNodeHIsEmpty(&self->col[0].node);
 }
 
-oopPrivate(uint16_t, dance, uint16_t idx, uint16_t count) {
+static oopFunc(uint16_t, dance, uint16_t idx, uint16_t count) {
     uint16_t resultCount = 0; // 0: 无解
     if (dlx_isEmpty(self)) { // 有解
         if (self->result != NULL) {
@@ -137,7 +137,7 @@ oopDestroy() {
     free(self->stack), free(self->first), free(self->col), free(self);
 }
 
-oopPublic(bool, nodeAdd, uint16_t rowId, uint16_t colId) {
+oopFunc(bool, nodeAdd, uint16_t rowId, uint16_t colId) {
     // 确保不会有重复节点
     for (dlxCursor i = self->col[colId].node.down; i != &self->col[colId].node; i = i->down)
         if (i->rowId == rowId) return true;
@@ -150,7 +150,7 @@ oopPublic(bool, nodeAdd, uint16_t rowId, uint16_t colId) {
     return false;
 }
 
-oopPublic(uint16_t, search, uint16_t count) {
+oopFunc(uint16_t, search, uint16_t count) {
     return dlx_dance(self, 0, count);
 }
 

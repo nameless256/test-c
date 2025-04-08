@@ -52,14 +52,14 @@ oopDestroy();
  * @brief 在 rowId 行 colId 列 插入一个节点
  * @return 节点是否已存在
  */
-oopPublic(bool, nodeAdd, uint16_t rowId, uint16_t colId);
+oopFunc(bool, nodeAdd, uint16_t rowId, uint16_t colId);
 
 /**
  * @brief 在 解空间 内 搜索 可行解
  * @param count 需要找到的解的个数
  * @return 找到的解的个数
  */
-oopPublic(uint16_t, search, uint16_t count);
+oopFunc(uint16_t, search, uint16_t count);
 
 /**
  * @note 决策化作行

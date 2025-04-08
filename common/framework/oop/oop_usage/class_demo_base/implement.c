@@ -4,7 +4,7 @@
 
 #include "private.h"
 
-oopPublic(void, eat) {
+oopFunc(void, eat) {
     printf("[%d] --------- {%s} Eating... \n", __LINE__, __FUNCTION__);
 }
 

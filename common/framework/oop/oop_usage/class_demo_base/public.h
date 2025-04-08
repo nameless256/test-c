@@ -29,7 +29,7 @@ oopClassDef
             uint8_t age;
 oopClassDefEnd
 
-oopPublic(void, eat);
+oopFunc(void, eat);
 
 oopCtor();
 

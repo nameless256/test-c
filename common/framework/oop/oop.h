@@ -31,16 +31,7 @@
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
 #define oopFunc(returnType, methodName, ...) \
-returnType methodName(className *self, ## __VA_ARGS__)
-
-#define oopPublic(returnType, methodName, ...) \
-oopFunc(returnType, CONCAT3(className, _, methodName), ## __VA_ARGS__)
-
-#define oopProtected(returnType, methodName, ...) \
-oopPublic(returnType, methodName, ## __VA_ARGS__)
-
-#define oopPrivate(returnType, methodName, ...) \
-static oopPublic(returnType, methodName, ## __VA_ARGS__)
+returnType CONCAT3(className, _, methodName)(className *self, ## __VA_ARGS__)
 
 /******************************************************************/ // 引用
 
@@ -104,7 +95,7 @@ returnType (*methodName)(className *self, ## __VA_ARGS__)
 
 /// 需要套层壳包装虚函数具体实现的调用, 并通过壳的声明位置决定作用域是 公共、私有还是受保护
 #define oopVFuncImpl(returnType, methodName, ...) \
-static oopFunc(returnType, methodName, ## __VA_ARGS__)
+static returnType methodName(className *self, ## __VA_ARGS__)
 
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 

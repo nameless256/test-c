@@ -8,7 +8,7 @@ oopVFuncImpl(void, makeSound) {
     printf("[%d] --------- {%s} Barking... \n", __LINE__, __FUNCTION__);
 }
 
-oopPublic(void, displayInfo) {
+oopFunc(void, displayInfo) {
     // 虽然说可以这么做, 但不推荐, 本质上是绕过了封装, 导致原有的访问控制的方法失效了
 //    printf("[%d] --------- {%s} Name: %s \n", __LINE__, __FUNCTION__, ((classBaseName *) self)->name);
     printf("[%d] --------- {%s} \n", __LINE__, __FUNCTION__);
