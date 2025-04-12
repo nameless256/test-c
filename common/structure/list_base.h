@@ -71,6 +71,7 @@
 //📌 **关键特性**：
 //所有插入/删除操作（如 `push_back`、`splice`）的时间复杂度为 **O(1)**，但 `size()` 在 C++11 前可能为 O(n)。
 
+#include "stddef.h"
 #include "oop.h"
 
 /**
@@ -78,5 +79,28 @@
  * 特定类型list定义宏
  * 通过函数指针特化类型
  */
+
+#define className _listBase
+#define classBaseName
+
+typedef int _listBaseVal;
+
+#define _listBaseNode(type) \
+struct oopName(node ## _ ## type)
+
+#define _listBaseNodeDefine(type) \
+struct oopName(node ## _ ## type) { \
+    struct oopName(node) *_priv, *_next; \
+    type _storage; \
+}
+
+// 宏实现泛型无法对指针即 `_listBaseNodeDefine(size_t *);` 做支持
+// 只能通过 `typedef` 规避
+_listBaseNodeDefine(_listBaseVal);
+_listBaseNodeDefine(size_t);
+
+oopClassDef
+            _listBaseNode(size_t) _impl;
+oopClassDefEnd
 
 #endif //TEST_C_LIST_BASE_H

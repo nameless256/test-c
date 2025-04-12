@@ -30,8 +30,10 @@
 
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
+#define oopName(name) CONCAT3(className, _, name)
+
 #define oopFunc(returnType, methodName, ...) \
-returnType CONCAT3(className, _, methodName)(className *self, ## __VA_ARGS__)
+returnType oopName(methodName)(className *self, ## __VA_ARGS__)
 
 /******************************************************************/ // 引用
 
