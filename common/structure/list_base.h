@@ -90,9 +90,14 @@ struct oopName(node ## _ ## type)
 
 #define _listBaseNodeDefine(type) \
 struct oopName(node ## _ ## type) { \
-    struct oopName(node) *_priv, *_next; \
+    struct oopName(node) _p; \
     type _storage; \
 }
+
+struct _listBase_node;
+struct _listBase_node {
+    struct _listBase_node *_priv, *_next;
+};
 
 // 宏实现泛型无法对指针即 `_listBaseNodeDefine(size_t *);` 做支持
 // 只能通过 `typedef` 规避
@@ -102,5 +107,11 @@ _listBaseNodeDefine(size_t);
 oopClassDef
             _listBaseNode(size_t) _impl;
 oopClassDefEnd
+
+inline oopFunc(void, push_back) {}
+
+inline oopCtor() {self->_impl = (_listBaseNode(size_t)){{&self->_impl._p, &self->_impl._p}, 0};}
+
+inline oopDtor() {}
 
 #endif //TEST_C_LIST_BASE_H
