@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 uint8_t getNumDigit(uint32_t num) {
-    return 1 + (uint8_t) log10(num);
+    return 1 + (uint8_t) (num ? log10(num) : 0);
 }
 
 bool screenOnOffDetect(bool screenOn, double x, double y, double z) {
