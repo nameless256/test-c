@@ -19,8 +19,9 @@
 #define name2Str(name)              #name
 #define nameVal2Str(name)           name2Str(name)
 #define name2StrCase(name)          case name: return name2Str(name)
-#define constraintMapping(value, num, total) \
+#define valMap(value, num, total) \
         ((total) ? (((value) > (total)) ? (num) : ((num) * (value) / (total))) : 0)
+#define valMapRange(value, num, lBound, uBound) valMap(value - lBound, num, uBound - lBound)
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define structOffsetOf(type, member) ((uintptr_t)(&((type *)0)->member))
@@ -39,6 +40,17 @@
 
 #define autoReleaseFile(name, path, args) \
     for (FILE *name = fopen(path, args); name != NULL; fclose(name), name = NULL)
+    
+#define enumValDef(name, init) name init,
+#define enumValCapture(name, ...) name2StrCase(name);
+#define enumIter(name, action) enumIter ## _ ## name(name, action)
+#define enumDispatch(action, prefix, name, ...) action(prefix ## _ ## name, __VA_ARGS__)
+
+#define enumDef(name) typedef enum { enumIter(name, enumValDef) } (name);
+#define enumDefToStr(name) \
+static inline char *name ## _ ## toStr(name val) { \
+    switch(val) { enumIter(name, enumValCapture) default: return "NaN"; } \
+};
 
 #define ALIAS(function)             __attribute__((alias(#function)))
 #define WEAK                        __attribute__((weak))

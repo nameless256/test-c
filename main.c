@@ -32,34 +32,21 @@ sumDefBase(double)
 
 sumDefBase(int)
 
-#define enumValDefDefault(name) name,
-#define enumValDefInit(name, default) name = default,
-#define enumValCapture(name) case name: return name2Str(name);
-#define enumIter(name) enumIter ## _ ## name
-#define enumDispatch(f, n) f(n)
-
-#define enumDef(name) typedef enum { enumIter(name)(enumValDefDefault) } (name);
-#define enumDefToStr(name) \
-static inline char *name ## _ ## toStr(name val) { \
-    switch(val) { enumIter(name)(enumValCapture) default: return "NaN"; } \
-};
-
-#define enumIter_fieldTypeId(action) \
-action(fieldTypeId_Integer) \
-action(fieldTypeId_Float) \
-action(fieldTypeId_Pointer) \
-action(fieldTypeId_Array)
+#define enumIter_fieldTypeId(prefix, action) \
+enumDispatch(action, prefix, Int, = 0) \
+enumDispatch(action, prefix, Float) \
+enumDispatch(action, prefix, Ptr) \
+enumDispatch(action, prefix, Array) \
+enumDispatch(action, prefix, Enum) \
+enumDispatch(action, prefix, Bool) \
+enumDispatch(action, prefix, Bits)
 
 enumDef(fieldTypeId)
 enumDefToStr(fieldTypeId)
 
 typedef struct {
-    const char *name;
     fieldTypeId id;
-} fieldTypeInfo;
-
-typedef struct {
-    fieldTypeInfo type;
+    const char *type;
     const char *name;
     size_t size;
     size_t offset;
