@@ -32,6 +32,15 @@ sumDefBase(double)
 
 sumDefBase(int)
 
+typedef struct {
+    double f;
+    int i;
+} testStruct;
+
+sumDef(testStruct) {
+    return (testStruct) {sum(double)(arg0.f, arg1.f), sum(int)(arg0.i, arg1.i)};
+}
+
 #define enumIter_fieldTypeId(prefix, action) \
 enumDispatch(action, prefix, Int, = 0) \
 enumDispatch(action, prefix, Float) \
@@ -44,31 +53,30 @@ enumDispatch(action, prefix, Bits)
 enumDef(fieldTypeId)
 enumDefToStr(fieldTypeId)
 
+struct typeInfo;
+
 typedef struct {
     fieldTypeId id;
-    const char *type;
+    const struct typeInfo *type;
     const char *name;
-    size_t size;
     size_t offset;
     size_t length;
-    bool isSigned;
 } fieldInfo;
 
-struct _MKCREFLECT_TypeInfo {
+typedef struct typeInfo {
     const char *name;
-    size_t fields_count;
     size_t size;
-    size_t packed_size;
-    fieldInfo *fields;
-};
+    size_t sizePacked;
+    size_t fieldsLength;
+    const fieldInfo *fields;
+    bool isSigned;
+} typeInfo;
 
-typedef struct {
-    double f;
-    int i;
-} testStruct;
-
-sumDef(testStruct) {
-    return (testStruct) {sum(double)(arg0.f, arg1.f), sum(int)(arg0.i, arg1.i)};
+const typeInfo *getTypeInfo_fieldTypeId(void) {
+    static const typeInfo info = {
+        "fieldTypeId", sizeof(fieldTypeId), sizeof(fieldTypeId), 0, NULL, 0,
+    };
+    return &info;
 }
 
 int main() {
