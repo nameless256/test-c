@@ -48,7 +48,7 @@
 
 #define enumDef(name) typedef enum { enumIter(name, enumValDef) } (name);
 #define enumDefToStr(name) \
-static inline char *name ## _ ## toStr(name val) { \
+static inline char *toString ## _ ## name(name val) { \
     switch(val) { enumIter(name, enumValCapture) default: return "NaN"; } \
 };
 
