@@ -75,18 +75,63 @@ struct typeInfo {
     bool isSigned;
 };
 
-#define VA_ARG2STR_0(A0, ...) #A0 VA_ARG2STR_1(__VA_ARGS__)
-#define VA_ARG2STR_1(A0, ...) #A0 VA_ARG2STR_2(__VA_ARGS__)
-#define VA_ARG2STR_2(A0, ...) #A0 VA_ARG2STR_3(__VA_ARGS__)
-#define VA_ARG2STR_3(A0, ...) #A0 VA_ARG2STR_4(__VA_ARGS__)
-#define VA_ARG2STR_4(A0, ...) #A0 VA_ARG2STR_5(__VA_ARGS__)
-#define VA_ARG2STR_5(A0, ...) #A0
-#define VA_ARG2STR(...) VA_ARG2STR_0(__VA_ARGS__)
+#define IS_DOLLAR_IMPL(x)  IS_DOLLAR_IMPL2(x)
+#define IS_DOLLAR_IMPL2(x) IS_DOLLAR_##x
 
+#define IS_DOLLAR(x)       IS_DOLLAR_IMPL(x)
+#define IS_DOLLAR_$        *
+
+// 通用宏：如果参数是 $，转成 *，否则原样输出
+#define CONVERT_DOLLAR_TO_STAR(x)  IF_EQ(x, $)
+
+// 辅助宏定义
+#define IF_EQ(a, b)   IF_EQ_1(a, b)
+#define IF_EQ_1(a, b) IF_EQ_2(a, b)
+#define IF_EQ_2(a, b) IF_EQ_##a##_##b
+
+#define IF_EQ_$_$    TRUE_
+#define TRUE_       *
+
+// 测试用例
+//CONVERT_DOLLAR_TO_STAR($)   // 展开为 *
+//CONVERT_DOLLAR_TO_STAR(a)   // 展开为 a
+//CONVERT_DOLLAR_TO_STAR(*)   // 展开为 *
+
+// 辅助宏：拼接两个标记
+#define PRIMITIVE_CAT(a, b) a##_##b
+#define CAT(a, b) PRIMITIVE_CAT(a, b)
+
+// 计算变参个数（支持1~5个参数）
+#define COUNT_ARGS_IMPL(_1, _2, _3, _4, _5, N, ...) N
+#define COUNT_ARGS(...) COUNT_ARGS_IMPL(__VA_ARGS__, 5, 4, 3, 2, 1)
+
+// 根据参数数量调用对应的处理宏
+#define SNAKE_CASE_1(a) a
+#define SNAKE_CASE_2(a, ...) CAT(a, SNAKE_CASE_1(__VA_ARGS__))
+#define SNAKE_CASE_3(a, ...) CAT(a, SNAKE_CASE_2(__VA_ARGS__))
+#define SNAKE_CASE_4(a, ...) CAT(a, SNAKE_CASE_3(__VA_ARGS__))
+#define SNAKE_CASE_5(a, ...) CAT(a, SNAKE_CASE_4(__VA_ARGS__))
+
+// 主宏：将参数拼接为蛇形命名
+#define SNAKE_CASE(...) \
+    CAT(SNAKE_CASE, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+
+//SNAKE_CASE(const, struct, typeInfo, $)
+//SNAKE_CASE(const, struct, typeInfo)
+//const_struct_typeInfo_$
+
+//#define PTR_CAST(x)
+#define VA_ARG2STR_0(ARG, ...) ARG VA_ARG2STR_1(__VA_ARGS__)
+#define VA_ARG2STR_1(ARG, ...) ARG VA_ARG2STR_2(__VA_ARGS__)
+#define VA_ARG2STR_2(ARG, ...) ARG VA_ARG2STR_3(__VA_ARGS__)
+#define VA_ARG2STR_3(ARG, ...) ARG
+#define VA_ARG2STR(...) nameVal2Str(VA_ARG2STR_0(__VA_ARGS__))
+#define VA_ARG2TYPE(...) VA_ARG2STR_0(__VA_ARGS__)
 //VA_ARG2STR(const, struct, typeInfo, *)
 //"const struct typeInfo *"
+#define $ *
+//VA_ARG2TYPE(const, struct, typeInfo, $)
 //const struct typeInfo *
-//const_struct_typeInfo_$
 
 static const typeInfo typeInfo_fieldTypeId = {
     "fieldTypeId", sizeof(fieldTypeId), sizeof(fieldTypeId), 0, NULL, 0,
