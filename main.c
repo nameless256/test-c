@@ -75,28 +75,6 @@ struct typeInfo {
     bool isSigned;
 };
 
-#define IS_DOLLAR_IMPL(x)  IS_DOLLAR_IMPL2(x)
-#define IS_DOLLAR_IMPL2(x) IS_DOLLAR_##x
-
-#define IS_DOLLAR(x)       IS_DOLLAR_IMPL(x)
-#define IS_DOLLAR_$        *
-
-// 通用宏：如果参数是 $，转成 *，否则原样输出
-#define CONVERT_DOLLAR_TO_STAR(x)  IF_EQ(x, $)
-
-// 辅助宏定义
-#define IF_EQ(a, b)   IF_EQ_1(a, b)
-#define IF_EQ_1(a, b) IF_EQ_2(a, b)
-#define IF_EQ_2(a, b) IF_EQ_##a##_##b
-
-#define IF_EQ_$_$    TRUE_
-#define TRUE_       *
-
-// 测试用例
-//CONVERT_DOLLAR_TO_STAR($)   // 展开为 *
-//CONVERT_DOLLAR_TO_STAR(a)   // 展开为 a
-//CONVERT_DOLLAR_TO_STAR(*)   // 展开为 *
-
 // 辅助宏：拼接两个标记
 #define PRIMITIVE_CAT(a, b) a##_##b
 #define CAT(a, b) PRIMITIVE_CAT(a, b)
@@ -116,6 +94,15 @@ struct typeInfo {
 #define SNAKE_CASE(...) \
     CAT(SNAKE_CASE, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
 
+#define MATCH_$ ,_arg
+#define MATCH_$__2(a, ...) a
+#define MATCH_$__3(...) *
+#define _CONVERT_$(...) CAT(MATCH_$_, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+#define CONVERT_$(a) _CONVERT_$(a, CAT(MATCH,a))
+
+//CONVERT_$(const)
+//CONVERT_$($)
+
 //SNAKE_CASE(const, struct, typeInfo, $)
 //SNAKE_CASE(const, struct, typeInfo)
 //const_struct_typeInfo_$
@@ -127,9 +114,8 @@ struct typeInfo {
 #define VA_ARG2STR_3(ARG, ...) ARG
 #define VA_ARG2STR(...) nameVal2Str(VA_ARG2STR_0(__VA_ARGS__))
 #define VA_ARG2TYPE(...) VA_ARG2STR_0(__VA_ARGS__)
-//VA_ARG2STR(const, struct, typeInfo, *)
+//VA_ARG2STR(const, struct, typeInfo, $)
 //"const struct typeInfo *"
-#define $ *
 //VA_ARG2TYPE(const, struct, typeInfo, $)
 //const struct typeInfo *
 
