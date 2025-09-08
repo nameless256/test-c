@@ -42,8 +42,10 @@ sumDef(testStruct) {
     return (testStruct) {sum(double)(arg0.f, arg1.f), sum(int)(arg0.i, arg1.i)};
 }
 
-#define enumIter_fieldTypeId(prefix, action) \
-enumDispatch(action, prefix, Int, = 0) \
+#include "enum_def.h"
+
+#define enumIter_fieldTypeId(action, prefix) \
+enumDispatch(action, prefix, Int, 0) \
 enumDispatch(action, prefix, Float) \
 enumDispatch(action, prefix, Double) \
 enumDispatch(action, prefix, Ptr) \
@@ -52,7 +54,7 @@ enumDispatch(action, prefix, Enum) \
 enumDispatch(action, prefix, Bool) \
 enumDispatch(action, prefix, Bits)
 
-enumDef(fieldTypeId)
+enumDef(fieldTypeId, uint8_t)
 enumDefToStr(fieldTypeId)
 
 struct typeInfo;
@@ -79,10 +81,6 @@ struct typeInfo {
 #define PRIMITIVE_CAT(a, b) a##_##b
 #define CAT(a, b) PRIMITIVE_CAT(a, b)
 
-// 计算变参个数（支持1~5个参数）
-#define COUNT_ARGS_IMPL(_1, _2, _3, _4, _5, N, ...) N
-#define COUNT_ARGS(...) COUNT_ARGS_IMPL(__VA_ARGS__, 5, 4, 3, 2, 1)
-
 // 根据参数数量调用对应的处理宏
 #define SNAKE_CASE_1(a) a
 #define SNAKE_CASE_2(a, ...) CAT(a, SNAKE_CASE_1(__VA_ARGS__))
@@ -92,12 +90,12 @@ struct typeInfo {
 
 // 主宏：将参数拼接为蛇形命名
 #define SNAKE_CASE(...) \
-    CAT(SNAKE_CASE, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+    CAT(SNAKE_CASE, getMacrosVaCount(__VA_ARGS__))(__VA_ARGS__)
 
 #define MATCH_$ ,_arg
 #define MATCH_$__2(a, ...) a
 #define MATCH_$__3(...) *
-#define _CONVERT_$(...) CAT(MATCH_$_, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+#define _CONVERT_$(...) CAT(MATCH_$_, getMacrosVaCount(__VA_ARGS__))(__VA_ARGS__)
 #define CONVERT_$(a) _CONVERT_$(a, CAT(MATCH,a))
 
 //CONVERT_$(const)
@@ -118,55 +116,6 @@ struct typeInfo {
 //"const struct typeInfo *"
 //VA_ARG2TYPE(const, struct, typeInfo, $)
 //const struct typeInfo *
-
-static const typeInfo typeInfo_fieldTypeId = {
-    "fieldTypeId", sizeof(fieldTypeId), sizeof(fieldTypeId), 0, NULL, 0,
-};
-
-static const typeInfo typeInfo_const_struct_typeInfo_$ = {
-    "const struct typeInfo *", sizeof(const struct typeInfo *), sizeof(const struct typeInfo *), 0, NULL, 0,
-};
-
-static const typeInfo typeInfo_const_char_$ = {
-    "const char *", sizeof(const char *), sizeof(const char *), 0, NULL, 0,
-};
-
-static const typeInfo typeInfo_size_t = {
-    "size_t", sizeof(size_t), sizeof(size_t), 0, NULL, 0,
-};
-
-static const fieldInfo fields_fieldInfo[] = {
-    {fieldTypeId_Enum, &typeInfo_fieldTypeId, "id", offsetof(fieldInfo, id), 0},
-    {fieldTypeId_Ptr, &typeInfo_const_struct_typeInfo_$, "type", offsetof(fieldInfo, type), 0},
-    {fieldTypeId_Ptr, &typeInfo_const_char_$, "name", offsetof(fieldInfo, name), 0},
-    {fieldTypeId_Int, &typeInfo_size_t, "offset", offsetof(fieldInfo, offset), 0},
-    {fieldTypeId_Int, &typeInfo_size_t, "length", offsetof(fieldInfo, length), 0},
-};
-
-static const typeInfo typeInfo_fieldInfo = {
-    "fieldInfo", sizeof(fieldInfo), sizeof(fieldInfo), ARRAY_SIZE(fields_fieldInfo), fields_fieldInfo, 0,
-};
-
-static const typeInfo typeInfo_const_fieldInfo_$ = {
-    "const fieldInfo *", sizeof(const fieldInfo *), sizeof(const fieldInfo *), 0, NULL, 0,
-};
-
-static const typeInfo typeInfo_bool = {
-    "bool", sizeof(bool), sizeof(bool), 0, NULL, 0,
-};
-
-static const fieldInfo fields_typeInfo[] = {
-    {fieldTypeId_Ptr, &typeInfo_const_char_$, "name", offsetof(typeInfo, name), 0},
-    {fieldTypeId_Int, &typeInfo_size_t, "size", offsetof(typeInfo, size), 0},
-    {fieldTypeId_Int, &typeInfo_size_t, "sizePacked", offsetof(typeInfo, sizePacked), 0},
-    {fieldTypeId_Int, &typeInfo_size_t, "fieldsLength", offsetof(typeInfo, fieldsLength), 0},
-    {fieldTypeId_Ptr, &typeInfo_const_fieldInfo_$, "fields", offsetof(typeInfo, fields), 0},
-    {fieldTypeId_Bool, &typeInfo_bool, "isSigned", offsetof(typeInfo, isSigned), 0},
-};
-
-static const typeInfo typeInfo_typeInfo = {
-    "typeInfo", sizeof(typeInfo), sizeof(typeInfo), ARRAY_SIZE(fields_typeInfo), fields_typeInfo, 0,
-};
 
 int main() {
     system("chcp 65001");

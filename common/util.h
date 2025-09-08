@@ -40,17 +40,6 @@
 
 #define autoReleaseFile(name, path, args) \
     for (FILE *name = fopen(path, args); name != NULL; fclose(name), name = NULL)
-    
-#define enumValDef(name, init) name init,
-#define enumValCapture(name, ...) name2StrCase(name);
-#define enumIter(name, action) enumIter ## _ ## name(name, action)
-#define enumDispatch(action, prefix, name, ...) action(prefix ## _ ## name, __VA_ARGS__)
-
-#define enumDef(name) typedef enum { enumIter(name, enumValDef) } (name);
-#define enumDefToStr(name) \
-static inline char *toString ## _ ## name(name val) { \
-    switch(val) { enumIter(name, enumValCapture) default: return "NaN"; } \
-};
 
 #define ALIAS(function)             __attribute__((alias(#function)))
 #define WEAK                        __attribute__((weak))
