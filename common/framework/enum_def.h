@@ -20,11 +20,6 @@
 
 #define enumDefArg1(name) typedef enum { enumIter(enumValDef, name) } (name);
 #define enumDefArg2(name, base) enum { enumIter(enumValDef, name) }; typedef base name;
-#define enumDef(...) enumCat(enumDefArg, getMacrosVaCount(__VA_ARGS__)) (__VA_ARGS__)
-#define enumDefToStr(name) \
-static inline char *name ## _ ## toString(name val) { \
-    switch(val) { enumIter(enumValCapture, name) default: return "NaN"; } \
-};
 
 /**
  * @example
@@ -43,5 +38,10 @@ static inline char *name ## _ ## toString(name val) { \
  * enumDefToStr(fieldTypeId)
  * ```
  */
+#define enumDef(...) enumCat(enumDefArg, getMacrosVaCount(__VA_ARGS__)) (__VA_ARGS__)
+#define enumDefToStr(name) \
+static inline char *name ## _ ## toString(name val) { \
+    switch(val) { enumIter(enumValCapture, name) default: return "NaN"; } \
+};
 
 #endif //TEST_C_ENUM_DEF_H
