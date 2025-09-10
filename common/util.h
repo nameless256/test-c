@@ -41,6 +41,13 @@
 #define autoReleaseFile(name, path, args) \
     for (FILE *name = fopen(path, args); name != NULL; fclose(name), name = NULL)
 
+#define _getVaCount(_1, _2, _3, _4, _5, N, ...) N
+#define getVaCount(...) _getVaCount(__VA_ARGS__, 5, 4, 3, 2, 1)
+#define _cat2(a, b) a ## b
+#define cat2(a, b) _cat2(a, b)
+#define _cat3(x, y, z) x ## y ## z
+#define cat3(x, y, z) _cat3(x, y, z)
+
 #define ALIAS(function)             __attribute__((alias(#function)))
 #define WEAK                        __attribute__((weak))
 #define UNUSED                      __attribute__((unused))

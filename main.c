@@ -90,12 +90,12 @@ struct typeInfo {
 
 // 主宏：将参数拼接为蛇形命名
 #define SNAKE_CASE(...) \
-    CAT(SNAKE_CASE, getMacrosVaCount(__VA_ARGS__))(__VA_ARGS__)
+    CAT(SNAKE_CASE, getVaCount(__VA_ARGS__))(__VA_ARGS__)
 
 #define MATCH_$ ,_arg
 #define MATCH_$__2(a, ...) a
 #define MATCH_$__3(...) *
-#define _CONVERT_$(...) CAT(MATCH_$_, getMacrosVaCount(__VA_ARGS__))(__VA_ARGS__)
+#define _CONVERT_$(...) CAT(MATCH_$_, getVaCount(__VA_ARGS__))(__VA_ARGS__)
 #define CONVERT_$(a) _CONVERT_$(a, CAT(MATCH,a))
 
 //CONVERT_$(const)

@@ -5,8 +5,10 @@
 #ifndef TEST_C_OOP_H
 #define TEST_C_OOP_H
 
-#define _CONCAT3(x, y, z) x ## y ## z
-#define CONCAT3(x, y, z) _CONCAT3(x, y, z)
+#ifndef cat3
+#define _cat3(x, y, z) x ## y ## z
+#define cat3(x, y, z) _cat3(x, y, z)
+#endif
 
 /**
  * @attention 由于 继承 的特性
@@ -30,7 +32,7 @@
 
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
-#define oopName(name) CONCAT3(className, _, name)
+#define oopName(name) cat3(className, _, name)
 
 #define oopFunc(returnType, methodName, ...) \
 returnType oopName(methodName)(className *self, ## __VA_ARGS__)
@@ -67,7 +69,7 @@ struct className { \
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
-#define oopVTabName(className) CONCAT3(className, _, vTab)
+#define oopVTabName(className) cat3(className, _, vTab)
 
 #define oopVPtrDef struct oopVTabName(className) {
 
@@ -102,13 +104,13 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
 /// 无法支持重载, 无论是通过 宏魔法 (Morn 库 的思路) 还是 可变参 都需要 手动增加代码, 往往还不利于维护, 甚至隐藏风险
-#define oopCtor(...) void CONCAT3(className, _, ctor)(className *self, ## __VA_ARGS__)
+#define oopCtor(...) void cat3(className, _, ctor)(className *self, ## __VA_ARGS__)
 
-#define oopCtorBaseCall(...) CONCAT3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
+#define oopCtorBaseCall(...) cat3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
 
-#define oopDtor() void CONCAT3(className, _, dtor)(className *self)
+#define oopDtor() void cat3(className, _, dtor)(className *self)
 
-#define oopDtorBaseCall() CONCAT3(classBaseName, _, dtor)((classBaseName *)self)
+#define oopDtorBaseCall() cat3(classBaseName, _, dtor)((classBaseName *)self)
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
@@ -116,17 +118,17 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /// 且 __attribute__((cleanup(CONCAT3(className, _, dtor)))) 在 有 goto语句 的函数上可能会报错
 /// 借助 GCC 的 __attribute__((cleanup())) 实现
 #define oopObj(className, varName, ...) \
-    className varName __attribute__((cleanup(CONCAT3(className, _, dtor)))); \
-    CONCAT3(className, _, ctor)(&varName, ## __VA_ARGS__)
+    className varName __attribute__((cleanup(cat3(className, _, dtor)))); \
+    cat3(className, _, ctor)(&varName, ## __VA_ARGS__)
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define oopObjNew(className, varName, ...) \
-    varName = CONCAT3(className, _, memAlloc)(); \
-    do {if (varName) CONCAT3(className, _, ctor)(varName, ## __VA_ARGS__);} while (0)
+    varName = cat3(className, _, memAlloc)(); \
+    do {if (varName) cat3(className, _, ctor)(varName, ## __VA_ARGS__);} while (0)
 
 #define oopObjDelete(className, varName) \
-    do {if (varName) {CONCAT3(className, _, dtor)(varName); CONCAT3(className, _, memFree)(varName);}} while (0)
+    do {if (varName) {cat3(className, _, dtor)(varName); cat3(className, _, memFree)(varName);}} while (0)
 
 /******************************************************************/ // { 简洁封装支持 }
 
@@ -146,17 +148,17 @@ struct className
 /******************************************************************/ // [ 创建 / 销毁 ] 的 声明 及 定义
 
 #define oopCreate(...) \
-    className *CONCAT3(className, _, create)(__VA_ARGS__)
+    className *cat3(className, _, create)(__VA_ARGS__)
 
 #define oopDestroy() \
-    void CONCAT3(className, _, destroy)(className *self)
+    void cat3(className, _, destroy)(className *self)
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define oopObjCreate(className, varName) \
-    varName = CONCAT3(className, _, create)
+    varName = cat3(className, _, create)
 
 #define oopObjDestroy(className, varName) \
-    CONCAT3(className, _, destroy)(varName)
+    cat3(className, _, destroy)(varName)
 
 #endif //TEST_C_OOP_H
