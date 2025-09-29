@@ -27,7 +27,7 @@
 
 /**
  * @example
- * ```c
+ * @code{.c}
  * #define enumIter_fieldTypeId(action, prefix) \
  * enumDispatch(action, prefix, Int, 0) \
  * enumDispatch(action, prefix, Float) \
@@ -40,7 +40,7 @@
  *
  * enumDef(fieldTypeId, uint8_t)
  * enumDefToStr(fieldTypeId)
- * ```
+ * @endcode
  */
 #define enumDef(...) cat2(enumDefArg, getVaCount(__VA_ARGS__)) (__VA_ARGS__)
 #define enumDefToStr(name) \
