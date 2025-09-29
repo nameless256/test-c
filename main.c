@@ -54,7 +54,7 @@ enumDispatch(action, prefix, Enum) \
 enumDispatch(action, prefix, Bool) \
 enumDispatch(action, prefix, Bits)
 
-enumDef(fieldTypeId, uint8_t)
+enumDef(fieldTypeId)
 enumDefToStr(fieldTypeId)
 
 struct typeInfo;
@@ -78,25 +78,25 @@ struct typeInfo {
 };
 
 // 辅助宏：拼接两个标记
-#define PRIMITIVE_CAT(a, b) a##_##b
-#define CAT(a, b) PRIMITIVE_CAT(a, b)
+#define _CAT_2(a, b) a##_##b
+#define CAT_2(a, b) _CAT_2(a, b)
 
 // 根据参数数量调用对应的处理宏
 #define SNAKE_CASE_1(a) a
-#define SNAKE_CASE_2(a, ...) CAT(a, SNAKE_CASE_1(__VA_ARGS__))
-#define SNAKE_CASE_3(a, ...) CAT(a, SNAKE_CASE_2(__VA_ARGS__))
-#define SNAKE_CASE_4(a, ...) CAT(a, SNAKE_CASE_3(__VA_ARGS__))
-#define SNAKE_CASE_5(a, ...) CAT(a, SNAKE_CASE_4(__VA_ARGS__))
+#define SNAKE_CASE_2(a, ...) CAT_2(a, SNAKE_CASE_1(__VA_ARGS__))
+#define SNAKE_CASE_3(a, ...) CAT_2(a, SNAKE_CASE_2(__VA_ARGS__))
+#define SNAKE_CASE_4(a, ...) CAT_2(a, SNAKE_CASE_3(__VA_ARGS__))
+#define SNAKE_CASE_5(a, ...) CAT_2(a, SNAKE_CASE_4(__VA_ARGS__))
 
 // 主宏：将参数拼接为蛇形命名
 #define SNAKE_CASE(...) \
-    CAT(SNAKE_CASE, getVaCount(__VA_ARGS__))(__VA_ARGS__)
+    CAT_2(SNAKE_CASE, getVaCount(__VA_ARGS__))(__VA_ARGS__)
 
 #define MATCH_$ ,_arg
 #define MATCH_$__2(a, ...) a
 #define MATCH_$__3(...) *
-#define _CONVERT_$(...) CAT(MATCH_$_, getVaCount(__VA_ARGS__))(__VA_ARGS__)
-#define CONVERT_$(a) _CONVERT_$(a, CAT(MATCH,a))
+#define _CONVERT_$(...) CAT_2(MATCH_$_, getVaCount(__VA_ARGS__))(__VA_ARGS__)
+#define CONVERT_$(a) _CONVERT_$(a, CAT_2(MATCH,a))
 
 //CONVERT_$(const)
 //CONVERT_$($)
@@ -120,7 +120,8 @@ struct typeInfo {
 int main() {
     system("chcp 65001");
     clock_t start = clock();
-
+    fieldTypeId o = fieldTypeId_Int;
+    fieldTypeId_toString(o);
 //    oopHeapUsage();
 //    oopUsage();
     printf("[%d] --------- {%s} %d %f \n", __LINE__, __FUNCTION__, sum(int)(2, 9), sum(double)(3.14, 2.96));

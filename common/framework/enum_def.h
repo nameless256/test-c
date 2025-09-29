@@ -22,8 +22,8 @@
 #define enumIter(action, name) enumIter ## _ ## name(action, name)
 #define enumDispatch(action, prefix, name, ...) action(prefix ## _ ## name, ## __VA_ARGS__)
 
-#define enumDefArg1(name) typedef enum { enumIter(enumValDef, name) } (name);
-#define enumDefArg2(name, base) enum { enumIter(enumValDef, name) }; typedef base name;
+#define enumDefArg1(name) enumDefArg2(name, int)
+#define enumDefArg2(name, base) enum _ ## name { enumIter(enumValDef, name) }; typedef base name;
 
 /**
  * @example
