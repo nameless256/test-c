@@ -57,6 +57,51 @@ enumDispatch(action, prefix, Bits)
 enumDef(fieldTypeId)
 enumDefToStr(fieldTypeId)
 
+struct _enumValMetaBase {
+    int idx;
+    char *name;
+};
+
+typedef struct _enumValMetaBase enumValMetaBase;
+
+struct _enumMeta {
+    char *name;
+    char *type;
+    int count;
+    enumValMetaBase **list;
+};
+
+typedef struct _enumMeta enumMeta;
+
+enum _temp {
+    temp_0,
+    temp_1,
+    temp_2,
+};
+
+typedef uint8_t temp;
+
+struct _enumValMeta_temp {
+    enumValMetaBase base;
+    uint8_t val;
+};
+
+typedef struct _enumValMeta_temp enumValMeta_temp;
+
+enumValMeta_temp enumValMeta_temp_0 = {{0, "temp_0"}, temp_0};
+enumValMeta_temp enumValMeta_temp_1 = {{1, "temp_1"}, temp_1};
+enumValMeta_temp enumValMeta_temp_2 = {{2, "temp_2"}, temp_2};
+
+enumValMetaBase *temp_list[] = {
+    (enumValMetaBase *)&enumValMeta_temp_0,
+    (enumValMetaBase *)&enumValMeta_temp_1,
+    (enumValMetaBase *)&enumValMeta_temp_2,
+};
+
+enumMeta temp_meta = {
+    "temp", "uint8_t", ARRAY_SIZE(temp_list), temp_list
+};
+
 struct typeInfo;
 typedef struct typeInfo typeInfo;
 
