@@ -57,24 +57,29 @@ enumDispatch(action, prefix, Bits)
 enumDef(fieldTypeId)
 enumDefToStr(fieldTypeId)
 
+typedef struct _typeMetaBase typeMetaBase;
+struct _typeMetaBase {
+    const char *name;
+    size_t size;
+};
+
+typedef struct _enumValMetaBase enumValMetaBase;
 struct _enumValMetaBase {
     int idx;
     char *name;
 };
 
-typedef struct _enumValMetaBase enumValMetaBase;
-
+typedef struct _enumMeta enumMeta;
 struct _enumMeta {
     char *name;
-    char *type;
+    size_t size;
+    char *baseType;
     int count;
     enumValMetaBase **list;
 };
 
-typedef struct _enumMeta enumMeta;
-
 enum _temp {
-    temp_0,
+    temp_0 = 2,
     temp_1,
     temp_2,
 };
@@ -88,9 +93,16 @@ struct _enumValMeta_temp {
 
 typedef struct _enumValMeta_temp enumValMeta_temp;
 
-enumValMeta_temp enumValMeta_temp_0 = {{0, "temp_0"}, temp_0};
-enumValMeta_temp enumValMeta_temp_1 = {{1, "temp_1"}, temp_1};
-enumValMeta_temp enumValMeta_temp_2 = {{2, "temp_2"}, temp_2};
+#define _enumIter(f, ...) mcrIter(f, succ, 0, __VA_ARGS__)
+
+#define enumValMetaDef(idx, arg) enumValMeta_temp enumValMeta##_##arg = {{idx, #arg}, arg};
+
+_enumIter(
+    enumValMetaDef,
+    temp_0,
+    temp_1,
+    temp_2
+)
 
 enumValMetaBase *temp_list[] = {
     (enumValMetaBase *)&enumValMeta_temp_0,
@@ -99,28 +111,17 @@ enumValMetaBase *temp_list[] = {
 };
 
 enumMeta temp_meta = {
-    "temp", "uint8_t", ARRAY_SIZE(temp_list), temp_list
+    "temp", "uint8_t", sizeof(uint8_t), ARRAY_SIZE(temp_list), temp_list
 };
 
-struct typeInfo;
-typedef struct typeInfo typeInfo;
+#define MATCH_$ ,_arg
+#define MATCH_$__2(a, ...) a
+#define MATCH_$__3(...) *
+#define _CONVERT_$(...) CAT_2(MATCH_$_, vaCount(__VA_ARGS__))(__VA_ARGS__)
+#define CONVERT_$(a) _CONVERT_$(a, CAT_2(MATCH,a))
 
-typedef struct {
-    fieldTypeId id;
-    const struct typeInfo *type;
-    const char *name;
-    size_t offset;
-    size_t length;
-} fieldInfo;
-
-struct typeInfo {
-    const char *name;
-    size_t size;
-    size_t sizePacked;
-    size_t fieldsLength;
-    const fieldInfo *fields;
-    bool isSigned;
-};
+//CONVERT_$(const)
+//CONVERT_$($)
 
 // 辅助宏：拼接两个标记
 #define _CAT_2(a, b) a##_##b
@@ -135,16 +136,7 @@ struct typeInfo {
 
 // 主宏：将参数拼接为蛇形命名
 #define SNAKE_CASE(...) \
-    CAT_2(SNAKE_CASE, getVaCount(__VA_ARGS__))(__VA_ARGS__)
-
-#define MATCH_$ ,_arg
-#define MATCH_$__2(a, ...) a
-#define MATCH_$__3(...) *
-#define _CONVERT_$(...) CAT_2(MATCH_$_, getVaCount(__VA_ARGS__))(__VA_ARGS__)
-#define CONVERT_$(a) _CONVERT_$(a, CAT_2(MATCH,a))
-
-//CONVERT_$(const)
-//CONVERT_$($)
+    CAT_2(SNAKE_CASE, vaCount(__VA_ARGS__))(__VA_ARGS__)
 
 //SNAKE_CASE(const, struct, typeInfo, $)
 //SNAKE_CASE(const, struct, typeInfo)

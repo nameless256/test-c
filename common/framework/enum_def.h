@@ -5,9 +5,9 @@
 #ifndef TEST_C_ENUM_DEF_H
 #define TEST_C_ENUM_DEF_H
 
-#ifndef getVaCount
-#define _getVaCount(_1, _2, _3, _4, _5, N, ...) N
-#define getVaCount(...) _getVaCount(__VA_ARGS__, 5, 4, 3, 2, 1)
+#ifndef vaCount
+#define _vaCount(_1, _2, _3, _4, _5, N, ...) N
+#define vaCount(...) _vaCount(__VA_ARGS__, 5, 4, 3, 2, 1)
 #endif
 
 #ifndef cat2
@@ -17,7 +17,7 @@
 
 #define enumValDefArg1(name) name
 #define enumValDefArg2(name, init) name = (init)
-#define enumValDef(...) cat2(enumValDefArg, getVaCount(__VA_ARGS__)) (__VA_ARGS__),
+#define enumValDef(...) cat2(enumValDefArg, vaCount(__VA_ARGS__)) (__VA_ARGS__),
 #define enumValCapture(name, ...) name2StrCase(name);
 #define enumIter(action, name) enumIter ## _ ## name(action, name)
 #define enumDispatch(action, prefix, name, ...) action(prefix ## _ ## name, ## __VA_ARGS__)
@@ -42,7 +42,7 @@
  * enumDefToStr(fieldTypeId)
  * @endcode
  */
-#define enumDef(...) cat2(enumDefArg, getVaCount(__VA_ARGS__)) (__VA_ARGS__)
+#define enumDef(...) cat2(enumDefArg, vaCount(__VA_ARGS__)) (__VA_ARGS__)
 #define enumDefToStr(name) \
 static inline char *name ## _ ## toString(name val) { \
     switch(val) { enumIter(enumValCapture, name) default: return "NaN"; } \

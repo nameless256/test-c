@@ -41,8 +41,16 @@
 #define autoReleaseFile(name, path, args) \
     for (FILE *name = fopen(path, args); name != NULL; fclose(name), name = NULL)
 
-#define _getVaCount(_1, _2, _3, _4, _5, N, ...) N
-#define getVaCount(...) _getVaCount(__VA_ARGS__, 5, 4, 3, 2, 1)
+#define _vaCount(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, N, ...) N
+#define vaCount(...) _vaCount(__VA_ARGS__, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+
+#define vaTupleUnpack(...) __VA_ARGS__
+#define _vaTupleCheck(...) , _1
+#define vaTupleCheck(arg) pred(vaCount(_vaTupleCheck arg))
+#define _vaTuple0(arg) arg
+#define _vaTuple1(arg) vaTupleUnpack arg
+#define vaTuple(arg) cat2(_vaTuple, vaTupleCheck(arg))(arg)
+
 #define _cat2(a, b) a ## b
 #define cat2(a, b) _cat2(a, b)
 #define _cat3(x, y, z) x ## y ## z
@@ -52,6 +60,60 @@
 #define WEAK                        __attribute__((weak))
 #define UNUSED                      __attribute__((unused))
 #define CLEANUP(function)           __attribute__((cleanup(function)))
+
+#define succ0 1
+#define succ1 2
+#define succ2 3
+#define succ3 4
+#define succ4 5
+#define succ5 6
+#define succ6 7
+#define succ7 8
+#define succ8 9
+#define succ9 10
+#define succ10 11
+#define succ11 12
+#define succ12 13
+#define succ13 14
+#define succ14 15
+#define succ15 16
+#define succ(n) cat2(succ, n)
+
+#define pred1 0
+#define pred2 1
+#define pred3 2
+#define pred4 3
+#define pred5 4
+#define pred6 5
+#define pred7 6
+#define pred8 7
+#define pred9 8
+#define pred10 9
+#define pred11 10
+#define pred12 11
+#define pred13 12
+#define pred14 13
+#define pred15 14
+#define pred16 15
+#define pred(n) cat2(pred, n)
+
+#define _mcrIter1(f, fpi, p, arg, ...) f(p, arg)
+#define _mcrIter2(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter3(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter4(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter5(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter6(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter7(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter8(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter9(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter10(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter11(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter12(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter13(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter14(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter15(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrIter16(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define mcrIter(f, fpi, p, ...) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, p, __VA_ARGS__)
 
 uint8_t getNumDigit(uint32_t num);
 
