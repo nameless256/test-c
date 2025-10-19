@@ -57,63 +57,6 @@ enumDispatch(action, prefix, Bits)
 enumDef(fieldTypeId)
 enumDefToStr(fieldTypeId)
 
-typedef struct _typeMetaBase typeMetaBase;
-struct _typeMetaBase {
-    const char *name;
-    size_t size;
-};
-
-typedef struct _enumValMetaBase enumValMetaBase;
-struct _enumValMetaBase {
-    int idx;
-    char *name;
-};
-
-typedef struct _enumMeta enumMeta;
-struct _enumMeta {
-    char *name;
-    size_t size;
-    char *baseType;
-    int count;
-    enumValMetaBase **list;
-};
-
-enum _temp {
-    temp_0 = 2,
-    temp_1,
-    temp_2,
-};
-
-typedef uint8_t temp;
-
-struct _enumValMeta_temp {
-    enumValMetaBase base;
-    uint8_t val;
-};
-
-typedef struct _enumValMeta_temp enumValMeta_temp;
-
-#define _enumIter(f, ...) mcrIter(f, succ, 0, __VA_ARGS__)
-
-#define enumValMetaDef(idx, arg) enumValMeta_temp enumValMeta##_##arg = {{idx, #arg}, arg};
-
-_enumIter(
-    enumValMetaDef,
-    temp_0,
-    temp_1,
-    temp_2
-)
-
-enumValMetaBase *temp_list[] = {
-    (enumValMetaBase *)&enumValMeta_temp_0,
-    (enumValMetaBase *)&enumValMeta_temp_1,
-    (enumValMetaBase *)&enumValMeta_temp_2,
-};
-
-enumMeta temp_meta = {
-    "temp", "uint8_t", sizeof(uint8_t), ARRAY_SIZE(temp_list), temp_list
-};
-
 #define MATCH_$ ,_arg
 #define MATCH_$__2(a, ...) a
 #define MATCH_$__3(...) *
