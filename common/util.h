@@ -41,18 +41,10 @@
 #define autoReleaseFile(name, path, args) \
     for (FILE *name = fopen(path, args); name != NULL; fclose(name), name = NULL)
 
-#define _vaCount(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, N, ...) N
-#define vaCount(...) _vaCount(__VA_ARGS__, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
-
-#define vaTupleUnpack(...) __VA_ARGS__
-#define _vaTupleCheck(...) , _1
-#define vaTupleCheck(arg) pred(vaCount(_vaTupleCheck arg))
-#define _vaTuple0(arg) arg
-#define _vaTuple1(arg) vaTupleUnpack arg
-#define vaTuple(arg) cat2(_vaTuple, vaTupleCheck(arg))(arg)
-
 #define _cat2(a, b) a ## b
 #define cat2(a, b) _cat2(a, b)
+#define _cat_2(a, b) a ## _ ## b
+#define cat_2(a, b) _cat_2(a, b)
 #define _cat3(x, y, z) x ## y ## z
 #define cat3(x, y, z) _cat3(x, y, z)
 
@@ -61,6 +53,7 @@
 #define UNUSED                      __attribute__((unused))
 #define CLEANUP(function)           __attribute__((cleanup(function)))
 
+#pragma region "succ"
 #define succ0 1
 #define succ1 2
 #define succ2 3
@@ -78,7 +71,9 @@
 #define succ14 15
 #define succ15 16
 #define succ(n) cat2(succ, n)
+#pragma endregion
 
+#pragma region "pred"
 #define pred1 0
 #define pred2 1
 #define pred3 2
@@ -96,7 +91,9 @@
 #define pred15 14
 #define pred16 15
 #define pred(n) cat2(pred, n)
+#pragma endregion
 
+#pragma region "mcrIter"
 #define _mcrIter1(f, fpi, p, arg, ...) f(p, arg)
 #define _mcrIter2(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define _mcrIter3(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
@@ -114,6 +111,77 @@
 #define _mcrIter15(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define _mcrIter16(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define mcrIter(f, fpi, p, ...) cat2(_mcrIter, vaCount(__VA_ARGS__))(f, fpi, p, __VA_ARGS__)
+#pragma endregion
+
+#pragma region "mcrParamIter"
+#define _mcrParamIter1(f, fpi, p, arg, ...) f(p, arg)
+#define _mcrParamIter2(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter3(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter4(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter5(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter6(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter7(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter8(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter9(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter10(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter11(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter12(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter13(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter14(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter15(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrParamIter16(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define mcrParamIter(f, fpi, p, ...) cat2(_mcrParamIter, vaCount(__VA_ARGS__))(f, fpi, p, __VA_ARGS__)
+#pragma endregion
+
+#define _not0 ,
+#define mcrNot(i) pred(vaCount(cat2(_not, i)))
+#define _exBy00(arg)
+#define _exBy01(arg) arg
+#define exBy0(i, arg) cat2(_exBy0, mcrNot(i))(arg)
+#define vaArg(i, ...) mcrIter(exBy0, pred, i, __VA_ARGS__)
+
+#define asIs(arg) arg
+
+#define _vaCount(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, N, ...) N
+#define vaCount(...) _vaCount(__VA_ARGS__, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+
+#define _vaTupleUnpack(...) __VA_ARGS__
+#define vaTupleUnpack(arg) _vaTupleUnpack arg
+#define _vaTupleCheck(...) , _1
+#define vaTupleCheck(arg) pred(vaCount(_vaTupleCheck arg))
+#define _vaTuple0(arg) arg
+#define _vaTuple1(arg) vaTupleUnpack(arg)
+#define vaTupleArg1(arg) cat2(_vaTuple, vaTupleCheck(arg))(arg)
+#define vaTupleArg2(arg, i) vaArg(i, vaTupleArg1(arg))
+#define vaTuple(...) cat2(vaTupleArg, vaCount(__VA_ARGS__)) (__VA_ARGS__)
+
+#define vaTupleArgCountEq1(tuple) mcrNot(pred(vaCount(vaTuple(tuple))))
+#define _enumPrefValDef1(pref, tuple) cat_2(pref, vaTuple(tuple, 0))
+#define _enumPrefValDef0(pref, tuple) (_enumPrefValDef1(pref, tuple), vaTuple(tuple, 1))
+#define enumPrefValDef(pref, tuple) cat2(_enumPrefValDef, vaTupleArgCountEq1(tuple)) (pref, tuple)
+
+#define _enumValDef1(tuple) vaTuple(tuple, 0),
+#define _enumValDef0(tuple) vaTuple(tuple, 0) = vaTuple(tuple, 1);
+#define enumValDef(tuple) cat2(_enumValDef, vaTupleArgCountEq1(tuple)) (tuple)
+
+#define _enumTupleDefBase1(tuple) (vaTuple(tuple, 0), int)
+#define _enumTupleDefBase0(tuple) tuple
+#define enumTupleDefBase(tuple) cat2(_enumTupleDefBase, vaTupleArgCountEq1(tuple)) (tuple)
+
+#define enumDef(tuple, ...) \
+    _enumDef(enumTupleDefBase(tuple), mcrParamIter(enumPrefValDef, asIs, vaTuple(tuple, 0), __VA_ARGS__))
+#define _enumDef(tuple, ...) tuple, __VA_ARGS__
+
+// enumDef((temp, uint8_t), 2, (3), (5, 9))
+
+/*
+typedef uint8_t temp;
+enum _temp {
+    enumPrefValDef(temp, 2)
+    enumPrefValDef(temp, (3))
+    enumPrefValDef(temp, (5, 9))
+};
+*/
 
 uint8_t getNumDigit(uint32_t num);
 
