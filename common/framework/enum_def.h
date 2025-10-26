@@ -5,47 +5,27 @@
 #ifndef TEST_C_ENUM_DEF_H
 #define TEST_C_ENUM_DEF_H
 
-#ifndef vaCount
-#define _vaCount(_1, _2, _3, _4, _5, N, ...) N
-#define vaCount(...) _vaCount(__VA_ARGS__, 5, 4, 3, 2, 1)
-#endif
+#include "type_meta.h"
+#include "mcr_util.h"
 
-#ifndef cat2
-#define _cat2(a, b) a ## b
-#define cat2(a, b) _cat2(a, b)
-#endif
+#define __enumPrefValDef1(pref, tuple) cat_2(pref, vaTuple(tuple, 0))
+#define __enumPrefValDef0(pref, tuple) (__enumPrefValDef1(pref, tuple), vaTuple(tuple, 1))
+#define _enumPrefValDef(pref, tuple) cat2(__enumPrefValDef, vaTupleArgCountEq1(tuple)) (pref, tuple)
 
-#define enumValDefArg1(name) name
-#define enumValDefArg2(name, init) name = (init)
-#define enumValDef(...) cat2(enumValDefArg, vaCount(__VA_ARGS__)) (__VA_ARGS__),
-#define enumValCapture(name, ...) name2StrCase(name);
-#define enumIter(action, name) enumIter ## _ ## name(action, name)
-#define enumDispatch(action, prefix, name, ...) action(prefix ## _ ## name, ## __VA_ARGS__)
+#define __enumValDef1(tuple) vaTuple(tuple, 0),
+#define __enumValDef0(tuple) vaTuple(tuple, 0) = vaTuple(tuple, 1),
+#define _enumValDef(tuple) cat2(__enumValDef, vaTupleArgCountEq1(tuple)) (tuple)
 
-#define enumDefArg1(name) enumDefArg2(name, int)
-#define enumDefArg2(name, base) typedef base name; enum _ ## name { enumIter(enumValDef, name) };
+#define __enumTupleDefBase1(tuple) (vaTuple(tuple, 0), int)
+#define __enumTupleDefBase0(tuple) tuple
+#define _enumTupleDefBase(tuple) cat2(__enumTupleDefBase, vaTupleArgCountEq1(tuple)) (tuple)
 
-/**
- * @example
- * @code{.c}
- * #define enumIter_fieldTypeId(action, prefix) \
- * enumDispatch(action, prefix, Int, 0) \
- * enumDispatch(action, prefix, Float) \
- * enumDispatch(action, prefix, Double) \
- * enumDispatch(action, prefix, Ptr) \
- * enumDispatch(action, prefix, Array) \
- * enumDispatch(action, prefix, Enum) \
- * enumDispatch(action, prefix, Bool) \
- * enumDispatch(action, prefix, Bits)
- *
- * enumDef(fieldTypeId, uint8_t)
- * enumDefToStr(fieldTypeId)
- * @endcode
- */
-#define enumDef(...) cat2(enumDefArg, vaCount(__VA_ARGS__)) (__VA_ARGS__)
-#define enumDefToStr(name) \
-static inline char *name ## _ ## toString(name val) { \
-    switch(val) { enumIter(enumValCapture, name) default: return "NaN"; } \
-};
+#define enumDef(tuple, ...) \
+_enumDef(_enumTupleDefBase(tuple), mcrParamPIter(_enumPrefValDef, asIs, vaTuple(tuple, 0), __VA_ARGS__))
+#define _enumDef(tuple, ...) \
+typedef vaTuple(tuple, 1) vaTuple(tuple, 0); \
+enum cat2(_, vaTuple(tuple, 0)){ \
+mcrIter(_enumValDef, __VA_ARGS__) \
+}
 
 #endif //TEST_C_ENUM_DEF_H

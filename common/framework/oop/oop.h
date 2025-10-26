@@ -5,9 +5,9 @@
 #ifndef TEST_C_OOP_H
 #define TEST_C_OOP_H
 
-#ifndef cat3
-#define _cat3(x, y, z) x ## y ## z
-#define cat3(x, y, z) _cat3(x, y, z)
+#ifndef cat_2
+#define _cat_2(a, b) a ## _ ## b
+#define cat_2(a, b) _cat_2(a, b)
 #endif
 
 /**
@@ -32,7 +32,7 @@
 
 /******************************************************************/ // [ 成员函数 ] 的 声明 及 定义
 
-#define oopName(name) cat3(className, _, name)
+#define oopName(name) cat_2(className, name)
 
 #define oopFunc(returnType, methodName, ...) \
 returnType oopName(methodName)(className *self, ## __VA_ARGS__)
@@ -69,7 +69,7 @@ struct className { \
 
 /******************************************************************/ // [ 虚函数 ] 的 声明 及 定义
 
-#define oopVTabName(className) cat3(className, _, vTab)
+#define oopVTabName(className) cat_2(className, vTab)
 
 #define oopVPtrDef struct oopVTabName(className) {
 
@@ -104,13 +104,13 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /******************************************************************/ // [ 构造 / 析构 ] 的 声明 及 定义
 
 /// 无法支持重载, 无论是通过 宏魔法 (Morn 库 的思路) 还是 可变参 都需要 手动增加代码, 往往还不利于维护, 甚至隐藏风险
-#define oopCtor(...) void cat3(className, _, ctor)(className *self, ## __VA_ARGS__)
+#define oopCtor(...) void cat_2(className, ctor)(className *self, ## __VA_ARGS__)
 
-#define oopCtorBaseCall(...) cat3(classBaseName, _, ctor)((classBaseName *)self, ## __VA_ARGS__)
+#define oopCtorBaseCall(...) cat_2(classBaseName, ctor)((classBaseName *)self, ## __VA_ARGS__)
 
-#define oopDtor() void cat3(className, _, dtor)(className *self)
+#define oopDtor() void cat_2(className, dtor)(className *self)
 
-#define oopDtorBaseCall() cat3(classBaseName, _, dtor)((classBaseName *)self)
+#define oopDtorBaseCall() cat_2(classBaseName, dtor)((classBaseName *)self)
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
@@ -118,17 +118,17 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /// 且 __attribute__((cleanup(CONCAT3(className, _, dtor)))) 在 有 goto语句 的函数上可能会报错
 /// 借助 GCC 的 __attribute__((cleanup())) 实现
 #define oopObj(className, varName, ...) \
-    className varName __attribute__((cleanup(cat3(className, _, dtor)))); \
-    cat3(className, _, ctor)(&varName, ## __VA_ARGS__)
+    className varName __attribute__((cleanup(cat_2(className, dtor)))); \
+    cat_2(className, ctor)(&varName, ## __VA_ARGS__)
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define oopObjNew(className, varName, ...) \
-    varName = cat3(className, _, memAlloc)(); \
-    do {if (varName) cat3(className, _, ctor)(varName, ## __VA_ARGS__);} while (0)
+    varName = cat_2(className, memAlloc)(); \
+    do {if (varName) cat_2(className, ctor)(varName, ## __VA_ARGS__);} while (0)
 
 #define oopObjDelete(className, varName) \
-    do {if (varName) {cat3(className, _, dtor)(varName); cat3(className, _, memFree)(varName);}} while (0)
+    do {if (varName) {cat_2(className, dtor)(varName); cat_2(className, memFree)(varName);}} while (0)
 
 /******************************************************************/ // { 简洁封装支持 }
 
@@ -148,17 +148,17 @@ struct className
 /******************************************************************/ // [ 创建 / 销毁 ] 的 声明 及 定义
 
 #define oopCreate(...) \
-    className *cat3(className, _, create)(__VA_ARGS__)
+    className *cat_2(className, create)(__VA_ARGS__)
 
 #define oopDestroy() \
-    void cat3(className, _, destroy)(className *self)
+    void cat_2(className, destroy)(className *self)
 
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define oopObjCreate(className, varName) \
-    varName = cat3(className, _, create)
+    varName = cat_2(className, create)
 
 #define oopObjDestroy(className, varName) \
-    cat3(className, _, destroy)(varName)
+    cat_2(className, destroy)(varName)
 
 #endif //TEST_C_OOP_H
