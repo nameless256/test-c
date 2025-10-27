@@ -25,8 +25,6 @@
 
 #include "enum_def.h"
 
-enumDef((temp, uint8_t), 2, (3), (5, 9));
-
 int main() {
     system("chcp 65001");
     clock_t start = clock();

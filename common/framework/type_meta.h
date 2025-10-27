@@ -65,43 +65,31 @@ struct _paramMeta {
     const char *name;
 };
 
-typedef struct _funcMetaBase funcMetaBase;
-struct _funcMetaBase {
+typedef struct _funcMeta funcMeta;
+struct _funcMeta {
     const typeMetaBase *type;
     bool isVarArgs;
     uint8_t cnt;
     const paramMeta *const *params;
 };
 
-typedef struct _funcMeta funcMeta;
-struct _funcMeta {
-    funcMetaBase base;
-    const char *name;
-};
-
 typedef struct _funcPtrMeta funcPtrMeta;
 struct _funcPtrMeta {
     ptrMetaBase base;
-    funcMetaBase *func;
+    funcMeta *func;
 };
 
-typedef struct _arrayMetaBase arrayMetaBase;
-struct _arrayMetaBase {
+typedef struct _arrayMeta arrayMeta;
+struct _arrayMeta {
     typeMetaBase base;
     typeMetaBase *type;
     size_t length;
 };
 
-typedef struct _arrayMeta arrayMeta;
-struct _arrayMeta {
-    arrayMetaBase base;
-    const char *name;
-};
-
 typedef struct _arrayPtrMeta arrayPtrMeta;
 struct _arrayPtrMeta {
     ptrMetaBase base;
-    arrayMetaBase *array;
+    arrayMeta *array;
 };
 
 /**
