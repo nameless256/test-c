@@ -140,7 +140,7 @@
 #define _exBy0(i, arg) cat2(__exBy0, mcrNot(i))(arg)
 #define mcrVaArg(i, ...) mcrPIter(_exBy0, pred, i, __VA_ARGS__)
 
-#define asIs(arg) arg
+#define asIs(...) __VA_ARGS__
 
 #define _mcrVaCount(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, N, ...) N
 #define mcrVaCount(...) _mcrVaCount(__VA_ARGS__, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
