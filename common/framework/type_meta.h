@@ -21,6 +21,7 @@ enum _typeId {
 
 typedef uint8_t qual;
 enum _qual {
+    qual_Null = 0b000,
     qual_Const = 0b001,
     qual_Volatile = 0b010,
     qual_Restrict = 0b100,
