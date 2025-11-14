@@ -15,15 +15,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "util.h"
-#include "unicode.h"
+#include "type_meta.h"
 
 /**
  * @defgroup Main
  * @{
  */
-
-#include "enum_def.h"
 
 int main() {
     system("chcp 65001");

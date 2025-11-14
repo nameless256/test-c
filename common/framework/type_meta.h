@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "type_def.h"
+
 typedef uint8_t typeId;
 enum _typeId {
     typeId_Int,
