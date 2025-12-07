@@ -74,6 +74,7 @@
 #pragma endregion
 
 #pragma region "mcrIter"
+#define _mcrIter0(f, arg, ...)
 #define _mcrIter1(f, arg, ...) f(arg)
 #define _mcrIter2(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
 #define _mcrIter3(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
@@ -94,6 +95,7 @@
 #pragma endregion
 
 #pragma region "mcrPIter"
+#define _mcrPIter0(f, fpi, p, arg, ...)
 #define _mcrPIter1(f, fpi, p, arg, ...) f(p, arg)
 #define _mcrPIter2(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define _mcrPIter3(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
@@ -114,6 +116,7 @@
 #pragma endregion
 
 #pragma region "mcrParamPIter"
+#define _mcrParamPIter0(f, fpi, p, arg, ...)
 #define _mcrParamPIter1(f, fpi, p, arg, ...) f(p, arg)
 #define _mcrParamPIter2(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define _mcrParamPIter3(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
@@ -152,10 +155,11 @@
 #define mcrVaTupleCheck(arg) pred(mcrVaCount(_mcrVaTupleCheck arg))
 #define __mcrVaTuple10(arg) arg
 #define __mcrVaTuple11(arg) mcrVaTupleUnpack(arg)
+#define _mcrVaTuple0(arg)
 #define _mcrVaTuple1(arg) cat2(__mcrVaTuple1, mcrVaTupleCheck(arg))(arg)
 #define _mcrVaTuple2(arg, i) mcrVaArg(i, _mcrVaTuple1(arg))
 #define mcrVaTuple(...) cat2(_mcrVaTuple, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 
-#define mcrVaTupleArgCountEq1(tuple) mcrNot(pred(mcrVaCount(mcrVaTuple(tuple))))
+#define mcrVaTupleArgCount(tuple) _mcrVaCount(mcrVaTuple(tuple))
 
 #endif //MCR_UTIL_H

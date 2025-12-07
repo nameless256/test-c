@@ -1,30 +1,28 @@
-//
-// Created by xiaoxianghui on 2025/9/8.
-//
-
-#ifndef TEST_C_ENUM_DEF_H
-#define TEST_C_ENUM_DEF_H
-
 #include "mcr_util.h"
 
-#define __enumPrefValDef1(pref, tuple) cat_2(pref, mcrVaTuple(tuple, 0))
-#define __enumPrefValDef0(pref, tuple) (__enumPrefValDef1(pref, tuple), mcrVaTuple(tuple, 1))
-#define _enumPrefValDef(pref, tuple) cat2(__enumPrefValDef, mcrVaTupleArgCountEq1(tuple)) (pref, tuple)
+#ifndef enumName
+#error "enumName is not defined"
+#endif
 
-#define __enumValDef1(tuple) mcrVaTuple(tuple, 0),
-#define __enumValDef0(tuple) mcrVaTuple(tuple, 0) = mcrVaTuple(tuple, 1),
-#define _enumValDef(tuple) cat2(__enumValDef, mcrVaTupleArgCountEq1(tuple)) (tuple)
+#ifndef enumBase
+#define enumBase int
+#endif
 
-#define __enumTupleDefBase1(tuple) (mcrVaTuple(tuple, 0), int)
-#define __enumTupleDefBase0(tuple) tuple
-#define _enumTupleDefBase(tuple) cat2(__enumTupleDefBase, mcrVaTupleArgCountEq1(tuple)) (tuple)
+#ifndef enumMember
+#error "enumMember is not defined"
+#endif
 
-#define enumDef(tuple, ...) \
-_enumDef(_enumTupleDefBase(tuple), mcrParamPIter(_enumPrefValDef, asIs, mcrVaTuple(tuple, 0), __VA_ARGS__))
-#define _enumDef(tuple, ...) \
-typedef mcrVaTuple(tuple, 1) mcrVaTuple(tuple, 0); \
-enum cat2(_, mcrVaTuple(tuple, 0)){ \
-mcrIter(_enumValDef, __VA_ARGS__) \
-}
+#ifndef _enumMemberDef
+#define __enumMemberDef1(tuple) cat_2(enumName, mcrVaTuple(tuple, 0)),
+#define __enumMemberDef2(tuple) cat_2(enumName, mcrVaTuple(tuple, 0)) = mcrVaTuple(tuple, 1),
+#define _enumMemberDef(tuple) cat2(__enumMemberDef, mcrVaTupleArgCount(tuple)) (tuple)
+#endif
 
-#endif //TEST_C_ENUM_DEF_H
+typedef enumBase enumName;
+enum enumName {
+    mcrIter(_enumMemberDef, enumMember)
+};
+
+#undef enumName
+#undef enumBase
+#undef enumMember
