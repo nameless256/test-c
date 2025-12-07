@@ -10,7 +10,7 @@
 
 #define enumName typeId
 #define enumBase uint8_t
-#define enumMember Int, Ptr, Enum, Float, Array, Union, Struct,
+#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
 #include "type_def.h"
 
 #define enumName qual
@@ -82,6 +82,16 @@ struct arrayPtrMeta {
     arrayMeta *array;
 };
 
+typedef struct ptrMeta ptrMeta;
+struct ptrMeta {
+    union {
+        ptrMetaBase base;
+        typePtrMeta type;
+        funcPtrMeta func;
+        arrayPtrMeta array;
+    };
+};
+
 /**
  * @attention 定义枚举(e.g. enum temp:uint8_t)，需定义枚举值元数据结构
  * @code{.c}
@@ -120,18 +130,39 @@ struct bitFieldMeta {
     uint8_t ofs;
 };
 
+typedef struct fieldMeta fieldMeta;
+struct fieldMeta {
+    union {
+        fieldMetaBase base;
+        bitFieldMeta bitField;
+    };
+};
+
 typedef struct unionMeta unionMeta;
 struct unionMeta {
     typeMetaBase base;
     size_t cnt;
-    const fieldMetaBase *const *fields;
+    const fieldMeta *const *fields;
 };
 
 typedef struct structMeta structMeta;
 struct structMeta {
     typeMetaBase base;
     size_t cnt;
-    const fieldMetaBase *const *fields;
+    const fieldMeta *const *fields;
+};
+
+typedef struct typeMeta typeMeta;
+struct typeMeta {
+    union {
+        typeMetaBase base;
+        intMeta intMeta;
+        ptrMeta ptrMeta;
+        enumMeta enumMeta;
+        arrayMeta arrayMeta;
+        unionMeta unionMeta;
+        structMeta structMeta;
+    };
 };
 
 #endif //TYPE_META_H
