@@ -11,12 +11,12 @@
 #define enumName typeId
 #define enumBase uint8_t
 #define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
-#include "type_def.h"
+#include "enum_def.h"
 
 #define enumName qual
 #define enumBase uint8_t
 #define enumMember (Null, 0b000), (Const, 0b001), (Volatile, 0b010), (Restrict, 0b100),
-#include "type_def.h"
+#include "enum_def.h"
 
 typedef struct typeMetaBase typeMetaBase;
 struct typeMetaBase {
@@ -35,7 +35,7 @@ struct intMeta {
 #define enumName ptrTypeId
 #define enumBase uint8_t
 #define enumMember Type, Func, Array
-#include "type_def.h"
+#include "enum_def.h"
 
 typedef struct ptrMetaBase ptrMetaBase;
 struct ptrMetaBase {

@@ -13,6 +13,7 @@ include_directories(
         common/framework/oop
         common/framework/oop/oop_usage
         common/framework/oop/oop_heap_usage
+        common/framework/reflection
         common/structure
         game
         modules
