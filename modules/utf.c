@@ -5,7 +5,7 @@
 #include <string.h>
 #include <malloc.h>
 
-#include "unicode.h"
+#include "utf.h"
 
 enum utf8ByteFormat {
     utf8ByteFormat_Illegal = 0,

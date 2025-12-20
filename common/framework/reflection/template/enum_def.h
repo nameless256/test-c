@@ -23,6 +23,10 @@ enum enumName {
     mcrIter(_enumMemberDef, enumMember)
 };
 
+#ifdef enumMataRemain
+#undef enumMataRemain
+#else
 #undef enumName
 #undef enumBase
 #undef enumMember
+#endif

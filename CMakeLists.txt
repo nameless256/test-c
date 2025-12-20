@@ -14,6 +14,7 @@ include_directories(
         common/framework/oop/oop_usage
         common/framework/oop/oop_heap_usage
         common/framework/reflection
+        common/framework/reflection/template
         common/structure
         game
         modules
@@ -29,6 +30,7 @@ file(
         "common/framework/oop/oop_heap_usage/*.c"
         "common/framework/oop/oop_heap_usage/rect/*.c"
         "common/framework/oop/oop_heap_usage/shape/*.c"
+        "common/framework/reflection/*.c"
         "common/structure/*.c"
         "common/*.c"
         "game/*.c"
