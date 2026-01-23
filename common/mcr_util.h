@@ -115,27 +115,6 @@
 #define mcrPIter(f, fpi, p, ...) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, p, __VA_ARGS__)
 #pragma endregion
 
-#pragma region "mcrParamPIter"
-#define _mcrParamPIter0(f, fpi, p, arg, ...)
-#define _mcrParamPIter1(f, fpi, p, arg, ...) f(p, arg)
-#define _mcrParamPIter2(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter3(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter4(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter5(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter6(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter7(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter8(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter9(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter10(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter11(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter12(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter13(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter14(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter15(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define _mcrParamPIter16(f, fpi, p, arg, ...) f(p, arg),cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
-#define mcrParamPIter(f, fpi, p, ...) cat2(_mcrParamPIter, mcrVaCount(__VA_ARGS__))(f, fpi, p, __VA_ARGS__)
-#pragma endregion
-
 #define _not0 ,
 #define mcrNot(i) pred(mcrVaCount(cat2(_not, i)))
 #define __exBy00(arg)
