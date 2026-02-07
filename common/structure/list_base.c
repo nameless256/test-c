@@ -5,38 +5,48 @@
 #include <stdbool.h>
 #include "list_base.h"
 
-struct link2Node {
-    struct link2Node *prev, *next;
+#include <stdint.h>
+
+typedef struct listNode listNode;
+struct listNode {
+    listNode *prev, *next;
+    uint8_t data[];
 };
 
-typedef struct link2Node listNode;
+typedef struct alloc alloc;
+struct alloc {
+    void *(*alloc)(size_t);
+    void (*free)(void *);
+};
 
-#define listNodeInit(name) { &(name), &(name) }
+typedef struct list list;
+struct list {
+    alloc *alloc;
+    listNode *head;
+    listNode *tail;
+    size_t size;
+};
 
 #ifndef structOffsetOf
 #define structOffsetOf(type, member) ((uintptr_t)(&((type *)0)->member))
 #endif
 
-#ifndef containerOf
-#define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOffsetOf(type, member)))
-#endif
-
-static inline void listNodeShow(listNode *node) {
+static inline void showNode(listNode *node) {
     node->prev->next = node;
     node->next->prev = node;
 }
 
-static inline void listNodeHide(listNode *node) {
+static inline void hideNode(listNode *node) {
     node->prev->next = node->next;
     node->next->prev = node->prev;
 }
 
-static inline void listAdd(listNode *node, listNode *head) {
+static inline void addNode(listNode *node, listNode *head) {
     node->prev = head, node->next = head->next;
     head->next->prev = node, head->next = node;
 }
 
-static inline listNode *listDel(listNode *node) {
+static inline listNode *deleteNode(listNode *node) {
     node->prev->next = node->next;
     node->next->prev = node->prev;
     node->next = node;
@@ -44,6 +54,6 @@ static inline listNode *listDel(listNode *node) {
     return node;
 }
 
-static inline bool listIsEmpty(const listNode *head) {
+static inline bool isEmpty(const listNode *head) {
     return head->next == head && head->prev == head;
 }
