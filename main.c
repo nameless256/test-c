@@ -26,6 +26,11 @@ int main() {
     system("chcp 65001");
     clock_t start = clock();
 
+    int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+#define foreach(valName, container) for (int i = 0, valName = container[i]; i < ARRAY_SIZE(container); ++i)
+    foreach(bbb, arr) {
+    }
+
     clock_t stop = clock();
     double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
     printf("Time elapsed: %.5f \n", elapsed);

@@ -85,7 +85,7 @@ returnType (*methodName)(className *self, ## __VA_ARGS__)
 #define oopVDtorDeclare() void (*dtor)(className *self)
 
 #define oopVPtrInit() \
-    self->vptr = &oopVTabName(className)
+    (self->vptr = &oopVTabName(className))
 
 #define oopVPtrBaseInit() \
     oopVTabName(classBaseName) = *self->classBaseName.vptr; \
@@ -106,11 +106,11 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /// 无法支持重载, 无论是通过 宏魔法 (Morn 库 的思路) 还是 可变参 都需要 手动增加代码, 往往还不利于维护, 甚至隐藏风险
 #define oopCtor(...) void cat_2(className, ctor)(className *self, ## __VA_ARGS__)
 
-#define oopCtorBaseCall(...) cat_2(classBaseName, ctor)((classBaseName *)self, ## __VA_ARGS__)
-
 #define oopDtor() void cat_2(className, dtor)(className *self)
 
-#define oopDtorBaseCall() cat_2(classBaseName, dtor)((classBaseName *)self)
+#define call(name, ...) oopName(name)(self, ##__VA_ARGS__)
+
+#define super(name, ...) cat_2(classBaseName, name)((classBaseName *)self, ## __VA_ARGS__)
 
 /******************************************************************/ // 在栈上 [ 创建 / 销毁 ] 对象
 
@@ -124,11 +124,15 @@ static returnType methodName(className *self, ## __VA_ARGS__)
 /******************************************************************/ // 在堆上 [ 创建 / 销毁 ] 对象
 
 #define oopObjNew(className, varName, ...) \
-    varName = cat_2(className, memAlloc)(); \
+    varName = oopMemAlloc(sizeof(className)); \
+    do {if (varName) cat_2(className, ctor)(varName, ## __VA_ARGS__);} while (0)
+
+#define oopObjNewEx(className, varName, exSize, ...) \
+    varName = oopMemAlloc(sizeof(className) + exSize); \
     do {if (varName) cat_2(className, ctor)(varName, ## __VA_ARGS__);} while (0)
 
 #define oopObjDelete(className, varName) \
-    do {if (varName) {cat_2(className, dtor)(varName); cat_2(className, memFree)(varName);}} while (0)
+    do {if (varName) {cat_2(className, dtor)(varName); oopMemFree(varName);}} while (0)
 
 /******************************************************************/ // { 简洁封装支持 }
 
