@@ -50,6 +50,22 @@
 #define succ13 14
 #define succ14 15
 #define succ15 16
+#define succ16 17
+#define succ17 18
+#define succ18 19
+#define succ19 20
+#define succ20 21
+#define succ21 22
+#define succ22 23
+#define succ23 24
+#define succ24 25
+#define succ25 26
+#define succ26 27
+#define succ27 28
+#define succ28 29
+#define succ29 30
+#define succ30 31
+#define succ31 32
 #define succ(n) cat2(succ, n)
 #pragma endregion
 
@@ -70,6 +86,22 @@
 #define pred14 13
 #define pred15 14
 #define pred16 15
+#define pred17 16
+#define pred18 17
+#define pred19 18
+#define pred20 19
+#define pred21 20
+#define pred22 21
+#define pred23 22
+#define pred24 23
+#define pred25 24
+#define pred26 25
+#define pred27 26
+#define pred28 27
+#define pred29 28
+#define pred30 29
+#define pred31 30
+#define pred32 31
 #define pred(n) cat2(pred, n)
 #pragma endregion
 
@@ -91,6 +123,21 @@
 #define _mcrIter14(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
 #define _mcrIter15(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
 #define _mcrIter16(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter17(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter18(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter19(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter20(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter21(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter22(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter23(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter24(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter25(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter26(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter27(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter28(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter29(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter30(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
+#define _mcrIter31(f, arg, ...) f(arg) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
 #define mcrIter(f, ...) cat2(_mcrIter, mcrVaCount(__VA_ARGS__))(f, __VA_ARGS__)
 #pragma endregion
 
@@ -112,6 +159,21 @@
 #define _mcrPIter14(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define _mcrPIter15(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define _mcrPIter16(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter17(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter18(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter19(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter20(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter21(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter22(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter23(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter24(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter25(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter26(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter27(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter28(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter29(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter30(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
+#define _mcrPIter31(f, fpi, p, arg, ...) f(p, arg) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, fpi(p), __VA_ARGS__)
 #define mcrPIter(f, fpi, p, ...) cat2(_mcrPIter, mcrVaCount(__VA_ARGS__))(f, fpi, p, __VA_ARGS__)
 #pragma endregion
 
