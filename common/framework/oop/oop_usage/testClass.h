@@ -7,40 +7,40 @@
 #define PUBLIC
 // 公共 继承
 /*
- * #define $PUBLIC
+ * #define EXTENDS_PUBLIC
  * #include "testClassBase"
  */
 #undef PUBLIC
 #endif
 
 // 保护
-#if defined($INTERNAL) || defined($PRIVATE) || defined($PROTECTED) || defined($PUBLIC)
+#if defined(EXTENDS_INTERNAL) || defined(EXTENDS_PRIVATE) || defined(EXTENDS_PROTECTED) || defined(EXTENDS_PUBLIC)
 #define PROTECTED
 // 保护 继承
 /*
- * #define $PROTECTED
+ * #define EXTENDS_PROTECTED
  * #include "testClassBase"
  */
 // 公共 继承
 /*
- * #define $PUBLIC
+ * #define EXTENDS_PUBLIC
  * #include "testClassBase"
  */
 #undef PROTECTED
 #endif
 
 // 私有
-#if defined($INTERNAL)
+#if defined(EXTENDS_INTERNAL)
 #define PRIVATE
 // 私有 继承
 /*
- * #define $PRIVATE
+ * #define EXTENDS_PRIVATE
  * #include "testClassBase"
  */
 #undef PRIVATE
 #endif
 
-#undef $INTERNAL
-#undef $PRIVATE
-#undef $PROTECTED
-#undef $PUBLIC
+#undef EXTENDS_INTERNAL
+#undef EXTENDS_PRIVATE
+#undef EXTENDS_PROTECTED
+#undef EXTENDS_PUBLIC
