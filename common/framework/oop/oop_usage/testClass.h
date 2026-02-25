@@ -7,30 +7,21 @@
  * #define EXTENDS
  * #include "testClassBase"
  */
-#define PUBLIC
-// 公共
-#undef PUBLIC
 
-#if defined(DECLARE) || defined(EXTENDS)
-#define PROTECTED
-// 保护
+#if (defined(DECLARE) && !defined(EXTENDS)) || defined(EXTENDS)
 // 保护 继承
 /*
  * #define EXTENDS
  * #include "testClassBase"
  */
-#undef PROTECTED
 #endif
 
-// 私有
-#if defined(DECLARE)
-#define PRIVATE
+#if (defined(DECLARE) && !defined(EXTENDS))
 // 私有 继承
 /*
  * #define EXTENDS
  * #include "testClassBase"
  */
-#undef PRIVATE
 #endif
 
 #undef DECLARE
