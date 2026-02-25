@@ -2,45 +2,36 @@
 // Created by CodingDev on 2026/2/24.
 //
 
-// 公共
-#if !defined(PROTECTED)
-#define PUBLIC
 // 公共 继承
 /*
- * #define EXTENDS_PUBLIC
+ * #define EXTENDS
  * #include "testClassBase"
  */
+#define PUBLIC
+// 公共
 #undef PUBLIC
-#endif
 
-// 保护
-#if defined(EXTENDS_INTERNAL) || defined(EXTENDS_PRIVATE) || defined(EXTENDS_PROTECTED) || defined(EXTENDS_PUBLIC)
+#if defined(DECLARE) || defined(EXTENDS)
 #define PROTECTED
+// 保护
 // 保护 继承
 /*
- * #define EXTENDS_PROTECTED
- * #include "testClassBase"
- */
-// 公共 继承
-/*
- * #define EXTENDS_PUBLIC
+ * #define EXTENDS
  * #include "testClassBase"
  */
 #undef PROTECTED
 #endif
 
 // 私有
-#if defined(EXTENDS_INTERNAL)
+#if defined(DECLARE)
 #define PRIVATE
 // 私有 继承
 /*
- * #define EXTENDS_PRIVATE
+ * #define EXTENDS
  * #include "testClassBase"
  */
 #undef PRIVATE
 #endif
 
-#undef EXTENDS_INTERNAL
-#undef EXTENDS_PRIVATE
-#undef EXTENDS_PROTECTED
-#undef EXTENDS_PUBLIC
+#undef DECLARE
+#undef EXTENDS
