@@ -4,9 +4,6 @@
 
 #include "oop_usage.h"
 #include "class_demo/public.h"
-#define DECLARE
-// #define EXTENDS
-#include "testClass.h"
 
 static void test(int oopQuote(arg)) {
     oopDequote(arg)++;
