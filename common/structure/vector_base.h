@@ -14,7 +14,7 @@ typedef struct vectorBase {
     void *data;
 } vectorBase;
 
-void vectorBase_ctor(vectorBase *self, size_t size, size_t capacity);
+void vectorBase_ctor(vectorBase *self, size_t size, size_t capacity, void *initialize);
 void vectorBase_dtor(vectorBase *self);
 void *vectorBase_at(vectorBase *self, size_t index);
 
