@@ -15,16 +15,16 @@ typedef struct vectorMeta {
 #define _vector2(t, n, c, v)                                          \
 t *n __attribute__((cleanup(vector_dtor))) = NULL;                    \
 do {                                                                  \
-n = vectorGetdata(t, malloc(sizeof(vectorMeta) + sizeof(t) * c)); \
-if (n == NULL || vectorGetMeta(n) == NULL) {                      \
-n = NULL;                                                     \
-break;                                                        \
-}                                                                 \
-vectorGetMeta(n)->capacity = c;                                   \
-vectorGetMeta(n)->size = c;                                       \
-if (c == 0) break;                                                \
-n[0] = v;                                                         \
-fillMemoryWithPattern(n, sizeof(t), c, &n[0]);                    \
+    n = vectorGetdata(t, malloc(sizeof(vectorMeta) + sizeof(t) * c)); \
+    if (n == NULL || vectorGetMeta(n) == NULL) {                      \
+        n = NULL;                                                     \
+        break;                                                        \
+    }                                                                 \
+    vectorGetMeta(n)->capacity = c;                                   \
+    vectorGetMeta(n)->size = c;                                       \
+    if (c == 0) break;                                                \
+    n[0] = v;                                                         \
+    fillMemoryWithPattern(n, sizeof(t), c, &n[0]);                    \
 } while (0)
 #define _vector1(t, n, c) _vector2(t, n, c, 0)
 #define _vector0(t, n) _vector1(t, n, 0)
