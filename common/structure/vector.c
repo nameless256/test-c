@@ -7,6 +7,14 @@
 #include <malloc.h>
 #include <string.h>
 
+#include "vector.h"
+
+void vector_dtor(void *self) {
+    if ((*(uintptr_t *) self) == 0) return;
+    vectorMeta *meta = (vectorMeta *) ((*(uintptr_t *) self) - sizeof(vectorMeta));
+    free(meta);
+}
+
 void vectorBase_ctor(vectorBase *self, size_t typeSize, size_t capacity, void *value) {
     self->typeSize = typeSize;
     self->size = 0;
