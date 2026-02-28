@@ -23,9 +23,13 @@
  * @{
  */
 
+#include "vector_base.h"
+
 int main() {
     system("chcp 65001");
     clock_t start = clock();
+
+    vector(int, v);
 
     clock_t stop = clock();
     double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;

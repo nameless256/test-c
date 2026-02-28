@@ -7,13 +7,14 @@
 #include <malloc.h>
 #include <string.h>
 
-void vectorBase_ctor(vectorBase *self, size_t size, size_t capacity, void *value) {
-    self->typeSize = size;
+void vectorBase_ctor(vectorBase *self, size_t typeSize, size_t capacity, void *value) {
+    self->typeSize = typeSize;
     self->size = 0;
     self->data = NULL;
-    if (size == 0 || capacity == 0) return;
-    if (SIZE_MAX / capacity < size) return;
-    self->data = malloc(capacity * size);
+    self->capacity = 0;
+    if (typeSize == 0 || capacity == 0) return;
+    if (SIZE_MAX / capacity < typeSize) return;
+    self->data = malloc(capacity * typeSize);
     if (self->data == NULL) return;
     self->capacity = capacity;
     if (value == NULL) {
