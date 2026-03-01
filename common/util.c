@@ -281,3 +281,12 @@ void fillMemoryWithPattern(void *dest, size_t size, size_t length, const void *p
         remaining -= copySize;
     }
 }
+
+bool alloc_safe(void **ptr, size_t size, size_t offset) {
+    if (ptr == NULL) return true;
+    void *newPtr = (realloc(*ptr, offset + size)) + offset;
+    if (newPtr == NULL) return true;
+    *ptr = newPtr;
+    return false;
+}
+

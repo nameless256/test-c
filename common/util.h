@@ -107,4 +107,6 @@ void printBuffer(const unsigned char *buff, size_t length);
  */
 void fillMemoryWithPattern(void *dest, size_t size, size_t length, const void *pattern);
 
+bool alloc_safe(void **ptr, size_t size, size_t offset);
+
 #endif //GLOBAL_FUNCTION_H

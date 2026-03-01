@@ -8,15 +8,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define enumName typeId
-#define enumBase uint8_t
-#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
-#include "enum_def.h"
-
-#define enumName qual
-#define enumBase uint8_t
-#define enumMember (Null, 0b000), (Const, 0b001), (Volatile, 0b010), (Restrict, 0b100),
-#include "enum_def.h"
+typedef uint8_t qual;
+typedef uint8_t typeId;
 
 typedef struct typeMetaBase typeMetaBase;
 struct typeMetaBase {
@@ -32,10 +25,7 @@ struct intMeta {
     bool isSigned;
 };
 
-#define enumName ptrTypeId
-#define enumBase uint8_t
-#define enumMember Type, Func, Array
-#include "enum_def.h"
+typedef uint8_t ptrTypeId;
 
 typedef struct ptrMetaBase ptrMetaBase;
 struct ptrMetaBase {
@@ -164,5 +154,23 @@ struct typeMeta {
         structMeta structMeta;
     };
 };
+
+#define enumName typeId
+#define enumBase uint8_t
+#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
+
+#include "enum_def.h"
+
+#define enumName qual
+#define enumBase uint8_t
+#define enumMember (Null, 0b000), (Const, 0b001), (Volatile, 0b010), (Restrict, 0b100),
+
+#include "enum_def.h"
+
+#define enumName ptrTypeId
+#define enumBase uint8_t
+#define enumMember Type, Func, Array
+
+#include "enum_def.h"
 
 #endif //TYPE_META_H
