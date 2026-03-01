@@ -267,3 +267,17 @@ void printBuffer(const unsigned char *buff, size_t length) {
     }
     if (length % 16 != 0) putchar('\n');
 }
+
+void fillMemoryWithPattern(void *dest, size_t size, size_t length, const void *pattern) {
+    if (length == 0 || size == 0) return;
+    memcpy(dest, pattern, size);
+    if (length == 0) return;
+    size_t offset = size;
+    size_t remaining = (length - 1) * size;
+    while (remaining > 0) {
+        size_t copySize = (offset < remaining) ? offset : remaining;
+        memmove(dest + offset, dest, copySize);
+        offset += copySize;
+        remaining -= copySize;
+    }
+}

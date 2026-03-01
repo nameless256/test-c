@@ -95,4 +95,16 @@ bool printEscapes(unsigned char byte);
 
 void printBuffer(const unsigned char *buff, size_t length);
 
+/**
+ * @brief 内存模式填充函数
+ * @details 使用指数增长算法将指定模式数据复制填充到目标内存区域
+ * @param[out] dest 目标内存地址
+ * @param[in] size 单个元素的大小（字节）
+ * @param[in] length 元素数量
+ * @param[in] pattern 模式数据源
+ * @note 当elementCount为0或elementSize为0时，函数直接返回
+ * @note 此函数使用memmove确保内存重叠时的安全性
+ */
+void fillMemoryWithPattern(void *dest, size_t size, size_t length, const void *pattern);
+
 #endif //GLOBAL_FUNCTION_H
