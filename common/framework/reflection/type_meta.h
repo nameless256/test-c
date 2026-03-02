@@ -98,27 +98,11 @@ struct ptrMeta {
     };
 };
 
-/**
- * @attention 定义枚举(e.g. enum temp:uint8_t)，需定义枚举值元数据结构
- * @code{.c}
-typedef struct enumValMeta_temp enumValMeta_temp;
-struct enumValMeta_temp {
-    enumValMetaBase base;
-    uint8_t value;
-};
- * @endcode
- */
-typedef struct enumValMetaBase enumValMetaBase;
-struct enumValMetaBase {
-    const char *name;
-    size_t idx;
-};
-
 struct enumMeta {
     typeMetaBase base;
     const intMeta *type;
     size_t (*cnt)(void);
-    const enumValMetaBase *const *tab;
+    // const enumValMetaBase *const *tab;
 };
 
 typedef struct fieldMetaBase fieldMetaBase;

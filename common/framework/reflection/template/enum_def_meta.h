@@ -38,6 +38,17 @@ static size_t enumMetaFunc(cnt)(void) {
 
 extern const intMeta cat_2(enumBase, meta);
 
+#ifndef _enumValMetaDef
+#define _enumValMetaDef(tuple) {nameVal2Str(mcrVaTuple(tuple, 0)), cat_2(enumName, mcrVaTuple(tuple, 0))},
+#endif
+
+struct {
+    const char *name;
+    enumBase value;
+} static cat_2(enumMetaName, tab)[] = {
+    mcrIter(_enumValMetaDef, enumMember)
+};
+
 const enumMeta enumMetaName = {
     .base = {
         .name = enumMetaFunc(name),
