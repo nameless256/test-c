@@ -8,24 +8,40 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef uint8_t qual;
-typedef uint8_t typeId;
+typedef struct typeMeta typeMeta;
+typedef struct enumMeta enumMeta;
+
+#define enumName typeId
+#define enumBase uint8_t
+#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
+
+#include "enum_def.h"
+
+#define enumName qual
+#define enumBase uint8_t
+#define enumMember (Null, 0b000), (Const, 0b001), (Volatile, 0b010), (Restrict, 0b100),
+
+#include "enum_def.h"
 
 typedef struct typeMetaBase typeMetaBase;
 struct typeMetaBase {
-    const char *name;
-    size_t size;
-    qual quals;
-    typeId id;
+    const char *(*name)(void);
+    size_t (*size)(void);
+    qual (*quals)(void);
+    typeId (*id)(void);
 };
 
 typedef struct intMeta intMeta;
 struct intMeta {
     typeMetaBase base;
-    bool isSigned;
+    bool (*isSigned)(void);
 };
 
-typedef uint8_t ptrTypeId;
+#define enumName ptrTypeId
+#define enumBase uint8_t
+#define enumMember Type, Func, Array
+
+#include "enum_def.h"
 
 typedef struct ptrMetaBase ptrMetaBase;
 struct ptrMetaBase {
@@ -36,18 +52,18 @@ struct ptrMetaBase {
 typedef struct typePtrMeta typePtrMeta;
 struct typePtrMeta {
     ptrMetaBase base;
-    typeMetaBase *type;
+    const typeMeta *type;
 };
 
 typedef struct paramMeta paramMeta;
 struct paramMeta {
-    const typeMetaBase *type;
+    const typeMeta *type;
     const char *name;
 };
 
 typedef struct funcMeta funcMeta;
 struct funcMeta {
-    const typeMetaBase *type;
+    const typeMeta *type;
     bool isVarArgs;
     uint8_t cnt;
     const paramMeta *const *params;
@@ -62,7 +78,7 @@ struct funcPtrMeta {
 typedef struct arrayMeta arrayMeta;
 struct arrayMeta {
     typeMetaBase base;
-    typeMetaBase *type;
+    const typeMeta *type;
     size_t length;
 };
 
@@ -98,11 +114,10 @@ struct enumValMetaBase {
     size_t idx;
 };
 
-typedef struct enumMeta enumMeta;
 struct enumMeta {
     typeMetaBase base;
-    typeMetaBase *type;
-    size_t cnt;
+    const intMeta *type;
+    size_t (*cnt)(void);
     const enumValMetaBase *const *tab;
 };
 
@@ -142,7 +157,6 @@ struct structMeta {
     const fieldMeta *const *fields;
 };
 
-typedef struct typeMeta typeMeta;
 struct typeMeta {
     union {
         typeMetaBase base;
@@ -155,22 +169,6 @@ struct typeMeta {
     };
 };
 
-#define enumName typeId
-#define enumBase uint8_t
-#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
-
-#include "enum_def.h"
-
-#define enumName qual
-#define enumBase uint8_t
-#define enumMember (Null, 0b000), (Const, 0b001), (Volatile, 0b010), (Restrict, 0b100),
-
-#include "enum_def.h"
-
-#define enumName ptrTypeId
-#define enumBase uint8_t
-#define enumMember Type, Func, Array
-
-#include "enum_def.h"
+extern const intMeta uint8_t_meta;
 
 #endif //TYPE_META_H

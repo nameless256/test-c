@@ -23,6 +23,8 @@ enum enumName {
     mcrIter(_enumMemberDef, enumMember)
 };
 
+extern const enumMeta cat_2(enumName, meta);
+
 #ifdef enumMataRemain
 #undef enumMataRemain
 #else
