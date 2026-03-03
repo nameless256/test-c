@@ -3,7 +3,39 @@
 //
 #include "type_meta.h"
 
+#define intName int8_t
+
+#include "int_def_meta.h"
+
 #define intName uint8_t
+
+#include "int_def_meta.h"
+
+#define intName int16_t
+
+#include "int_def_meta.h"
+
+#define intName uint16_t
+
+#include "int_def_meta.h"
+
+#define intName int32_t
+
+#include "int_def_meta.h"
+
+#define intName uint32_t
+
+#include "int_def_meta.h"
+
+#define intName int64_t
+
+#include "int_def_meta.h"
+
+#define intName uint64_t
+
+#include "int_def_meta.h"
+
+#define intName size_t
 
 #include "int_def_meta.h"
 

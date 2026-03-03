@@ -102,7 +102,12 @@ struct enumMeta {
     typeMetaBase base;
     const intMeta *type;
     size_t (*cnt)(void);
-    // const enumValMetaBase *const *tab;
+    int (*getIdxByValue)(int64_t value);
+    int (*getIdxByName)(const char *name);
+    int64_t (*getValueByIdx)(int idx);
+    int64_t (*getValueByName)(const char *name);
+    const char* (*getNameByIdx)(int idx);
+    const char* (*getNameByValue)(int64_t value);
 };
 
 typedef struct fieldMetaBase fieldMetaBase;
@@ -153,6 +158,16 @@ struct typeMeta {
     };
 };
 
-extern const intMeta uint8_t_meta;
+#define intMetaDeclare(name) extern const intMeta cat_2(name, meta)
+
+intMetaDeclare(int8_t);
+intMetaDeclare(uint8_t);
+intMetaDeclare(int16_t);
+intMetaDeclare(uint16_t);
+intMetaDeclare(int32_t);
+intMetaDeclare(uint32_t);
+intMetaDeclare(int64_t);
+intMetaDeclare(uint64_t);
+intMetaDeclare(size_t);
 
 #endif //TYPE_META_H
