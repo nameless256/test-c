@@ -41,7 +41,7 @@
 
 #define enumName typeId
 #define enumBase uint8_t
-#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
+#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct, Class,
 
 #include "enum_def_meta.h"
 

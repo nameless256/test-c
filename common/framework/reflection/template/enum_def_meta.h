@@ -18,26 +18,6 @@
 #define enumMetaName cat_2(enumName, meta)
 #define enumMetaFunc(name) cat_2(enumMetaName, name)
 
-static const char *enumMetaFunc(name)(void) {
-    return name2Str(enumName);
-}
-
-static size_t enumMetaFunc(size)(void) {
-    return sizeof(enumBase);
-}
-
-static qual enumMetaFunc(quals)(void) {
-    return qual_Null;
-}
-
-static typeId enumMetaFunc(id)(void) {
-    return typeId_Enum;
-}
-
-static size_t enumMetaFunc(cnt)(void) {
-    return mcrVaCount(enumMember);
-}
-
 extern const intMeta cat_2(enumBase, meta);
 
 #ifndef _enumValMetaDef
@@ -89,13 +69,13 @@ static const char *enumMetaFunc(getNameByValue) (int64_t value) {
 
 const enumMeta enumMetaName = {
     .base = {
-        .name = enumMetaFunc(name),
-        .size = enumMetaFunc(size),
-        .quals = enumMetaFunc(quals),
-        .id = enumMetaFunc(id),
+        .name = name2Str(enumName),
+        .size = sizeof(enumBase),
+        .quals = qual_Null,
+        .id = typeId_Enum,
     },
     .type = &cat_2(enumBase, meta),
-    .cnt = enumMetaFunc(cnt),
+    .cnt = mcrVaCount(enumMember),
     .getIdxByValue = enumMetaFunc(getIdxByValue),
     .getIdxByName = enumMetaFunc(getIdxByName),
     .getValueByIdx = enumMetaFunc(getValueByIdx),

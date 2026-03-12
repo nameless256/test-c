@@ -13,7 +13,7 @@ typedef struct enumMeta enumMeta;
 
 #define enumName typeId
 #define enumBase uint8_t
-#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct,
+#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct, Class,
 
 #include "enum_def.h"
 
@@ -25,16 +25,16 @@ typedef struct enumMeta enumMeta;
 
 typedef struct typeMetaBase typeMetaBase;
 struct typeMetaBase {
-    const char *(*name)(void);
-    size_t (*size)(void);
-    qual (*quals)(void);
-    typeId (*id)(void);
+    const char *name;
+    size_t size;
+    qual quals;
+    typeId id;
 };
 
 typedef struct intMeta intMeta;
 struct intMeta {
     typeMetaBase base;
-    bool (*isSigned)(void);
+    bool isSigned;
 };
 
 #define enumName ptrTypeId
@@ -101,13 +101,13 @@ struct ptrMeta {
 struct enumMeta {
     typeMetaBase base;
     const intMeta *type;
-    size_t (*cnt)(void);
+    size_t cnt;
     int (*getIdxByValue)(int64_t value);
     int (*getIdxByName)(const char *name);
     int64_t (*getValueByIdx)(int idx);
     int64_t (*getValueByName)(const char *name);
-    const char* (*getNameByIdx)(int idx);
-    const char* (*getNameByValue)(int64_t value);
+    const char *(*getNameByIdx)(int idx);
+    const char *(*getNameByValue)(int64_t value);
 };
 
 typedef struct fieldMetaBase fieldMetaBase;
@@ -146,6 +146,21 @@ struct structMeta {
     const fieldMeta *const *fields;
 };
 
+typedef struct objBase objBase;
+
+typedef struct classMeta classMeta;
+struct classMeta {
+    typeMetaBase base;
+    classMeta *baseClass;
+    bool (*ctor)(objBase *);
+    void (*dtor)(objBase *);
+    bool (*copy)(objBase *, objBase *);
+};
+
+struct objBase {
+    classMeta *class;
+};
+
 struct typeMeta {
     union {
         typeMetaBase base;
@@ -155,6 +170,7 @@ struct typeMeta {
         arrayMeta arrayMeta;
         unionMeta unionMeta;
         structMeta structMeta;
+        classMeta classMeta;
     };
 };
 
