@@ -79,6 +79,21 @@ bool string_copy(objBase *obj, objBase *other) {
     return false;
 }
 
+void func1(void) {
+
+}
+
+void func2(void) {
+
+}
+
+struct {
+    void (*func1)(void);
+    void (*func2)(void);
+} string_impl = {
+    func1,func2
+};
+
 classMeta string_meta = {
     .base = {
         .name = "string",
@@ -89,19 +104,25 @@ classMeta string_meta = {
     .ctor = string_ctor,
     .dtor = string_dtor,
     .copy = string_copy,
+    .ifImplTab = (void **)&string_impl,
+    .cnt = (sizeof(string_impl) / sizeof(void *)),
 };
 
-void obj_dtor(classMeta *class, objBase *obj) {
+void obj_dtor_base(classMeta *class, objBase *obj) {
     if(class->dtor) class->dtor(obj);
     if(class->baseClass) {
-        obj_dtor(class->baseClass, obj);
+        obj_dtor_base(class->baseClass, obj);
     }
 }
 
-bool obj_ctor(classMeta *class, objBase *obj) {
+void obj_dtor(objBase *obj) {
+    obj_dtor_base(obj->class, obj);
+}
+
+bool obj_ctor_base(classMeta *class, objBase *obj) {
     if (class->baseClass) {
-        if (obj_ctor(class->baseClass, obj)) {
-            obj_dtor(class->baseClass, obj);
+        if (obj_ctor_base(class->baseClass, obj)) {
+            obj_dtor_base(class->baseClass, obj);
             return true;
         }
     }
@@ -109,15 +130,23 @@ bool obj_ctor(classMeta *class, objBase *obj) {
     return false;
 }
 
-bool obj_copy(classMeta *class, objBase *obj, objBase *other) {
+bool obj_ctor(objBase *obj) {
+    return obj_ctor_base(obj->class, obj);
+}
+
+bool obj_copy_base(classMeta *class, objBase *obj, objBase *other) {
     if (class->baseClass) {
-        if (obj_copy(class->baseClass, obj, other)) {
-            obj_dtor(class->baseClass, obj);
+        if (obj_copy_base(class->baseClass, obj, other)) {
+            obj_dtor_base(class->baseClass, obj);
             return true;
         }
     }
     if (class->copy) return class->copy(obj, other);
     return false;
+}
+
+bool obj_copy(objBase *obj, objBase *other) {
+    return obj_copy_base(obj->class, obj, other);
 }
 
 int main() {

@@ -155,6 +155,8 @@ struct classMeta {
     bool (*ctor)(objBase *);
     void (*dtor)(objBase *);
     bool (*copy)(objBase *, objBase *);
+    void **const ifImplTab;
+    size_t cnt;
 };
 
 struct objBase {
