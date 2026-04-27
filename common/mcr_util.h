@@ -6,10 +6,13 @@
 #define MCR_UTIL_H
 
 #define BIT(n)                      (1UL << (n))
+#define setBit(arg, n)              ((arg) |= BIT(n))
+#define clearBit(arg, n)            ((arg) &= ~BIT(n))
 #define checkBit(arg, n)            (((arg) & BIT(n)) == BIT(n))
 #define ARRAY_SIZE(array)           (sizeof(array) / sizeof((array)[0]))
 #define MAX(a, b)                   ((a) > (b) ? (a) : (b))
 #define MIN(a, b)                   ((a) < (b) ? (a) : (b))
+#define CLAMP(min, val, max)        (MAX(min, (MIN(val, max))))
 #define ABS(a)                      ((0 - (a)) > 0 ? (-(a)) : (a))
 #define SWAP(arg0, arg1)            do{(arg0) ^= (arg1); (arg1) ^= (arg0); (arg0) ^= (arg1);} while(0)
 #define name2Str(name)              #name
@@ -19,9 +22,9 @@
 ((total) ? (((value) > (total)) ? (num) : ((num) * (value) / (total))) : 0)
 #define valMapRange(value, num, lBound, uBound) valMap(value - lBound, num, uBound - lBound)
 
-#define structOffsetOf(type, member) ((uintptr_t)(&((type *)0)->member))
+#define structOfsOf(type, member) ((uintptr_t)(&((type *)0)->member))
 
-#define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOffsetOf(type, member)))
+#define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOfsOf(type, member)))
 
 #define _cat2(a, b) a ## b
 #define cat2(a, b) _cat2(a, b)
