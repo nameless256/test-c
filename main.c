@@ -39,7 +39,9 @@ void test() {
 }
 
 typedef struct string string;
-struct string {
+
+struct string
+{
     objBase base;
     size_t size;
     size_t length;
@@ -51,7 +53,7 @@ bool string_ctor(objBase *obj) {
 }
 
 void string_dtor(objBase *obj) {
-    string *self = (string *) obj;
+    string *self = (string*)obj;
     if (self->data) {
         free(self->data);
         self->data = NULL;
@@ -61,29 +63,14 @@ void string_dtor(objBase *obj) {
 }
 
 bool string_copy(objBase *obj, objBase *other) {
-    string *self = (string *) obj;
-    string *src = (string *) other;
-    if (alloc_safe((void **) &self->data, src->size, 0)) return true;
+    string *self = (string*)obj;
+    string *src = (string*)other;
+    if (alloc_safe((void**)&self->data, src->size, 0)) return true;
     memcpy(self->data, src->data, src->size);
     self->length = src->length;
     self->size = src->size;
     return false;
 }
-
-void func1(void) {
-
-}
-
-void func2(void) {
-
-}
-
-struct {
-    void (*func1)(void);
-    void (*func2)(void);
-} string_impl = {
-    func1,func2
-};
 
 classMeta string_meta = {
     .base = {
@@ -95,15 +82,32 @@ classMeta string_meta = {
     .ctor = string_ctor,
     .dtor = string_dtor,
     .copy = string_copy,
-    .ifImplTab = (void **)&string_impl,
-    .cnt = (sizeof(string_impl) / sizeof(void *)),
 };
 
+/// \todo 构造析构顺序待更正
+/**
+obj_dtor(dog_obj)
+  └─> obj_dtor_base(Dog_class, dog_obj)
+       ├─> 逆序析构 Dog 的成员:
+       │    ├─> obj_dtor_base(MemberD_class, &dog_obj.d)
+       │    └─> obj_dtor_base(MemberC_class, &dog_obj.c)
+       ├─> Dog::dtor(dog_obj)          // 派生类自身析构
+       └─> 递归处理基类 Animal:
+            └─> obj_dtor_base(Animal_class, &dog_obj.animal_part)
+                 ├─> 逆序析构 Animal 的成员:
+                 │    ├─> obj_dtor_base(MemberB_class, &animal.b)
+                 │    └─> obj_dtor_base(MemberA_class, &animal.a)
+                 └─> Animal::dtor(animal)  // 基类自身析构
+ */
 void obj_dtor_base(classMeta *class, objBase *obj) {
-    if(class->dtor) class->dtor(obj);
-    if(class->baseClass) {
-        obj_dtor_base(class->baseClass, obj);
+    for (size_t i = class->cnt; i > 0; i--) {
+        const fieldMeta *field = class->fields[i - 1];
+        if (field->base.isBitField) continue;
+        const typeMeta *type = field->base.base.type;
+        if (type->base.id != typeId_Class) continue;
+        obj_dtor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs));
     }
+    if (class->dtor) class->dtor(obj);
 }
 
 void obj_dtor(objBase *obj) {
@@ -111,9 +115,13 @@ void obj_dtor(objBase *obj) {
 }
 
 bool obj_ctor_base(classMeta *class, objBase *obj) {
-    if (class->baseClass) {
-        if (obj_ctor_base(class->baseClass, obj)) {
-            obj_dtor_base(class->baseClass, obj);
+    for (size_t i = 0; i < class->cnt; i++) {
+        const fieldMeta *field = class->fields[i];
+        if (field->base.isBitField) continue;
+        const typeMeta *type = field->base.base.type;
+        if (type->base.id != typeId_Class) continue;
+        if (obj_ctor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs))) {
+            obj_dtor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs));
             return true;
         }
     }
@@ -126,9 +134,14 @@ bool obj_ctor(objBase *obj) {
 }
 
 bool obj_copy_base(classMeta *class, objBase *obj, objBase *other) {
-    if (class->baseClass) {
-        if (obj_copy_base(class->baseClass, obj, other)) {
-            obj_dtor_base(class->baseClass, obj);
+    for (size_t i = 0; i < class->cnt; i++) {
+        const fieldMeta *field = class->fields[i];
+        if (field->base.isBitField) continue;
+        const typeMeta *type = field->base.base.type;
+        if (type->base.id != typeId_Class) continue;
+        if (obj_copy_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs),
+                          (objBase*)((char*)other + field->base.ofs))) {
+            obj_dtor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs));
             return true;
         }
     }
@@ -147,7 +160,7 @@ int main() {
     // test();
 
     clock_t stop = clock();
-    double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
+    double elapsed = (double)(stop - start) / CLOCKS_PER_SEC;
     printf("Time elapsed: %.5f \n", elapsed);
     //    system("pause");
     return 0;

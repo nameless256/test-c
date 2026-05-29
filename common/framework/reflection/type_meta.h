@@ -73,7 +73,7 @@ mcrDispatch(f, Array)
 
 typedef struct ptrMetaBase ptrMetaBase;
 struct ptrMetaBase {
-    typeMetaBase base;
+    typeMetaBase base; ///< base.name == "*"
     ptrTypeId id;
 };
 
@@ -91,9 +91,9 @@ struct paramMeta {
 
 typedef struct funcMeta funcMeta;
 struct funcMeta {
-    const typeMeta *type;
+    const typeMeta *type; ///< return type
     bool isVarArgs;
-    uint8_t cnt;
+    uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) funcMeta::cnt == 1
     const paramMeta *const *params;
 };
 
@@ -188,14 +188,14 @@ struct fieldMeta {
 
 typedef struct unionMeta unionMeta;
 struct unionMeta {
-    typeMetaBase base;
+    typeMetaBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
     const fieldMeta *const *fields;
 };
 
 typedef struct structMeta structMeta;
 struct structMeta {
-    typeMetaBase base;
+    typeMetaBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
     const fieldMeta *const *fields;
 };
@@ -206,11 +206,11 @@ typedef struct classMeta classMeta;
 struct classMeta {
     typeMetaBase base;
     classMeta *baseClass;
+    size_t cnt;
+    const fieldMeta *const *fields;
     bool (*ctor)(objBase *);
     void (*dtor)(objBase *);
     bool (*copy)(objBase *, objBase *);
-    void **const ifImplTab;
-    size_t cnt;
 };
 
 struct objBase {
