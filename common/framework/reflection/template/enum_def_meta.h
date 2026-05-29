@@ -28,7 +28,6 @@ struct {
     const char *name;
     enumBase value;
 } static cat_2(enumMetaName, tab)[] = {
-    // mcrIter(_enumValMetaDef, enumMember)
     enumMember(_enumValMetaDef)
 };
 
