@@ -84,48 +84,47 @@ classMeta string_meta = {
     .copy = string_copy,
 };
 
-/// \todo 构造析构顺序待更正
-/**
-obj_dtor(dog_obj)
-  └─> obj_dtor_base(Dog_class, dog_obj)
-       ├─> 逆序析构 Dog 的成员:
-       │    ├─> obj_dtor_base(MemberD_class, &dog_obj.d)
-       │    └─> obj_dtor_base(MemberC_class, &dog_obj.c)
-       ├─> Dog::dtor(dog_obj)          // 派生类自身析构
-       └─> 递归处理基类 Animal:
-            └─> obj_dtor_base(Animal_class, &dog_obj.animal_part)
-                 ├─> 逆序析构 Animal 的成员:
-                 │    ├─> obj_dtor_base(MemberB_class, &animal.b)
-                 │    └─> obj_dtor_base(MemberA_class, &animal.a)
-                 └─> Animal::dtor(animal)  // 基类自身析构
- */
-void obj_dtor_base(classMeta *class, objBase *obj) {
-    for (size_t i = class->cnt; i > 0; i--) {
+static void obj_dtor_base(classMeta *class, objBase *obj);
+
+static void obj_dtor_member_base(classMeta *class, objBase *obj, size_t cnt) {
+    for (size_t i = cnt; i > 0; i--) {
         const fieldMeta *field = class->fields[i - 1];
         if (field->base.isBitField) continue;
         const typeMeta *type = field->base.base.type;
         if (type->base.id != typeId_Class) continue;
         obj_dtor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs));
     }
+}
+
+static void obj_dtor_base(classMeta *class, objBase *obj) {
+    obj_dtor_member_base(class, obj, class->cnt);
     if (class->dtor) class->dtor(obj);
+    if (class->baseClass) obj_dtor_base(class->baseClass, obj);
 }
 
 void obj_dtor(objBase *obj) {
     obj_dtor_base(obj->class, obj);
 }
 
-bool obj_ctor_base(classMeta *class, objBase *obj) {
+static bool obj_ctor_base(classMeta *class, objBase *obj) {
+    if (class->baseClass) {
+        if (obj_ctor_base(class->baseClass, obj)) return true;
+    }
     for (size_t i = 0; i < class->cnt; i++) {
         const fieldMeta *field = class->fields[i];
         if (field->base.isBitField) continue;
         const typeMeta *type = field->base.base.type;
         if (type->base.id != typeId_Class) continue;
         if (obj_ctor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs))) {
-            obj_dtor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs));
+            obj_dtor_member_base(class, obj, i);
             return true;
         }
     }
-    if (class->ctor) return class->ctor(obj);
+    if (class->ctor) {
+        if (class->ctor(obj)) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -133,7 +132,7 @@ bool obj_ctor(objBase *obj) {
     return obj_ctor_base(obj->class, obj);
 }
 
-bool obj_copy_base(classMeta *class, objBase *obj, objBase *other) {
+static bool obj_copy_base(classMeta *class, objBase *obj, objBase *other) {
     for (size_t i = 0; i < class->cnt; i++) {
         const fieldMeta *field = class->fields[i];
         if (field->base.isBitField) continue;
@@ -141,7 +140,13 @@ bool obj_copy_base(classMeta *class, objBase *obj, objBase *other) {
         if (type->base.id != typeId_Class) continue;
         if (obj_copy_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs),
                           (objBase*)((char*)other + field->base.ofs))) {
-            obj_dtor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs));
+            for (size_t j = i; j > 0; j--) {
+                const fieldMeta *prev_field = class->fields[j - 1];
+                if (prev_field->base.isBitField) continue;
+                const typeMeta *prev_type = prev_field->base.base.type;
+                if (prev_type->base.id != typeId_Class) continue;
+                obj_dtor_base((classMeta*)&prev_type->classMeta, (objBase*)((char*)obj + prev_field->base.ofs));
+            }
             return true;
         }
     }
