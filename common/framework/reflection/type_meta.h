@@ -10,7 +10,6 @@
 
 typedef struct typeMeta typeMeta;
 typedef struct enumMeta enumMeta;
-typedef struct intMeta intMeta;
 
 #define _typeId_enumName typeId
 #define _typeId_enumBase uint8_t
@@ -53,6 +52,7 @@ struct typeMetaBase {
     typeId id;
 };
 
+typedef struct intMeta intMeta;
 struct intMeta {
     typeMetaBase base;
     bool isSigned;
