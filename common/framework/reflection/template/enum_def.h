@@ -13,14 +13,14 @@
 #endif
 
 #ifndef _enumMemberDef
-#define __enumMemberDef1(tuple) cat_2(enumName, mcrVaTuple(tuple, 0)),
-#define __enumMemberDef2(tuple) cat_2(enumName, mcrVaTuple(tuple, 0)) = mcrVaTuple(tuple, 1),
-#define _enumMemberDef(tuple) cat2(__enumMemberDef, mcrVaTupleArgCount(tuple)) (tuple)
+#define __enumMemberDef1(name) cat_2(enumName, name),
+#define __enumMemberDef2(name, value) cat_2(enumName, name) = value,
+#define _enumMemberDef(...) cat2(__enumMemberDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 #endif
 
 typedef enumBase enumName;
 enum enumName {
-    mcrIter(_enumMemberDef, enumMember)
+    enumMember(_enumMemberDef)
 };
 
 extern const enumMeta cat_2(enumName, meta);

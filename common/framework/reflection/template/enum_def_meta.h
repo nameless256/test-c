@@ -21,14 +21,15 @@
 extern const intMeta cat_2(enumBase, meta);
 
 #ifndef _enumValMetaDef
-#define _enumValMetaDef(tuple) {nameVal2Str(mcrVaTuple(tuple, 0)), cat_2(enumName, mcrVaTuple(tuple, 0))},
+#define _enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
 #endif
 
 struct {
     const char *name;
     enumBase value;
 } static cat_2(enumMetaName, tab)[] = {
-    mcrIter(_enumValMetaDef, enumMember)
+    // mcrIter(_enumValMetaDef, enumMember)
+    enumMember(_enumValMetaDef)
 };
 
 static int enumMetaFunc(getIdxByValue) (int64_t value) {

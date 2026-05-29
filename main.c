@@ -38,12 +38,12 @@ void test() {
     printf("\n");
 }
 
-#define enumName textEncoding
-#define enumBase uint8_t
-#define enumMember Utf8, Utf16, Utf16Le, Utf16Be, Utf32, Utf32Le, Utf32Be
-#define enumMataRemain
-#include "enum_def.h"
-#include "enum_def_meta.h"
+// #define enumName textEncoding
+// #define enumBase uint8_t
+// #define enumMember Utf8, Utf16, Utf16Le, Utf16Be, Utf32, Utf32Le, Utf32Be
+// #define enumMataRemain
+// #include "enum_def.h"
+// #include "enum_def_meta.h"
 
 typedef struct string string;
 struct string {
@@ -51,7 +51,7 @@ struct string {
     size_t size;
     size_t length;
     uint8_t *data;
-    textEncoding encoding;
+    // textEncoding encoding;
 };
 
 bool string_ctor(objBase *obj) {
@@ -73,7 +73,7 @@ bool string_copy(objBase *obj, objBase *other) {
     string *src = (string *) other;
     if (alloc_safe((void **) &self->data, src->size, 0)) return true;
     memcpy(self->data, src->data, src->size);
-    self->encoding = src->encoding;
+    // self->encoding = src->encoding;
     self->length = src->length;
     self->size = src->size;
     return false;

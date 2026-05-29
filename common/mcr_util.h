@@ -26,6 +26,8 @@
 
 #define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOfsOf(type, member)))
 
+#define mcrDispatch(f, ...)         f(__VA_ARGS__)
+
 #define _cat2(a, b) a ## b
 #define cat2(a, b) _cat2(a, b)
 #define _cat_2(a, b) a ## _ ## b

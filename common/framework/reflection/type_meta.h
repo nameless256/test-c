@@ -10,16 +10,38 @@
 
 typedef struct typeMeta typeMeta;
 typedef struct enumMeta enumMeta;
+typedef struct intMeta intMeta;
 
-#define enumName typeId
-#define enumBase uint8_t
-#define enumMember Bool, Int, Ptr, Enum, Float, Array, Union, Struct, Class,
+#define _typeId_enumName typeId
+#define _typeId_enumBase uint8_t
+#define _typeId_enumMember(f) \
+mcrDispatch(f, Bool) \
+mcrDispatch(f, Int) \
+mcrDispatch(f, Ptr) \
+mcrDispatch(f, Enum) \
+mcrDispatch(f, Float) \
+mcrDispatch(f, Array) \
+mcrDispatch(f, Union) \
+mcrDispatch(f, Struct) \
+mcrDispatch(f, Class)
+
+#define enumName _typeId_enumName 
+#define enumBase _typeId_enumBase 
+#define enumMember(f) _typeId_enumMember(f) 
 
 #include "enum_def.h"
 
-#define enumName qual
-#define enumBase uint8_t
-#define enumMember (Null, 0b000), (Const, 0b001), (Volatile, 0b010), (Restrict, 0b100),
+#define _qual_enumName qual
+#define _qual_enumBase uint8_t
+#define _qual_enumMember(f) \
+mcrDispatch(f, Null, 0b000) \
+mcrDispatch(f, Const, 0b001) \
+mcrDispatch(f, Volatile, 0b010) \
+mcrDispatch(f, Restrict, 0b100)
+
+#define enumName _qual_enumName 
+#define enumBase _qual_enumBase 
+#define enumMember(f) _qual_enumMember(f) 
 
 #include "enum_def.h"
 
@@ -31,15 +53,21 @@ struct typeMetaBase {
     typeId id;
 };
 
-typedef struct intMeta intMeta;
 struct intMeta {
     typeMetaBase base;
     bool isSigned;
 };
 
-#define enumName ptrTypeId
-#define enumBase uint8_t
-#define enumMember Type, Func, Array
+#define _ptrTypeId_enumName ptrTypeId
+#define _ptrTypeId_enumBase uint8_t
+#define _ptrTypeId_enumMember(f) \
+mcrDispatch(f, Type) \
+mcrDispatch(f, Func) \
+mcrDispatch(f, Array)
+
+#define enumName _ptrTypeId_enumName 
+#define enumBase _ptrTypeId_enumBase 
+#define enumMember(f) _ptrTypeId_enumMember(f) 
 
 #include "enum_def.h"
 
@@ -110,6 +138,32 @@ struct enumMeta {
     const char *(*getNameByValue)(int64_t value);
 };
 
+#ifdef TYPE_META_H_IMPL
+#define enumName _typeId_enumName
+#define enumBase _typeId_enumBase
+#define enumMember(f) _typeId_enumMember(f)
+#include "enum_def_meta.h"
+
+#define enumName _qual_enumName
+#define enumBase _qual_enumBase
+#define enumMember(f) _qual_enumMember(f)
+#include "enum_def_meta.h"
+
+#define enumName _ptrTypeId_enumName
+#define enumBase _ptrTypeId_enumBase
+#define enumMember(f) _ptrTypeId_enumMember(f)
+#include "enum_def_meta.h"
+#endif
+#undef _typeId_enumName
+#undef _typeId_enumBase
+#undef _typeId_enumMember
+#undef _qual_enumName
+#undef _qual_enumBase
+#undef _qual_enumMember
+#undef _ptrTypeId_enumName
+#undef _ptrTypeId_enumBase
+#undef _ptrTypeId_enumMember
+
 typedef struct fieldMetaBase fieldMetaBase;
 struct fieldMetaBase {
     paramMeta base;
@@ -177,7 +231,6 @@ struct typeMeta {
 };
 
 #define intMetaDeclare(name) extern const intMeta cat_2(name, meta)
-
 intMetaDeclare(int8_t);
 intMetaDeclare(uint8_t);
 intMetaDeclare(int16_t);
@@ -187,5 +240,30 @@ intMetaDeclare(uint32_t);
 intMetaDeclare(int64_t);
 intMetaDeclare(uint64_t);
 intMetaDeclare(size_t);
+
+#ifdef TYPE_META_H_IMPL
+#define intName int8_t
+#include "int_def_meta.h"
+#define intName uint8_t
+#include "int_def_meta.h"
+#define intName int16_t
+#include "int_def_meta.h"
+#define intName uint16_t
+#include "int_def_meta.h"
+#define intName int32_t
+#include "int_def_meta.h"
+#define intName uint32_t
+#include "int_def_meta.h"
+#define intName int64_t
+#include "int_def_meta.h"
+#define intName uint64_t
+#include "int_def_meta.h"
+#define intName size_t
+#include "int_def_meta.h"
+#endif
+
+#ifdef TYPE_META_H_IMPL
+#undef TYPE_META_H_IMPL
+#endif
 
 #endif //TYPE_META_H
