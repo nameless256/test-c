@@ -86,75 +86,83 @@ classMeta string_meta = {
 
 static void obj_dtor_base(classMeta *class, objBase *obj);
 
-static void obj_dtor_member_base(classMeta *class, objBase *obj, size_t cnt) {
+static void obj_dtor_member(classMeta *class, objBase *obj, size_t cnt) {
     for (size_t i = cnt; i > 0; i--) {
         const fieldMeta *field = class->fields[i - 1];
         if (field->base.isBitField) continue;
         const typeMeta *type = field->base.base.type;
         if (type->base.id != typeId_Class) continue;
-        obj_dtor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs));
+        classMeta *fieldClass = (classMeta*)&type->classMeta;
+        objBase *fieldObj = (objBase*)((char*)obj + field->base.ofs);
+        obj_dtor_base(fieldClass, fieldObj);
     }
 }
 
 static void obj_dtor_base(classMeta *class, objBase *obj) {
-    obj_dtor_member_base(class, obj, class->cnt);
+    if (obj == NULL || class == NULL) return;
+    obj_dtor_member(class, obj, class->cnt);
     if (class->dtor) class->dtor(obj);
     if (class->baseClass) obj_dtor_base(class->baseClass, obj);
 }
 
 void obj_dtor(objBase *obj) {
+    if (obj == NULL) return;
+    if (obj->class == NULL) return;
     obj_dtor_base(obj->class, obj);
 }
 
 static bool obj_ctor_base(classMeta *class, objBase *obj) {
-    if (class->baseClass) {
-        if (obj_ctor_base(class->baseClass, obj)) return true;
-    }
+    if (class == NULL || obj == NULL) return true;
+    if (class->baseClass && obj_ctor_base(class->baseClass, obj)) return true;
     for (size_t i = 0; i < class->cnt; i++) {
         const fieldMeta *field = class->fields[i];
         if (field->base.isBitField) continue;
         const typeMeta *type = field->base.base.type;
         if (type->base.id != typeId_Class) continue;
-        if (obj_ctor_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs))) {
-            obj_dtor_member_base(class, obj, i);
-            return true;
-        }
+        classMeta *fieldClass = (classMeta*)&type->classMeta;
+        objBase *fieldObj = (objBase*)((char*)obj + field->base.ofs);
+        if (!obj_ctor_base(fieldClass, fieldObj)) continue;
+        obj_dtor_member(class, obj, i);
+        return true;
     }
-    if (class->ctor) {
-        if (class->ctor(obj)) {
-            return true;
-        }
+    if (class->ctor && class->ctor(obj)) {
+        obj_dtor_member(class, obj, class->cnt);
+        return true;
     }
     return false;
 }
 
 bool obj_ctor(objBase *obj) {
+    if (obj == NULL) return true;
+    if (obj->class == NULL) return true;
     return obj_ctor_base(obj->class, obj);
 }
 
 static bool obj_copy_base(classMeta *class, objBase *obj, objBase *other) {
+    if (class == NULL || obj == NULL || other == NULL) return true;
+    if (class->baseClass && obj_copy_base(class->baseClass, obj, other)) return true;
     for (size_t i = 0; i < class->cnt; i++) {
         const fieldMeta *field = class->fields[i];
         if (field->base.isBitField) continue;
         const typeMeta *type = field->base.base.type;
         if (type->base.id != typeId_Class) continue;
-        if (obj_copy_base((classMeta*)&type->classMeta, (objBase*)((char*)obj + field->base.ofs),
-                          (objBase*)((char*)other + field->base.ofs))) {
-            for (size_t j = i; j > 0; j--) {
-                const fieldMeta *prev_field = class->fields[j - 1];
-                if (prev_field->base.isBitField) continue;
-                const typeMeta *prev_type = prev_field->base.base.type;
-                if (prev_type->base.id != typeId_Class) continue;
-                obj_dtor_base((classMeta*)&prev_type->classMeta, (objBase*)((char*)obj + prev_field->base.ofs));
-            }
-            return true;
-        }
+        classMeta *fieldClass = (classMeta*)&type->classMeta;
+        objBase *fieldObj = (objBase*)((char*)obj + field->base.ofs);
+        objBase *fieldOther = (objBase*)((char*)other + field->base.ofs);
+        if (!obj_copy_base(fieldClass, fieldObj, fieldOther)) continue;
+        obj_dtor_member(class, obj, i);
+        return true;
     }
-    if (class->copy) return class->copy(obj, other);
+    if (class->copy && class->copy(obj, other)) {
+        obj_dtor_member(class, obj, class->cnt);
+        return true;
+    }
     return false;
 }
 
 bool obj_copy(objBase *obj, objBase *other) {
+    if (obj->class == NULL || other->class == NULL) return true;
+    if (obj->class != other->class) return true;
     return obj_copy_base(obj->class, obj, other);
 }
 
