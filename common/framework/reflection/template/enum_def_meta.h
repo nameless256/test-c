@@ -75,7 +75,7 @@ const enumMeta enumMetaName = {
         .id = typeId_Enum,
     },
     .type = &cat_2(enumBase, meta),
-    .cnt = mcrVaCount(enumMember),
+    .cnt = ARRAY_SIZE(cat_2(enumMetaName, tab)),
     .getIdxByValue = enumMetaFunc(getIdxByValue),
     .getIdxByName = enumMetaFunc(getIdxByName),
     .getValueByIdx = enumMetaFunc(getValueByIdx),
