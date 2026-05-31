@@ -18,5 +18,4 @@ const intMeta intMetaName = {
 };
 
 #undef intMetaName
-#undef intMetaFunc
 #undef intName

@@ -138,32 +138,6 @@ struct enumMeta {
     const char *(*getNameByValue)(int64_t value);
 };
 
-#ifdef TYPE_META_H_IMPL
-#define enumName _typeId_enumName
-#define enumBase _typeId_enumBase
-#define enumMember(f) _typeId_enumMember(f)
-#include "enum_def_meta.h"
-
-#define enumName _qual_enumName
-#define enumBase _qual_enumBase
-#define enumMember(f) _qual_enumMember(f)
-#include "enum_def_meta.h"
-
-#define enumName _ptrTypeId_enumName
-#define enumBase _ptrTypeId_enumBase
-#define enumMember(f) _ptrTypeId_enumMember(f)
-#include "enum_def_meta.h"
-#endif
-#undef _typeId_enumName
-#undef _typeId_enumBase
-#undef _typeId_enumMember
-#undef _qual_enumName
-#undef _qual_enumBase
-#undef _qual_enumMember
-#undef _ptrTypeId_enumName
-#undef _ptrTypeId_enumBase
-#undef _ptrTypeId_enumMember
-
 typedef struct fieldMetaBase fieldMetaBase;
 struct fieldMetaBase {
     paramMeta base;
@@ -241,6 +215,10 @@ intMetaDeclare(int64_t);
 intMetaDeclare(uint64_t);
 intMetaDeclare(size_t);
 
+void obj_dtor(objBase *obj);
+bool obj_ctor(objBase *obj);
+bool obj_copy(objBase *obj, objBase *other);
+
 #ifdef TYPE_META_H_IMPL
 #define intName int8_t
 #include "int_def_meta.h"
@@ -260,7 +238,32 @@ intMetaDeclare(size_t);
 #include "int_def_meta.h"
 #define intName size_t
 #include "int_def_meta.h"
+
+#define enumName _typeId_enumName
+#define enumBase _typeId_enumBase
+#define enumMember(f) _typeId_enumMember(f)
+#include "enum_def_meta.h"
+
+#define enumName _qual_enumName
+#define enumBase _qual_enumBase
+#define enumMember(f) _qual_enumMember(f)
+#include "enum_def_meta.h"
+
+#define enumName _ptrTypeId_enumName
+#define enumBase _ptrTypeId_enumBase
+#define enumMember(f) _ptrTypeId_enumMember(f)
+#include "enum_def_meta.h"
 #endif
+
+#undef _typeId_enumName
+#undef _typeId_enumBase
+#undef _typeId_enumMember
+#undef _qual_enumName
+#undef _qual_enumBase
+#undef _qual_enumMember
+#undef _ptrTypeId_enumName
+#undef _ptrTypeId_enumBase
+#undef _ptrTypeId_enumMember
 
 #ifdef TYPE_META_H_IMPL
 #undef TYPE_META_H_IMPL
