@@ -4,9 +4,9 @@
 #define TYPE_META_H_IMPL
 #include "type_meta.h"
 
-static void dtorBase(classMeta *class, objBase *obj);
+static void dtorBase(const classMeta *class, objBase *obj);
 
-static void memberDtor(classMeta *class, objBase *obj, size_t cnt) {
+static void memberDtor(const classMeta *class, objBase *obj, size_t cnt) {
     for (size_t i = cnt; i > 0; i--) {
         const fieldMeta *field = class->fields[i - 1];
         if (field->base.isBitField) continue;
@@ -18,7 +18,7 @@ static void memberDtor(classMeta *class, objBase *obj, size_t cnt) {
     }
 }
 
-static void dtorBase(classMeta *class, objBase *obj) {
+static void dtorBase(const classMeta *class, objBase *obj) {
     if (obj == NULL || class == NULL) return;
     memberDtor(class, obj, class->cnt);
     if (class->dtor) class->dtor(obj);
@@ -31,7 +31,7 @@ void obj_dtor(objBase *obj) {
     dtorBase(obj->class, obj);
 }
 
-static bool ctorBase(classMeta *class, objBase *obj) {
+static bool ctorBase(const classMeta *class, objBase *obj) {
     if (class == NULL || obj == NULL) return true;
     if (class->baseClass && ctorBase(class->baseClass, obj)) return true;
     for (size_t i = 0; i < class->cnt; i++) {
@@ -58,7 +58,7 @@ bool obj_ctor(objBase *obj) {
     return ctorBase(obj->class, obj);
 }
 
-static bool copyBase(classMeta *class, objBase *obj, objBase *other) {
+static bool copyBase(const classMeta *class, objBase *obj, objBase *other) {
     if (class == NULL || obj == NULL || other == NULL) return true;
     if (class->baseClass && copyBase(class->baseClass, obj, other)) return true;
     for (size_t i = 0; i < class->cnt; i++) {
@@ -80,7 +80,8 @@ static bool copyBase(classMeta *class, objBase *obj, objBase *other) {
     return false;
 }
 
-bool obj_copy(objBase *obj, objBase *other) {
+bool obj_copy(objBase *restrict obj, objBase *restrict other) {
+    if (obj == NULL || other == NULL) return true;
     if (obj->class == NULL || other->class == NULL) return true;
     if (obj->class != other->class) return true;
     return copyBase(obj->class, obj, other);

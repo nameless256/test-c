@@ -217,7 +217,7 @@ intMetaDeclare(size_t);
 
 void obj_dtor(objBase *obj);
 bool obj_ctor(objBase *obj);
-bool obj_copy(objBase *obj, objBase *other);
+bool obj_copy(objBase *restrict obj, objBase *restrict other);
 
 #ifdef TYPE_META_H_IMPL
 #define intName int8_t
