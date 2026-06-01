@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct typeMeta typeMeta;
+typedef union typeMeta typeMeta;
 typedef struct enumMeta enumMeta;
 
 #define _typeId_enumName typeId
@@ -116,14 +116,12 @@ struct arrayPtrMeta {
     arrayMeta *array;
 };
 
-typedef struct ptrMeta ptrMeta;
-struct ptrMeta {
-    union {
-        ptrMetaBase base;
-        typePtrMeta type;
-        funcPtrMeta func;
-        arrayPtrMeta array;
-    };
+typedef union ptrMeta ptrMeta;
+union ptrMeta {
+    ptrMetaBase base;
+    typePtrMeta type;
+    funcPtrMeta func;
+    arrayPtrMeta array;
 };
 
 struct enumMeta {
@@ -152,12 +150,10 @@ struct bitFieldMeta {
     uint8_t ofs;
 };
 
-typedef struct fieldMeta fieldMeta;
-struct fieldMeta {
-    union {
-        fieldMetaBase base;
-        bitFieldMeta bitField;
-    };
+typedef union fieldMeta fieldMeta;
+union fieldMeta {
+    fieldMetaBase base;
+    bitFieldMeta bitField;
 };
 
 typedef struct unionMeta unionMeta;
@@ -191,17 +187,15 @@ struct objBase {
     classMeta *class;
 };
 
-struct typeMeta {
-    union {
-        typeMetaBase base;
-        intMeta intMeta;
-        ptrMeta ptrMeta;
-        enumMeta enumMeta;
-        arrayMeta arrayMeta;
-        unionMeta unionMeta;
-        structMeta structMeta;
-        classMeta classMeta;
-    };
+union typeMeta {
+    typeMetaBase base;
+    intMeta intMeta;
+    ptrMeta ptrMeta;
+    enumMeta enumMeta;
+    arrayMeta arrayMeta;
+    unionMeta unionMeta;
+    structMeta structMeta;
+    classMeta classMeta;
 };
 
 #define intMetaDeclare(name) extern const intMeta cat_2(name, meta)
