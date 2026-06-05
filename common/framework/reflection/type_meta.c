@@ -8,12 +8,12 @@ static void dtorBase(const classMeta *class, objBase *obj);
 
 static void memberDtor(const classMeta *class, objBase *obj, size_t cnt) {
     for (size_t i = cnt; i > 0; i--) {
-        const fieldMeta *field = class->fields[i - 1];
-        if (field->base.isBitField) continue;
-        const typeMeta *type = field->base.base.type;
+        const fieldMeta *field = &class->fields[i - 1];
+        if (field->bitCnt) continue;
+        const typeMeta *type = field->base.type;
         if (type->base.id != typeId_Class) continue;
         classMeta *fieldClass = (classMeta*)&type->classMeta;
-        objBase *fieldObj = (objBase*)((char*)obj + field->base.ofs);
+        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
         dtorBase(fieldClass, fieldObj);
     }
 }
@@ -35,12 +35,12 @@ static bool ctorBase(const classMeta *class, objBase *obj) {
     if (class == NULL || obj == NULL) return true;
     if (class->baseClass && ctorBase(class->baseClass, obj)) return true;
     for (size_t i = 0; i < class->cnt; i++) {
-        const fieldMeta *field = class->fields[i];
-        if (field->base.isBitField) continue;
-        const typeMeta *type = field->base.base.type;
+        const fieldMeta *field = &class->fields[i];
+        if (field->bitCnt) continue;
+        const typeMeta *type = field->base.type;
         if (type->base.id != typeId_Class) continue;
         classMeta *fieldClass = (classMeta*)&type->classMeta;
-        objBase *fieldObj = (objBase*)((char*)obj + field->base.ofs);
+        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
         if (!ctorBase(fieldClass, fieldObj)) continue;
         memberDtor(class, obj, i);
         return true;
@@ -62,13 +62,13 @@ static bool copyBase(const classMeta *class, objBase *obj, objBase *other) {
     if (class == NULL || obj == NULL || other == NULL) return true;
     if (class->baseClass && copyBase(class->baseClass, obj, other)) return true;
     for (size_t i = 0; i < class->cnt; i++) {
-        const fieldMeta *field = class->fields[i];
-        if (field->base.isBitField) continue;
-        const typeMeta *type = field->base.base.type;
+        const fieldMeta *field = &class->fields[i];
+        if (field->bitCnt) continue;
+        const typeMeta *type = field->base.type;
         if (type->base.id != typeId_Class) continue;
         classMeta *fieldClass = (classMeta*)&type->classMeta;
-        objBase *fieldObj = (objBase*)((char*)obj + field->base.ofs);
-        objBase *fieldOther = (objBase*)((char*)other + field->base.ofs);
+        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
+        objBase *fieldOther = (objBase*)((char*)other + field->ofs);
         if (!copyBase(fieldClass, fieldObj, fieldOther)) continue;
         memberDtor(class, obj, i);
         return true;

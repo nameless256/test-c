@@ -40,8 +40,7 @@ void test() {
 
 typedef struct string string;
 
-struct string
-{
+struct string {
     objBase base;
     size_t size;
     size_t length;

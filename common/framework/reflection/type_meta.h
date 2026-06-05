@@ -22,11 +22,12 @@ mcrDispatch(f, Float) \
 mcrDispatch(f, Array) \
 mcrDispatch(f, Union) \
 mcrDispatch(f, Struct) \
-mcrDispatch(f, Class)
+mcrDispatch(f, Class) \
+mcrDispatch(f, Dynamic, 0b1000)
 
-#define enumName _typeId_enumName 
-#define enumBase _typeId_enumBase 
-#define enumMember(f) _typeId_enumMember(f) 
+#define enumName _typeId_enumName
+#define enumBase _typeId_enumBase
+#define enumMember(f) _typeId_enumMember(f)
 
 #include "enum_def.h"
 
@@ -38,21 +39,24 @@ mcrDispatch(f, Const, 0b001) \
 mcrDispatch(f, Volatile, 0b010) \
 mcrDispatch(f, Restrict, 0b100)
 
-#define enumName _qual_enumName 
-#define enumBase _qual_enumBase 
-#define enumMember(f) _qual_enumMember(f) 
+#define enumName _qual_enumName
+#define enumBase _qual_enumBase
+#define enumMember(f) _qual_enumMember(f)
 
 #include "enum_def.h"
 
 typedef struct typeMetaBase typeMetaBase;
+
+/// \todo 0xOil metaOf
 struct typeMetaBase {
-    const char *name;
+    const char *name; ///< if id == Dynamic, use metaOf(type)
     size_t size;
     qual quals;
     typeId id;
 };
 
 typedef struct intMeta intMeta;
+
 struct intMeta {
     typeMetaBase base;
     bool isSigned;
@@ -65,63 +69,46 @@ mcrDispatch(f, Type) \
 mcrDispatch(f, Func) \
 mcrDispatch(f, Array)
 
-#define enumName _ptrTypeId_enumName 
-#define enumBase _ptrTypeId_enumBase 
-#define enumMember(f) _ptrTypeId_enumMember(f) 
+#define enumName _ptrTypeId_enumName
+#define enumBase _ptrTypeId_enumBase
+#define enumMember(f) _ptrTypeId_enumMember(f)
 
 #include "enum_def.h"
 
-typedef struct ptrMetaBase ptrMetaBase;
-struct ptrMetaBase {
-    typeMetaBase base; ///< base.name == "*"
-    ptrTypeId id;
-};
-
-typedef struct typePtrMeta typePtrMeta;
-struct typePtrMeta {
-    ptrMetaBase base;
-    const typeMeta *type;
-};
-
 typedef struct paramMeta paramMeta;
+
 struct paramMeta {
     const typeMeta *type;
     const char *name;
 };
 
 typedef struct funcMeta funcMeta;
-struct funcMeta {
-    const typeMeta *type; ///< return type
-    bool isVarArgs;
-    uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) funcMeta::cnt == 1
-    const paramMeta *const *params;
-};
 
-typedef struct funcPtrMeta funcPtrMeta;
-struct funcPtrMeta {
-    ptrMetaBase base;
-    funcMeta *func;
+struct funcMeta {
+    const paramMeta *type; ///< return type; type->name == func name
+    const paramMeta *const params;
+    bool isVarArgs;
+    uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) cnt == 1
 };
 
 typedef struct arrayMeta arrayMeta;
+
 struct arrayMeta {
     typeMetaBase base;
     const typeMeta *type;
     size_t length;
 };
 
-typedef struct arrayPtrMeta arrayPtrMeta;
-struct arrayPtrMeta {
-    ptrMetaBase base;
-    arrayMeta *array;
-};
+typedef struct ptrMeta ptrMeta;
 
-typedef union ptrMeta ptrMeta;
-union ptrMeta {
-    ptrMetaBase base;
-    typePtrMeta type;
-    funcPtrMeta func;
-    arrayPtrMeta array;
+struct ptrMeta {
+    typeMetaBase base; ///< base.name == "*"
+    ptrTypeId id;
+    union {
+        typeMeta *type;
+        funcMeta *func;
+        arrayMeta *array;
+    };
 };
 
 struct enumMeta {
@@ -136,48 +123,40 @@ struct enumMeta {
     const char *(*getNameByValue)(int64_t value);
 };
 
-typedef struct fieldMetaBase fieldMetaBase;
-struct fieldMetaBase {
+typedef struct fieldMeta fieldMeta;
+
+struct fieldMeta {
     paramMeta base;
     size_t ofs;
-    bool isBitField;
-};
-
-typedef struct bitFieldMeta bitFieldMeta;
-struct bitFieldMeta {
-    fieldMetaBase base;
-    uint8_t cnt;
-    uint8_t ofs;
-};
-
-typedef union fieldMeta fieldMeta;
-union fieldMeta {
-    fieldMetaBase base;
-    bitFieldMeta bitField;
+    uint8_t bitCnt;
+    uint8_t bitOfs;
 };
 
 typedef struct unionMeta unionMeta;
+
 struct unionMeta {
     typeMetaBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
-    const fieldMeta *const *fields;
+    const fieldMeta *const fields;
 };
 
 typedef struct structMeta structMeta;
+
 struct structMeta {
     typeMetaBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
-    const fieldMeta *const *fields;
+    const fieldMeta *const fields;
 };
 
 typedef struct objBase objBase;
 
 typedef struct classMeta classMeta;
+
 struct classMeta {
     typeMetaBase base;
     classMeta *baseClass;
     size_t cnt;
-    const fieldMeta *const *fields;
+    const fieldMeta *const fields;
     bool (*ctor)(objBase *);
     void (*dtor)(objBase *);
     bool (*copy)(objBase *, objBase *);
