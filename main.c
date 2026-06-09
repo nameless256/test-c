@@ -71,6 +71,29 @@ bool string_copy(objBase *obj, objBase *other) {
     return false;
 }
 
+static const fieldMeta string_fields[] = {
+    {
+        .base = {
+            .type = (typeMeta*)&size_t_meta,
+            .name = "size"
+        },
+        .ofs = structOfsOf(string, size)
+    },
+    {
+        .base = {
+            .type = (typeMeta*)&size_t_meta,
+            .name = "length"
+        },
+        .ofs = structOfsOf(string, length)
+    },
+    {
+        .base = {
+            .dsc = "uint8_t *data",
+        },
+        .ofs = structOfsOf(string, data)
+    },
+};
+
 classMeta string_meta = {
     .base = {
         .name = "string",
@@ -81,6 +104,8 @@ classMeta string_meta = {
     .ctor = string_ctor,
     .dtor = string_dtor,
     .copy = string_copy,
+    .cnt = 3,
+    .fields = string_fields,
 };
 
 int main() {

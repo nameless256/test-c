@@ -22,8 +22,7 @@ mcrDispatch(f, Float) \
 mcrDispatch(f, Array) \
 mcrDispatch(f, Union) \
 mcrDispatch(f, Struct) \
-mcrDispatch(f, Class) \
-mcrDispatch(f, Dynamic, 0b1000)
+mcrDispatch(f, Class)
 
 #define enumName _typeId_enumName
 #define enumBase _typeId_enumBase
@@ -47,9 +46,8 @@ mcrDispatch(f, Restrict, 0b100)
 
 typedef struct typeMetaBase typeMetaBase;
 
-/// \todo 0xOil metaOf
 struct typeMetaBase {
-    const char *name; ///< if id == Dynamic, use metaOf(type)
+    const char *name;
     size_t size;
     qual quals;
     typeId id;
@@ -80,6 +78,7 @@ typedef struct paramMeta paramMeta;
 struct paramMeta {
     const typeMeta *type;
     const char *name;
+    const char *dsc;
 };
 
 typedef struct funcMeta funcMeta;
