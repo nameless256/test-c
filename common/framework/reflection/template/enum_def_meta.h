@@ -24,48 +24,9 @@ extern const intMeta cat_2(enumBase, meta);
 #define _enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
 #endif
 
-struct {
-    const char *name;
-    enumBase value;
-} static cat_2(enumMetaName, tab)[] = {
+static enumValMeta cat_2(enumMetaName, vals)[] = {
     enumMember(_enumValMetaDef)
 };
-
-static int enumMetaFunc(getIdxByValue) (int64_t value) {
-    for (int i = 0; i < ARRAY_SIZE(cat_2(enumMetaName, tab)); i++) {
-        if (cat_2(enumMetaName, tab)[i].value == value) return i;
-    }
-    return -1;
-}
-
-static int enumMetaFunc(getIdxByName) (const char *name) {
-    for (int i = 0; i < ARRAY_SIZE(cat_2(enumMetaName, tab)); i++) {
-        if (strcmp(cat_2(enumMetaName, tab)[i].name, name) == 0) return i;
-    }
-    return -1;
-}
-
-static int64_t enumMetaFunc(getValueByIdx) (int idx) {
-    if (idx < 0 || ARRAY_SIZE(cat_2(enumMetaName, tab)) <= idx) return INT64_MIN;
-    return cat_2(enumMetaName, tab)[idx].value;
-}
-
-static int64_t enumMetaFunc(getValueByName) (const char *name) {
-    int idx = enumMetaFunc(getIdxByName)(name);
-    if (idx < 0) return INT64_MIN;
-    return cat_2(enumMetaName, tab)[idx].value;
-}
-
-static const char *enumMetaFunc(getNameByIdx) (int idx) {
-    if (idx < 0 || ARRAY_SIZE(cat_2(enumMetaName, tab)) <= idx) return 0;
-    return cat_2(enumMetaName, tab)[idx].name;
-}
-
-static const char *enumMetaFunc(getNameByValue) (int64_t value) {
-    int idx = enumMetaFunc(getIdxByValue)(value);
-    if (idx < 0) return NULL;
-    return cat_2(enumMetaName, tab)[idx].name;
-}
 
 const enumMeta enumMetaName = {
     .base = {
@@ -75,13 +36,8 @@ const enumMeta enumMetaName = {
         .id = typeId_Enum,
     },
     .type = &cat_2(enumBase, meta),
-    .cnt = ARRAY_SIZE(cat_2(enumMetaName, tab)),
-    .getIdxByValue = enumMetaFunc(getIdxByValue),
-    .getIdxByName = enumMetaFunc(getIdxByName),
-    .getValueByIdx = enumMetaFunc(getValueByIdx),
-    .getValueByName = enumMetaFunc(getValueByName),
-    .getNameByIdx = enumMetaFunc(getNameByIdx),
-    .getNameByValue = enumMetaFunc(getNameByValue),
+    .cnt = ARRAY_SIZE(cat_2(enumMetaName, vals)),
+    .vals = cat_2(enumMetaName, vals),
 };
 
 #undef enumMetaName

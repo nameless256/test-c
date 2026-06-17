@@ -74,21 +74,28 @@ bool string_copy(objBase *obj, objBase *other) {
 static const fieldMeta string_fields[] = {
     {
         .base = {
-            .type = (typeMeta*)&size_t_meta,
+            .dsc = {
+                .ptr = (typeMeta*)&size_t_meta
+            },
             .name = "size"
         },
         .ofs = structOfsOf(string, size)
     },
     {
         .base = {
-            .type = (typeMeta*)&size_t_meta,
+            .dsc = {
+                .ptr = (typeMeta*)&size_t_meta
+            },
             .name = "length"
         },
         .ofs = structOfsOf(string, length)
     },
     {
         .base = {
-            .dsc = "uint8_t *data",
+            .dsc = {
+                .str = "uint8_t *data",
+            },
+            .name = "data"
         },
         .ofs = structOfsOf(string, data)
     },

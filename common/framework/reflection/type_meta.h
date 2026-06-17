@@ -75,20 +75,7 @@ mcrDispatch(f, Array)
 
 typedef struct paramMeta paramMeta;
 
-struct paramMeta {
-    const typeMeta *type;
-    const char *name;
-    const char *dsc;
-};
-
 typedef struct funcMeta funcMeta;
-
-struct funcMeta {
-    const paramMeta *type; ///< return type; type->name == func name
-    const paramMeta *const params;
-    bool isVarArgs;
-    uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) cnt == 1
-};
 
 typedef struct arrayMeta arrayMeta;
 
@@ -110,26 +97,21 @@ struct ptrMeta {
     };
 };
 
+typedef struct enumValMeta enumValMeta;
+
+struct enumValMeta {
+    const char *name;
+    int value;
+};
+
 struct enumMeta {
     typeMetaBase base;
     const intMeta *type;
     size_t cnt;
-    int (*getIdxByValue)(int64_t value);
-    int (*getIdxByName)(const char *name);
-    int64_t (*getValueByIdx)(int idx);
-    int64_t (*getValueByName)(const char *name);
-    const char *(*getNameByIdx)(int idx);
-    const char *(*getNameByValue)(int64_t value);
+    const enumValMeta *const vals;
 };
 
 typedef struct fieldMeta fieldMeta;
-
-struct fieldMeta {
-    paramMeta base;
-    size_t ofs;
-    uint8_t bitCnt;
-    uint8_t bitOfs;
-};
 
 typedef struct unionMeta unionMeta;
 
@@ -174,6 +156,36 @@ union typeMeta {
     unionMeta unionMeta;
     structMeta structMeta;
     classMeta classMeta;
+};
+
+typedef struct paramTypeDsc paramTypeDsc;
+
+struct paramTypeDsc {
+    const char *str;
+    const typeMeta *ptr;
+};
+
+struct paramMeta {
+    union {
+        paramTypeDsc dsc;
+        const typeMeta type;
+    };
+    const char *name;
+    bool parsed;
+};
+
+struct fieldMeta {
+    paramMeta base;
+    size_t ofs;
+    uint8_t bitCnt;
+    uint8_t bitOfs;
+};
+
+struct funcMeta {
+    const paramMeta retType; ///< return type; type->name == func name
+    const paramMeta *const params;
+    bool isVarArgs;
+    uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) cnt == 1
 };
 
 void obj_dtor(objBase *obj);
