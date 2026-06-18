@@ -177,8 +177,9 @@ struct paramMeta {
 struct fieldMeta {
     paramMeta base;
     size_t ofs;
-    uint8_t bitCnt;
-    uint8_t bitOfs;
+    /// VvV It is useless and has high implementation complexity, so no support is provided
+    // uint8_t bitCnt;
+    // uint8_t bitOfs;
 };
 
 struct funcMeta {
