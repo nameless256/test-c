@@ -115,6 +115,15 @@ classMeta string_meta = {
     .fields = string_fields,
 };
 
+/// \todo 特殊字段类型元对象拼接有问题
+#define structName test1
+#define structMember(f) \
+mcrDispatch(f, int8_t, a) \
+mcrDispatch(f, char*, b)
+#define structMataRemain
+#include "struct_def.h"
+#include "struct_def_meta.h"
+
 int main() {
     system("chcp 65001");
     clock_t start = clock();

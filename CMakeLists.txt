@@ -37,4 +37,5 @@ file(
         "modules/*.c"
 )
 
-add_executable(test_c main.c ${SOURCES})
+add_executable(test_c main.c ${SOURCES}
+        common/framework/reflection/template/struct_def.h)

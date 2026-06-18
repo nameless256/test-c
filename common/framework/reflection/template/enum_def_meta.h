@@ -16,7 +16,7 @@
 #endif
 
 #define enumMetaName cat_2(enumName, meta)
-#define enumMetaFunc(name) cat_2(enumMetaName, name)
+#define enumMetaValsName cat_2(enumMetaName, vals)
 
 extern const intMeta cat_2(enumBase, meta);
 
@@ -24,7 +24,7 @@ extern const intMeta cat_2(enumBase, meta);
 #define _enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
 #endif
 
-static enumValMeta cat_2(enumMetaName, vals)[] = {
+static enumValMeta enumMetaValsName[] = {
     enumMember(_enumValMetaDef)
 };
 
@@ -36,12 +36,12 @@ const enumMeta enumMetaName = {
         .id = typeId_Enum,
     },
     .type = &cat_2(enumBase, meta),
-    .cnt = ARRAY_SIZE(cat_2(enumMetaName, vals)),
-    .vals = cat_2(enumMetaName, vals),
+    .cnt = ARRAY_SIZE(enumMetaValsName),
+    .vals = enumMetaValsName,
 };
 
+#undef enumMetaValsName
 #undef enumMetaName
-#undef enumMetaFunc
 #undef enumName
 #undef enumBase
 #undef enumMember
