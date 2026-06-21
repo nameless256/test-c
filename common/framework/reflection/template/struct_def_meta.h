@@ -13,11 +13,10 @@
 #define structMetaFieldsName cat_2(structMetaName, fields)
 
 #ifndef _structFieldDef
-#define __structFieldDef1(_dsc) { .base = { .dsc = { .str = name2Str(_dsc) }, }, },
-#define __structFieldDef2(_type, _field) \
+#define __structFieldDef2(_field, _dsc) \
     { \
-    .base = { .dsc = { .ptr = (typeMeta *)&cat_2(_type, meta) }, .name = name2Str(_field), }, \
-    .ofs = structOfsOf(structName, _field), \
+        .base = { .dsc = { .str = name2Str(_dsc) }, .name = name2Str(_field), }, \
+        .ofs = structOfsOf(structName, _field), \
     },
 #define _structFieldDef(...) cat2(__structFieldDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 #endif
