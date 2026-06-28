@@ -15,7 +15,7 @@
 #ifndef _structFieldDef
 #define __structFieldDef2(_field, _dsc) \
     { \
-        .base = { .dsc = { .str = name2Str(_dsc) }, .name = name2Str(_field), }, \
+        .base = { .dsc = name2Str(_dsc), .name = name2Str(_field), }, \
         .ofs = structOfsOf(structName, _field), \
     },
 #define _structFieldDef(...) cat2(__structFieldDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)

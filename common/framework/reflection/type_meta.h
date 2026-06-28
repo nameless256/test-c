@@ -158,20 +158,10 @@ union typeMeta {
     classMeta classMeta;
 };
 
-typedef struct paramTypeDsc paramTypeDsc;
-
-struct paramTypeDsc {
-    const char *str;
-    const typeMeta *ptr;
-};
-
 struct paramMeta {
-    union {
-        paramTypeDsc dsc;
-        const typeMeta type;
-    };
+    const typeMeta type;
     const char *name;
-    bool parsed;
+    const char *dsc;
 };
 
 struct fieldMeta {
