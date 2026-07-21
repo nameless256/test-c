@@ -159,7 +159,7 @@ union typeMeta {
 };
 
 struct paramMeta {
-    const typeMeta type;
+    typeMeta type;
     const char *name;
     const char *dsc;
 };
@@ -179,10 +179,6 @@ struct funcMeta {
     uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) cnt == 1
 };
 
-void obj_dtor(objBase *obj);
-bool obj_ctor(objBase *obj);
-bool obj_copy(objBase *restrict obj, objBase *restrict other);
-
 #define intMetaDeclare(name) extern const intMeta cat_2(name, meta)
 intMetaDeclare(int8_t);
 intMetaDeclare(uint8_t);
@@ -200,37 +196,6 @@ baseTypeMetaDeclare(float);
 baseTypeMetaDeclare(double);
 
 #ifdef TYPE_META_H_IMPL
-#define intName int8_t
-#include "int_def_meta.h"
-#define intName uint8_t
-#include "int_def_meta.h"
-#define intName int16_t
-#include "int_def_meta.h"
-#define intName uint16_t
-#include "int_def_meta.h"
-#define intName int32_t
-#include "int_def_meta.h"
-#define intName uint32_t
-#include "int_def_meta.h"
-#define intName int64_t
-#include "int_def_meta.h"
-#define intName uint64_t
-#include "int_def_meta.h"
-#define intName size_t
-#include "int_def_meta.h"
-
-#define baseTypeName bool
-#define baseTypeId typeId_Bool
-#include "base_type_def_meta.h"
-
-#define baseTypeName float
-#define baseTypeId typeId_Float
-#include "base_type_def_meta.h"
-
-#define baseTypeName double
-#define baseTypeId typeId_Float
-#include "base_type_def_meta.h"
-
 #define enumName _typeId_enumName
 #define enumBase _typeId_enumBase
 #define enumMember(f) _typeId_enumMember(f)

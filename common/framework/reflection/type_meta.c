@@ -4,85 +4,42 @@
 #define TYPE_META_H_IMPL
 #include "type_meta.h"
 
-static void dtorBase(const classMeta *class, objBase *obj);
+#include "int_def_meta.h"
+#define intName uint8_t
+#include "int_def_meta.h"
+#define intName int16_t
+#include "int_def_meta.h"
+#define intName uint16_t
+#include "int_def_meta.h"
+#define intName int32_t
+#include "int_def_meta.h"
+#define intName uint32_t
+#include "int_def_meta.h"
+#define intName int64_t
+#include "int_def_meta.h"
+#define intName uint64_t
+#include "int_def_meta.h"
+#define intName size_t
+#include "int_def_meta.h"
 
-static void memberDtor(const classMeta *class, objBase *obj, size_t cnt) {
-    for (size_t i = cnt; i > 0; i--) {
-        const fieldMeta *field = &class->fields[i - 1];
-        if (field->bitCnt) continue;
-        const typeMeta *type = field->base.type;
-        if (type->base.id != typeId_Class) continue;
-        classMeta *fieldClass = (classMeta*)&type->classMeta;
-        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
-        dtorBase(fieldClass, fieldObj);
-    }
-}
+#define baseTypeName bool
+#define baseTypeId typeId_Bool
+#include "base_type_def_meta.h"
 
-static void dtorBase(const classMeta *class, objBase *obj) {
-    if (obj == NULL || class == NULL) return;
-    memberDtor(class, obj, class->cnt);
-    if (class->dtor) class->dtor(obj);
-    if (class->baseClass) dtorBase(class->baseClass, obj);
-}
+#define baseTypeName float
+#define baseTypeId typeId_Float
+#include "base_type_def_meta.h"
 
-void obj_dtor(objBase *obj) {
-    if (obj == NULL) return;
-    if (obj->class == NULL) return;
-    dtorBase(obj->class, obj);
-}
+#define baseTypeName double
+#define baseTypeId typeId_Float
+#include "base_type_def_meta.h"
 
-static bool ctorBase(const classMeta *class, objBase *obj) {
-    if (class == NULL || obj == NULL) return true;
-    if (class->baseClass && ctorBase(class->baseClass, obj)) return true;
-    for (size_t i = 0; i < class->cnt; i++) {
-        const fieldMeta *field = &class->fields[i];
-        if (field->bitCnt) continue;
-        const typeMeta *type = field->base.type;
-        if (type->base.id != typeId_Class) continue;
-        classMeta *fieldClass = (classMeta*)&type->classMeta;
-        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
-        if (!ctorBase(fieldClass, fieldObj)) continue;
-        memberDtor(class, obj, i);
-        return true;
-    }
-    if (class->ctor && class->ctor(obj)) {
-        memberDtor(class, obj, class->cnt);
-        return true;
-    }
+bool param_type_meta_parsing(paramMeta *meta) {
+    if (meta == NULL) return true;
+    if (meta->dsc == NULL) return true;
+    if (meta->name == NULL) return true;
+    const char *dsc = meta->dsc;
+    const char *name = strstr(dsc, meta->name);
+    if (name == NULL) return true;
     return false;
-}
-
-bool obj_ctor(objBase *obj) {
-    if (obj == NULL) return true;
-    if (obj->class == NULL) return true;
-    return ctorBase(obj->class, obj);
-}
-
-static bool copyBase(const classMeta *class, objBase *obj, objBase *other) {
-    if (class == NULL || obj == NULL || other == NULL) return true;
-    if (class->baseClass && copyBase(class->baseClass, obj, other)) return true;
-    for (size_t i = 0; i < class->cnt; i++) {
-        const fieldMeta *field = &class->fields[i];
-        if (field->bitCnt) continue;
-        const typeMeta *type = field->base.type;
-        if (type->base.id != typeId_Class) continue;
-        classMeta *fieldClass = (classMeta*)&type->classMeta;
-        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
-        objBase *fieldOther = (objBase*)((char*)other + field->ofs);
-        if (!copyBase(fieldClass, fieldObj, fieldOther)) continue;
-        memberDtor(class, obj, i);
-        return true;
-    }
-    if (class->copy && class->copy(obj, other)) {
-        memberDtor(class, obj, class->cnt);
-        return true;
-    }
-    return false;
-}
-
-bool obj_copy(objBase *restrict obj, objBase *restrict other) {
-    if (obj == NULL || other == NULL) return true;
-    if (obj->class == NULL || other->class == NULL) return true;
-    if (obj->class != other->class) return true;
-    return copyBase(obj->class, obj, other);
 }
