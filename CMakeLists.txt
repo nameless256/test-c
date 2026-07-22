@@ -40,3 +40,9 @@ file(
 )
 
 add_executable(test_c main.c ${SOURCES})
+
+set(CUSTOM_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/custom.ld)
+target_link_options(test_c PRIVATE
+        -Wl,-T${CUSTOM_LINKER_SCRIPT}
+)
+

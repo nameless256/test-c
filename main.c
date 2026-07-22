@@ -122,6 +122,9 @@ int main() {
     clock_t start = clock();
 
     // test();
+    foreachMetaType(i) {
+        printf("0xOil: [%d]{%s} %s \n", __LINE__, __FUNCTION__, i->base.name);
+    }
 
     clock_t stop = clock();
     double elapsed = (double)(stop - start) / CLOCKS_PER_SEC;
