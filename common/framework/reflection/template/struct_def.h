@@ -1,5 +1,5 @@
 #include "mcr_util.h"
-#include "type_meta.h"
+#include "meta.h"
 
 #ifndef structName
 #error "structName is not defined"
@@ -19,7 +19,7 @@ struct structName {
     structMember(_structMemberDef)
 };
 
-extern const structMeta cat_2(structName, meta);
+extern const meta_struct cat_2(structName, meta);
 
 #ifdef structMataRemain
 #undef structMataRemain

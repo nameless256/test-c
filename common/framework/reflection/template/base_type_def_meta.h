@@ -1,5 +1,5 @@
 #include "mcr_util.h"
-#include "type_meta.h"
+#include "meta.h"
 
 #ifndef baseTypeName
 #error "baseTypeName is not defined"
@@ -11,7 +11,7 @@
 
 #define baseTypeMetaName cat_2(baseTypeName, meta)
 
-const typeMetaBase baseTypeMetaName = {
+const meta_typeBase baseTypeMetaName = {
     .name = name2Str(baseTypeName),
     .size = sizeof(baseTypeName),
     .quals = qual_Null,

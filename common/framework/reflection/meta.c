@@ -2,7 +2,7 @@
 // Created by CodingDev on 2025/12/16.
 //
 #define TYPE_META_H_IMPL
-#include "type_meta.h"
+#include "meta.h"
 
 #define intName int8_t
 #include "int_def_meta.h"
@@ -35,7 +35,7 @@
 #define baseTypeId typeId_Float
 #include "base_type_def_meta.h"
 
-bool param_type_meta_parsing(paramMeta *meta) {
+bool param_type_meta_parsing(meta_param *meta) {
     if (meta == NULL) return true;
     if (meta->dsc == NULL) return true;
     if (meta->name == NULL) return true;

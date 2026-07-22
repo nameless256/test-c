@@ -1,5 +1,5 @@
 #include "mcr_util.h"
-#include "type_meta.h"
+#include "meta.h"
 
 #include <string.h>
 
@@ -18,17 +18,17 @@
 #define enumMetaName cat_2(enumName, meta)
 #define enumMetaValsName cat_2(enumMetaName, vals)
 
-extern const intMeta cat_2(enumBase, meta);
+extern const meta_int cat_2(enumBase, meta);
 
 #ifndef _enumValMetaDef
 #define _enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
 #endif
 
-static enumValMeta enumMetaValsName[] = {
+static meta_enumVal enumMetaValsName[] = {
     enumMember(_enumValMetaDef)
 };
 
-const enumMeta enumMetaName = {
+const meta_enum enumMetaName = {
     .base = {
         .name = name2Str(enumName),
         .size = sizeof(enumBase),

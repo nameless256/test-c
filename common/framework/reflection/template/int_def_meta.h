@@ -1,5 +1,5 @@
 #include "mcr_util.h"
-#include "type_meta.h"
+#include "meta.h"
 
 #ifndef intName
 #error "intName is not defined"
@@ -7,7 +7,7 @@
 
 #define intMetaName cat_2(intName, meta)
 
-const intMeta intMetaName = {
+const meta_int intMetaName = {
     .base = {
         .name = name2Str(intName),
         .size = sizeof(intName),

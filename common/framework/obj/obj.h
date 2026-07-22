@@ -5,7 +5,7 @@
 #ifndef TEST_C_OBJ_H
 #define TEST_C_OBJ_H
 
-#include "type_meta.h"
+#include "meta.h"
 
 void obj_dtor(objBase *obj);
 bool obj_ctor(objBase *obj);

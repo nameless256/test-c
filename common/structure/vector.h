@@ -3,7 +3,7 @@
 //
 
 #include "util.h"
-#include "type_meta.h"
+#include "meta.h"
 
 typedef struct vectorMeta {
     size_t capacity;

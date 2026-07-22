@@ -8,8 +8,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef union typeMeta typeMeta;
-typedef struct enumMeta enumMeta;
+typedef union meta_type meta_type;
+typedef struct meta_enum meta_enum;
 
 #define _typeId_enumName typeId
 #define _typeId_enumBase uint8_t
@@ -44,19 +44,19 @@ mcrDispatch(f, Restrict, 0b100)
 
 #include "enum_def.h"
 
-typedef struct typeMetaBase typeMetaBase;
+typedef struct meta_typeBase meta_typeBase;
 
-struct typeMetaBase {
+struct meta_typeBase {
     const char *name;
     size_t size;
     qual quals;
     typeId id;
 };
 
-typedef struct intMeta intMeta;
+typedef struct meta_int meta_int;
 
-struct intMeta {
-    typeMetaBase base;
+struct meta_int {
+    meta_typeBase base;
     bool isSigned;
 };
 
@@ -73,113 +73,113 @@ mcrDispatch(f, Array)
 
 #include "enum_def.h"
 
-typedef struct paramMeta paramMeta;
+typedef struct meta_param meta_param;
 
-typedef struct funcMeta funcMeta;
+typedef struct meta_func meta_func;
 
-typedef struct arrayMeta arrayMeta;
+typedef struct meta_array meta_array;
 
-struct arrayMeta {
-    typeMetaBase base;
-    const typeMeta *type;
+struct meta_array {
+    meta_typeBase base;
+    const meta_type *type;
     size_t length;
 };
 
-typedef struct ptrMeta ptrMeta;
+typedef struct meta_ptr meta_ptr;
 
-struct ptrMeta {
-    typeMetaBase base; ///< base.name == "*"
+struct meta_ptr {
+    meta_typeBase base; ///< base.name == "*"
     ptrTypeId id;
     union {
-        typeMeta *type;
-        funcMeta *func;
-        arrayMeta *array;
+        meta_type *type;
+        meta_func *func;
+        meta_array *array;
     };
 };
 
-typedef struct enumValMeta enumValMeta;
+typedef struct meta_enumVal meta_enumVal;
 
-struct enumValMeta {
+struct meta_enumVal {
     const char *name;
     int value;
 };
 
-struct enumMeta {
-    typeMetaBase base;
-    const intMeta *type;
+struct meta_enum {
+    meta_typeBase base;
+    const meta_int *type;
     size_t cnt;
-    const enumValMeta *const vals;
+    const meta_enumVal *const vals;
 };
 
-typedef struct fieldMeta fieldMeta;
+typedef struct meta_field meta_field;
 
-typedef struct unionMeta unionMeta;
+typedef struct meta_union meta_union;
 
-struct unionMeta {
-    typeMetaBase base; ///< if not define name, base.name == <anonymous>
+struct meta_union {
+    meta_typeBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
-    const fieldMeta *const fields;
+    const meta_field *const fields;
 };
 
-typedef struct structMeta structMeta;
+typedef struct meta_struct meta_struct;
 
-struct structMeta {
-    typeMetaBase base; ///< if not define name, base.name == <anonymous>
+struct meta_struct {
+    meta_typeBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
-    const fieldMeta *const fields;
+    const meta_field *const fields;
 };
 
 typedef struct objBase objBase;
 
-typedef struct classMeta classMeta;
+typedef struct meta_class meta_class;
 
-struct classMeta {
-    typeMetaBase base;
-    classMeta *baseClass;
+struct meta_class {
+    meta_typeBase base;
+    meta_class *baseClass;
     size_t cnt;
-    const fieldMeta *const fields;
+    const meta_field *const fields;
     bool (*ctor)(objBase *);
     void (*dtor)(objBase *);
     bool (*copy)(objBase *, objBase *);
 };
 
 struct objBase {
-    classMeta *class;
+    meta_class *class;
 };
 
-union typeMeta {
-    typeMetaBase base;
-    intMeta mInt;
-    ptrMeta mPtr;
-    enumMeta mEnum;
-    arrayMeta mArray;
-    unionMeta mUnion;
-    structMeta mStruct;
-    classMeta mClass;
+union meta_type {
+    meta_typeBase base;
+    meta_int mInt;
+    meta_ptr mPtr;
+    meta_enum mEnum;
+    meta_array mArray;
+    meta_union mUnion;
+    meta_struct mStruct;
+    meta_class mClass;
 };
 
-struct paramMeta {
-    typeMeta type;
+struct meta_param {
+    meta_type type;
     const char *name;
     const char *dsc;
 };
 
-struct fieldMeta {
-    paramMeta base;
+struct meta_field {
+    meta_param base;
     size_t ofs;
     /// VvV It is useless and has high implementation complexity, so no support is provided
     // uint8_t bitCnt;
     // uint8_t bitOfs;
 };
 
-struct funcMeta {
-    const paramMeta retType; ///< return type; type->name == func name
-    const paramMeta *const params;
+struct meta_func {
+    const meta_param retType; ///< return type; type->name == func name
+    const meta_param *const params;
     bool isVarArgs;
     uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) cnt == 1
 };
 
-#define intMetaDeclare(name) extern const intMeta cat_2(name, meta)
+#define intMetaDeclare(name) extern const meta_int cat_2(name, meta)
 intMetaDeclare(int8_t);
 intMetaDeclare(uint8_t);
 intMetaDeclare(int16_t);
@@ -190,7 +190,7 @@ intMetaDeclare(int64_t);
 intMetaDeclare(uint64_t);
 intMetaDeclare(size_t);
 
-#define baseTypeMetaDeclare(name) extern const typeMetaBase cat_2(name, meta)
+#define baseTypeMetaDeclare(name) extern const meta_typeBase cat_2(name, meta)
 baseTypeMetaDeclare(bool);
 baseTypeMetaDeclare(float);
 baseTypeMetaDeclare(double);

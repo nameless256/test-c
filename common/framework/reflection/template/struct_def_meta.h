@@ -1,5 +1,5 @@
 #include "mcr_util.h"
-#include "type_meta.h"
+#include "meta.h"
 
 #ifndef structName
 #error "structName is not defined"
@@ -21,11 +21,11 @@
 #define _structFieldDef(...) cat2(__structFieldDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 #endif
 
-static const fieldMeta structMetaFieldsName[] = {
+static const meta_field structMetaFieldsName[] = {
     structMember(_structFieldDef)
 };
 
-const structMeta structMetaName = {
+const meta_struct structMetaName = {
     .base = {
         .name = name2Str(structName),
         .size = sizeof(structName),

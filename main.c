@@ -71,7 +71,7 @@ bool string_copy(objBase *obj, objBase *other) {
     return false;
 }
 
-static const fieldMeta string_fields[] = {
+static const meta_field string_fields[] = {
     {
         .base = {
             .dsc = "size_t size",
@@ -95,7 +95,7 @@ static const fieldMeta string_fields[] = {
     },
 };
 
-classMeta string_meta = {
+meta_class string_meta = {
     .base = {
         .name = "string",
         .size = sizeof(string),
