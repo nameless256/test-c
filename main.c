@@ -114,8 +114,8 @@ meta_class string_meta = {
 mcrDispatch(f, a, int8_t a) \
 mcrDispatch(f, b, char* b)
 #define structMataRemain
-#include "struct_def.h"
-#include "struct_def_meta.h"
+#include "def_struct.h"
+#include "def_meta_struct.h"
 
 int main() {
     system("chcp 65001");

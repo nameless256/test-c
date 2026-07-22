@@ -29,7 +29,7 @@ mcrDispatch(f, Class)
 #define enumBase _typeId_enumBase
 #define enumMember(f) _typeId_enumMember(f)
 
-#include "enum_def.h"
+#include "def_enum.h"
 
 #define _qual_enumName qual
 #define _qual_enumBase uint8_t
@@ -43,7 +43,7 @@ mcrDispatch(f, Restrict, 0b100)
 #define enumBase _qual_enumBase
 #define enumMember(f) _qual_enumMember(f)
 
-#include "enum_def.h"
+#include "def_enum.h"
 
 typedef struct meta_typeBase meta_typeBase;
 
@@ -72,7 +72,7 @@ mcrDispatch(f, Array)
 #define enumBase _ptrTypeId_enumBase
 #define enumMember(f) _ptrTypeId_enumMember(f)
 
-#include "enum_def.h"
+#include "def_enum.h"
 
 typedef struct meta_param meta_param;
 
@@ -205,17 +205,17 @@ extern meta_type __stop_meta_type_data;
 #define enumName _typeId_enumName
 #define enumBase _typeId_enumBase
 #define enumMember(f) _typeId_enumMember(f)
-#include "enum_def_meta.h"
+#include "def_meta_enum.h"
 
 #define enumName _qual_enumName
 #define enumBase _qual_enumBase
 #define enumMember(f) _qual_enumMember(f)
-#include "enum_def_meta.h"
+#include "def_meta_enum.h"
 
 #define enumName _ptrTypeId_enumName
 #define enumBase _ptrTypeId_enumBase
 #define enumMember(f) _ptrTypeId_enumMember(f)
-#include "enum_def_meta.h"
+#include "def_meta_enum.h"
 #undef TYPE_META_H_IMPL
 #endif
 
