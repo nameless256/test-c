@@ -25,15 +25,17 @@ static const meta_field structMetaFieldsName[] = {
     structMember(_structFieldDef)
 };
 
-const meta_struct structMetaName = {
-    .base = {
-        .name = name2Str(structName),
-        .size = sizeof(structName),
-        .quals = qual_Null,
-        .id = typeId_Struct,
-    },
-    .cnt = ARRAY_SIZE(structMetaFieldsName),
-    .fields = structMetaFieldsName,
+registerMetaType(structMetaName) = {
+    .mStruct = {
+        .base = {
+            .name = name2Str(structName),
+            .size = sizeof(structName),
+            .quals = qual_Null,
+            .id = typeId_Struct,
+        },
+        .cnt = ARRAY_SIZE(structMetaFieldsName),
+        .fields = structMetaFieldsName,
+    }
 };
 
 #undef structMetaFieldsName

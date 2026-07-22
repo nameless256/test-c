@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "mcr_util.h"
 
 typedef union meta_type meta_type;
 typedef struct meta_enum meta_enum;
@@ -106,7 +107,7 @@ struct meta_enumVal {
 
 struct meta_enum {
     meta_typeBase base;
-    const meta_int *type;
+    const meta_type *type;
     size_t cnt;
     const meta_enumVal *const vals;
 };
@@ -179,21 +180,26 @@ struct meta_func {
     uint8_t cnt; ///< isVarArgs == true, e.g. printf(fmt, ...) cnt == 1
 };
 
-#define intMetaDeclare(name) extern const meta_int cat_2(name, meta)
-intMetaDeclare(int8_t);
-intMetaDeclare(uint8_t);
-intMetaDeclare(int16_t);
-intMetaDeclare(uint16_t);
-intMetaDeclare(int32_t);
-intMetaDeclare(uint32_t);
-intMetaDeclare(int64_t);
-intMetaDeclare(uint64_t);
-intMetaDeclare(size_t);
+#define metaTypeDecl(name) extern const meta_type cat_2(name, meta)
+metaTypeDecl(int8_t);
+metaTypeDecl(uint8_t);
+metaTypeDecl(int16_t);
+metaTypeDecl(uint16_t);
+metaTypeDecl(int32_t);
+metaTypeDecl(uint32_t);
+metaTypeDecl(int64_t);
+metaTypeDecl(uint64_t);
+metaTypeDecl(size_t);
+metaTypeDecl(char);
+metaTypeDecl(bool);
+metaTypeDecl(float);
+metaTypeDecl(double);
 
-#define baseTypeMetaDeclare(name) extern const meta_typeBase cat_2(name, meta)
-baseTypeMetaDeclare(bool);
-baseTypeMetaDeclare(float);
-baseTypeMetaDeclare(double);
+extern meta_type __start_meta_type_data;
+extern meta_type __stop_meta_type_data;
+
+#define registerMetaType(type) SECTION(".meta_type_data") const meta_type type
+#define foreachMetaType(i) for (meta_type *i = &__start_meta_type_data; i < &__stop_meta_type_data; ++i)
 
 #ifdef TYPE_META_H_IMPL
 #define enumName _typeId_enumName
@@ -210,6 +216,7 @@ baseTypeMetaDeclare(double);
 #define enumBase _ptrTypeId_enumBase
 #define enumMember(f) _ptrTypeId_enumMember(f)
 #include "enum_def_meta.h"
+#undef TYPE_META_H_IMPL
 #endif
 
 #undef _typeId_enumName
@@ -221,9 +228,5 @@ baseTypeMetaDeclare(double);
 #undef _ptrTypeId_enumName
 #undef _ptrTypeId_enumBase
 #undef _ptrTypeId_enumMember
-
-#ifdef TYPE_META_H_IMPL
-#undef TYPE_META_H_IMPL
-#endif
 
 #endif //TYPE_META_H

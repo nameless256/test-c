@@ -23,7 +23,7 @@ enum enumName {
     enumMember(_enumMemberDef)
 };
 
-extern const meta_enum cat_2(enumName, meta);
+extern const meta_type cat_2(enumName, meta);
 
 #ifdef enumMataRemain
 #undef enumMataRemain

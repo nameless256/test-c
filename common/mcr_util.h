@@ -37,6 +37,7 @@
 #define WEAK                        __attribute__((weak))
 #define UNUSED                      __attribute__((unused))
 #define CLEANUP(function)           __attribute__((cleanup(function)))
+#define SECTION(x)                  __attribute__((section(x)))
 
 #pragma region "succ"
 #define succ0 1

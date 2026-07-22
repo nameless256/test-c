@@ -19,7 +19,7 @@ struct structName {
     structMember(_structMemberDef)
 };
 
-extern const meta_struct cat_2(structName, meta);
+extern const meta_type cat_2(structName, meta);
 
 #ifdef structMataRemain
 #undef structMataRemain

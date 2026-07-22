@@ -18,7 +18,7 @@
 #define enumMetaName cat_2(enumName, meta)
 #define enumMetaValsName cat_2(enumMetaName, vals)
 
-extern const meta_int cat_2(enumBase, meta);
+extern const meta_type cat_2(enumBase, meta);
 
 #ifndef _enumValMetaDef
 #define _enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
@@ -28,16 +28,18 @@ static meta_enumVal enumMetaValsName[] = {
     enumMember(_enumValMetaDef)
 };
 
-const meta_enum enumMetaName = {
-    .base = {
-        .name = name2Str(enumName),
-        .size = sizeof(enumBase),
-        .quals = qual_Null,
-        .id = typeId_Enum,
-    },
-    .type = &cat_2(enumBase, meta),
-    .cnt = ARRAY_SIZE(enumMetaValsName),
-    .vals = enumMetaValsName,
+registerMetaType(enumMetaName) = {
+    .mEnum = {
+        .base = {
+            .name = name2Str(enumName),
+            .size = sizeof(enumBase),
+            .quals = qual_Null,
+            .id = typeId_Enum,
+        },
+        .type = &cat_2(enumBase, meta),
+        .cnt = ARRAY_SIZE(enumMetaValsName),
+        .vals = enumMetaValsName,
+    }
 };
 
 #undef enumMetaValsName

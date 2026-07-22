@@ -22,6 +22,8 @@
 #include "int_def_meta.h"
 #define intName size_t
 #include "int_def_meta.h"
+#define intName char
+#include "int_def_meta.h"
 
 #define baseTypeName bool
 #define baseTypeId typeId_Bool

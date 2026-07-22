@@ -11,11 +11,13 @@
 
 #define baseTypeMetaName cat_2(baseTypeName, meta)
 
-const meta_typeBase baseTypeMetaName = {
-    .name = name2Str(baseTypeName),
-    .size = sizeof(baseTypeName),
-    .quals = qual_Null,
-    .id = baseTypeId,
+registerMetaType(baseTypeMetaName) = {
+    .base = {
+        .name = name2Str(baseTypeName),
+        .size = sizeof(baseTypeName),
+        .quals = qual_Null,
+        .id = baseTypeId,
+    }
 };
 
 #undef baseTypeMetaName
