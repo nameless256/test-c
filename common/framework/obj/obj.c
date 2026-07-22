@@ -11,7 +11,7 @@ static void memberDtor(const classMeta *class, objBase *obj, size_t cnt) {
         const fieldMeta *field = &class->fields[i - 1];
         const typeMeta *type = &field->base.type;
         if (type->base.id != typeId_Class) continue;
-        classMeta *fieldClass = (classMeta*)&type->classMeta;
+        classMeta *fieldClass = (classMeta*)&type->mClass;
         objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
         dtorBase(fieldClass, fieldObj);
     }
@@ -37,7 +37,7 @@ static bool ctorBase(const classMeta *class, objBase *obj) {
         const fieldMeta *field = &class->fields[i];
         const typeMeta *type = &field->base.type;
         if (type->base.id != typeId_Class) continue;
-        classMeta *fieldClass = (classMeta*)&type->classMeta;
+        classMeta *fieldClass = (classMeta*)&type->mClass;
         objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
         if (!ctorBase(fieldClass, fieldObj)) continue;
         memberDtor(class, obj, i);
@@ -63,7 +63,7 @@ static bool copyBase(const classMeta *class, objBase *obj, objBase *other) {
         const fieldMeta *field = &class->fields[i];
         const typeMeta *type = &field->base.type;
         if (type->base.id != typeId_Class) continue;
-        classMeta *fieldClass = (classMeta*)&type->classMeta;
+        classMeta *fieldClass = (classMeta*)&type->mClass;
         objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
         objBase *fieldOther = (objBase*)((char*)other + field->ofs);
         if (!copyBase(fieldClass, fieldObj, fieldOther)) continue;

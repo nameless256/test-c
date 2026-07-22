@@ -149,13 +149,13 @@ struct objBase {
 
 union typeMeta {
     typeMetaBase base;
-    intMeta intMeta;
-    ptrMeta ptrMeta;
-    enumMeta enumMeta;
-    arrayMeta arrayMeta;
-    unionMeta unionMeta;
-    structMeta structMeta;
-    classMeta classMeta;
+    intMeta mInt;
+    ptrMeta mPtr;
+    enumMeta mEnum;
+    arrayMeta mArray;
+    unionMeta mUnion;
+    structMeta mStruct;
+    classMeta mClass;
 };
 
 struct paramMeta {
