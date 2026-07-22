@@ -4,6 +4,7 @@
 #define TYPE_META_H_IMPL
 #include "type_meta.h"
 
+#define intName int8_t
 #include "int_def_meta.h"
 #define intName uint8_t
 #include "int_def_meta.h"
@@ -40,6 +41,23 @@ bool param_type_meta_parsing(paramMeta *meta) {
     if (meta->name == NULL) return true;
     const char *dsc = meta->dsc;
     const char *name = strstr(dsc, meta->name);
+    // int a
+    // signed int a
+    // unsigned int a
+    // const char *name
+    // union {
+    //     typeMeta *type;
+    //     funcMeta *func;
+    //     arrayMeta *array;
+    // }
+    // const enumValMeta *const vals
+    // bool (*ctor)(objBase *)
+    // ptrTypeId id
+    // ptrTypeId id[3]
+    // uint8_t t:4
+    // void (*t[10]) (int a)
+    // int (*t)[10]
+    // void *t[10]
     if (name == NULL) return true;
     return false;
 }
