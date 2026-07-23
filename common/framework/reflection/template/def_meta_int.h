@@ -10,7 +10,7 @@
 registerMetaType(intMetaName) = {
     .mInt = {
         .base = {
-            .name = name2Str(intName),
+            .name = nameVal2Str(intName),
             .size = sizeof(intName),
             .quals = qual_Null,
             .id = typeId_Int,

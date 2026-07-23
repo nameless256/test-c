@@ -8,34 +8,34 @@
 #include "def_meta_int.h"
 #define intName uint8_t
 #include "def_meta_int.h"
-#define intName int16_t
-#include "def_meta_int.h"
-#define intName uint16_t
-#include "def_meta_int.h"
-#define intName int32_t
-#include "def_meta_int.h"
-#define intName uint32_t
-#include "def_meta_int.h"
-#define intName int64_t
-#include "def_meta_int.h"
-#define intName uint64_t
-#include "def_meta_int.h"
-#define intName size_t
-#include "def_meta_int.h"
-#define intName char
-#include "def_meta_int.h"
-
-#define baseTypeName bool
-#define baseTypeId typeId_Bool
-#include "def_meta_base_type.h"
-
-#define baseTypeName float
-#define baseTypeId typeId_Float
-#include "def_meta_base_type.h"
-
-#define baseTypeName double
-#define baseTypeId typeId_Float
-#include "def_meta_base_type.h"
+// #define intName int16_t
+// #include "def_meta_int.h"
+// #define intName uint16_t
+// #include "def_meta_int.h"
+// #define intName int32_t
+// #include "def_meta_int.h"
+// #define intName uint32_t
+// #include "def_meta_int.h"
+// #define intName int64_t
+// #include "def_meta_int.h"
+// #define intName uint64_t
+// #include "def_meta_int.h"
+// #define intName size_t
+// #include "def_meta_int.h"
+// #define intName char
+// #include "def_meta_int.h"
+//
+// #define baseTypeName bool
+// #define baseTypeId typeId_Bool
+// #include "def_meta_base_type.h"
+//
+// #define baseTypeName float
+// #define baseTypeId typeId_Float
+// #include "def_meta_base_type.h"
+//
+// #define baseTypeName double
+// #define baseTypeId typeId_Float
+// #include "def_meta_base_type.h"
 
 bool param_type_meta_parsing(meta_param *meta) {
     if (meta == NULL) return true;

@@ -195,11 +195,11 @@ metaTypeDecl(bool);
 metaTypeDecl(float);
 metaTypeDecl(double);
 
-extern meta_type __meta_type_data_start;
-extern meta_type __meta_type_data_end;
+extern meta_type __start_meta_type_data;
+extern meta_type __stop_meta_type_data;
 
-#define registerMetaType(type) SECTION(".meta_type_data") const meta_type type
-#define foreachMetaType(i) for (meta_type *i = &__meta_type_data_start; i < &__meta_type_data_end; ++i)
+#define registerMetaType(type) __attribute__((section("meta_type_data"), aligned(4))) const meta_type type
+#define foreachMetaType(i) for (meta_type *i = &__start_meta_type_data; i < &__stop_meta_type_data; ++i)
 
 #ifdef TYPE_META_H_IMPL
 #define enumName _typeId_enumName

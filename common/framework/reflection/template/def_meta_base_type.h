@@ -13,7 +13,7 @@
 
 registerMetaType(baseTypeMetaName) = {
     .base = {
-        .name = name2Str(baseTypeName),
+        .name = nameVal2Str(baseTypeName),
         .size = sizeof(baseTypeName),
         .quals = qual_Null,
         .id = baseTypeId,
