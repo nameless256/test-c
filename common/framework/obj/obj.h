@@ -9,6 +9,6 @@
 
 void obj_dtor(objBase *obj);
 bool obj_ctor(objBase *obj);
-bool obj_copy(objBase *restrict obj, objBase *restrict other);
+bool obj_copy(objBase *restrict dst, objBase *restrict src);
 
 #endif //TEST_C_OBJ_H

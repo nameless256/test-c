@@ -6,20 +6,7 @@
 
 static void dtorBase(const meta_class *class, objBase *obj);
 
-static void memberDtor(const meta_class *class, objBase *obj, size_t cnt) {
-    for (size_t i = cnt; i > 0; i--) {
-        const meta_field *field = &class->fields[i - 1];
-        const meta_type *type = &field->base.type;
-        if (type->base.id != typeId_Class) continue;
-        meta_class *fieldClass = (meta_class*)&type->mClass;
-        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
-        dtorBase(fieldClass, fieldObj);
-    }
-}
-
 static void dtorBase(const meta_class *class, objBase *obj) {
-    if (obj == NULL || class == NULL) return;
-    memberDtor(class, obj, class->cnt);
     if (class->dtor) class->dtor(obj);
     if (class->baseClass) dtorBase(class->baseClass, obj);
 }
@@ -31,20 +18,9 @@ void obj_dtor(objBase *obj) {
 }
 
 static bool ctorBase(const meta_class *class, objBase *obj) {
-    if (class == NULL || obj == NULL) return true;
     if (class->baseClass && ctorBase(class->baseClass, obj)) return true;
-    for (size_t i = 0; i < class->cnt; i++) {
-        const meta_field *field = &class->fields[i];
-        const meta_type *type = &field->base.type;
-        if (type->base.id != typeId_Class) continue;
-        meta_class *fieldClass = (meta_class*)&type->mClass;
-        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
-        if (!ctorBase(fieldClass, fieldObj)) continue;
-        memberDtor(class, obj, i);
-        return true;
-    }
     if (class->ctor && class->ctor(obj)) {
-        memberDtor(class, obj, class->cnt);
+        dtorBase(class->baseClass, obj);
         return true;
     }
     return false;
@@ -56,30 +32,18 @@ bool obj_ctor(objBase *obj) {
     return ctorBase(obj->class, obj);
 }
 
-static bool copyBase(const meta_class *class, objBase *obj, objBase *other) {
-    if (class == NULL || obj == NULL || other == NULL) return true;
-    if (class->baseClass && copyBase(class->baseClass, obj, other)) return true;
-    for (size_t i = 0; i < class->cnt; i++) {
-        const meta_field *field = &class->fields[i];
-        const meta_type *type = &field->base.type;
-        if (type->base.id != typeId_Class) continue;
-        meta_class *fieldClass = (meta_class*)&type->mClass;
-        objBase *fieldObj = (objBase*)((char*)obj + field->ofs);
-        objBase *fieldOther = (objBase*)((char*)other + field->ofs);
-        if (!copyBase(fieldClass, fieldObj, fieldOther)) continue;
-        memberDtor(class, obj, i);
-        return true;
-    }
-    if (class->copy && class->copy(obj, other)) {
-        memberDtor(class, obj, class->cnt);
+static bool copyBase(const meta_class *class, objBase *dst, objBase *src) {
+    if (class->baseClass && copyBase(class->baseClass, dst, src)) return true;
+    if (class->copy && class->copy(dst, src)) {
+        dtorBase(class->baseClass, dst);
         return true;
     }
     return false;
 }
 
-bool obj_copy(objBase *restrict obj, objBase *restrict other) {
-    if (obj == NULL || other == NULL) return true;
-    if (obj->class == NULL || other->class == NULL) return true;
-    if (obj->class != other->class) return true;
-    return copyBase(obj->class, obj, other);
+bool obj_copy(objBase *restrict dst, objBase *restrict src) {
+    if (dst == NULL || src == NULL) return true;
+    if (dst->class == NULL || src->class == NULL) return true;
+    if (dst->class != src->class) return true;
+    return copyBase(dst->class, dst, src);
 }

@@ -160,7 +160,6 @@ union meta_type {
 };
 
 struct meta_param {
-    meta_type type;
     const char *name;
     const char *dsc;
 };
@@ -168,9 +167,7 @@ struct meta_param {
 struct meta_field {
     meta_param base;
     size_t ofs;
-    /// VvV It is useless and has high implementation complexity, so no support is provided
-    // uint8_t bitCnt;
-    // uint8_t bitOfs;
+    uint8_t bits;
 };
 
 struct meta_func {
