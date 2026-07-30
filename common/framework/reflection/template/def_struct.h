@@ -10,6 +10,7 @@
 #endif
 
 #ifndef _structMemberDef
+#define __structMemberDef3(name, dsc, bits) dsc: bits;
 #define __structMemberDef2(name, dsc) dsc;
 #define _structMemberDef(...) cat2(__structMemberDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 #endif

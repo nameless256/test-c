@@ -20,8 +20,7 @@
     },
 #define __structFieldDef3(_field, _dsc, _bits) \
     { \
-        .base = { .dsc = name2Str(_dsc), .name = name2Str(_field), }, \
-        .ofs = structOfsOf(structName, _field), \
+        .base = { .dsc = name2Str(_dsc: _bits), .name = name2Str(_field), }, \
         .bits = _bits, \
     },
 #define _structFieldDef(...) cat2(__structFieldDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)

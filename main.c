@@ -21,7 +21,16 @@
 /**
  * @defgroup Main
  * @{
- */
+*/
+
+#define structName test1
+#define structMember(f) \
+mcrDispatch(f, a, int8_t a) \
+mcrDispatch(f, b, char* b) \
+mcrDispatch(f, c, int8_t c, 4)
+#define structMataRemain
+#include "def_struct.h"
+#include "def_meta_struct.h"
 
 int main() {
     system("chcp 65001");
