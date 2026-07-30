@@ -35,31 +35,29 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "oop.h"
 
-#define className dlx
-
-oopClassDeclare()
+struct dlx;
+typedef struct dlx dlx;
 
 /**
  * @brief 创建 一个有 rowCount 行 colCount 列 的 dlx
  */
-oopCreate(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resultLen);
+dlx *dlx_create(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resultLen);
 
-oopDestroy();
+void dlx_destroy(dlx *self);
 
 /**
  * @brief 在 rowId 行 colId 列 插入一个节点
  * @return 节点是否已存在
  */
-oopFunc(bool, nodeAdd, uint16_t rowId, uint16_t colId);
+bool dlx_nodeAdd(dlx *self, uint16_t rowId, uint16_t colId);
 
 /**
  * @brief 在 解空间 内 搜索 可行解
  * @param count 需要找到的解的个数
  * @return 找到的解的个数
  */
-oopFunc(uint16_t, search, uint16_t count);
+uint16_t dlx_search(dlx *self, uint16_t count);
 
 /**
  * @note 决策化作行

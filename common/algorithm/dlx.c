@@ -30,7 +30,7 @@ typedef struct dlxCol {
 #define dlxNodeHIsEmpty(node) ((node)->left == (node) && (node)->right == (node))
 #define dlxNodeInit(node) (node)->up = (node)->down = (node)->left = (node)->right = (node)
 
-oopClassDefine() {
+struct dlx {
     dlxCol *col; ///< 列首节点数组
     dlxCursor *first; ///< 行首节点指针数组
     uint16_t *stack; ///< 解答栈
@@ -56,7 +56,7 @@ static dlxNode *dlxNodeRemove(dlxNode *node) {
     return node;
 }
 
-static oopFunc(void, hideColById, uint16_t colId) {
+static void dlx_hideColById(dlx *self, uint16_t colId) {
     dlxCol *col = &self->col[colId];
     dlxCursor r, c;
     dlxNodeHHide(&col->node);
@@ -64,7 +64,7 @@ static oopFunc(void, hideColById, uint16_t colId) {
         for (c = r->right; c != r; c = c->right) dlxNodeVHide(c), --(c->col->size);
 }
 
-static oopFunc(void, showColById, uint16_t colId) {
+static void dlx_showColById(dlx *self, uint16_t colId) {
     dlxCol *col = &self->col[colId];
     dlxCursor r, c;
     for (r = col->node.down; r != &col->node; r = r->down)
@@ -72,18 +72,18 @@ static oopFunc(void, showColById, uint16_t colId) {
     dlxNodeHShow(&col->node);
 }
 
-static oopFunc(dlxCol *, getMinCol) {
+static dlxCol *dlx_getMinCol(dlx *self) {
     dlxNode *minCol = self->col[0].node.right;
     for (dlxCursor i = minCol; i != &self->col[0].node; i = i->right)
         if (i->col->size < minCol->col->size) minCol = i;
     return minCol->col;
 }
 
-static oopFunc(bool, isEmpty) {
+static bool dlx_isEmpty(dlx *self) {
     return dlxNodeHIsEmpty(&self->col[0].node);
 }
 
-static oopFunc(uint16_t, dance, uint16_t idx, uint16_t count) {
+static uint16_t dlx_dance(dlx *self, uint16_t idx, uint16_t count) {
     uint16_t resultCount = 0; // 0: 无解
     if (dlx_isEmpty(self)) { // 有解
         if (self->result != NULL) {
@@ -109,7 +109,7 @@ static oopFunc(uint16_t, dance, uint16_t idx, uint16_t count) {
     return resultCount; // 无解返回0并在下一分支搜索解
 }
 
-oopCreate(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resultLen) {
+dlx *dlx_create(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resultLen) {
     dlx *self = malloc(sizeof(dlx)); // 基本结构 空间分配
     self->colCount = colCount + 1; // + 1: 行首
     self->rowCount = rowCount + 1; // + 1: 列首
@@ -130,14 +130,14 @@ oopCreate(uint16_t rowCount, uint16_t colCount, uint16_t *result, uint16_t resul
     return self;
 }
 
-oopDestroy() {
+void dlx_destroy(dlx *self) {
     if (self == NULL) return;
     for (uint16_t i = 0; i < self->colCount; ++i) // 销毁 列首 的 垂直链表
         while (!dlxNodeVIsEmpty(&self->col[i].node)) free(dlxNodeRemove(self->col[i].node.down));
     free(self->stack), free(self->first), free(self->col), free(self);
 }
 
-oopFunc(bool, nodeAdd, uint16_t rowId, uint16_t colId) {
+bool dlx_nodeAdd(dlx *self, uint16_t rowId, uint16_t colId) {
     // 确保不会有重复节点
     for (dlxCursor i = self->col[colId].node.down; i != &self->col[colId].node; i = i->down)
         if (i->rowId == rowId) return true;
@@ -150,7 +150,7 @@ oopFunc(bool, nodeAdd, uint16_t rowId, uint16_t colId) {
     return false;
 }
 
-oopFunc(uint16_t, search, uint16_t count) {
+uint16_t dlx_search(dlx *self, uint16_t count) {
     return dlx_dance(self, 0, count);
 }
 
