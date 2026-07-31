@@ -1,0 +1,58 @@
+#include "mcr_util.h"
+#include "meta.h"
+
+#ifndef className
+#error "className is not defined"
+#endif
+
+#ifndef classBaseName
+#define classBaseName objBase
+#endif
+
+#define classMetaName cat_2(className, meta)
+#define classMetaFieldsName cat_2(classMetaName, fields)
+
+#ifndef _classFieldDef
+#define __classFieldDef2(_field, _dsc) \
+{ .base = { .dsc = name2Str(_dsc), .name = name2Str(_field), }, .ofs = offsetof(className, _field), },
+#define __classFieldDef3(_field, _dsc, _bits) \
+{ .base = { .dsc = name2Str(_dsc: _bits), .name = name2Str(_field), }, .bits = _bits, },
+#define _classFieldDef(...) cat2(__classFieldDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
+#endif
+
+#ifdef classMember
+static const meta_field classMetaFieldsName[] = {
+    classMember(_classFieldDef)
+};
+#endif
+
+extern const meta_type cat_2(classBaseName, meta);
+extern bool cat_2(className, ctor)(objBase *);
+extern void cat_2(className, dtor)(objBase *);
+extern bool cat_2(className, copy)(objBase *, objBase *);
+
+registerMetaType(classMetaName) = {
+    .mClass = {
+        .base = {
+            .name = nameVal2Str(className),
+            .size = sizeof(className),
+            .quals = qual_Null,
+            .id = typeId_Class,
+        },
+        .baseClass = &cat_2(classBaseName, meta),
+#ifdef classMember
+        .cnt = ARRAY_SIZE(classMetaFieldsName),
+        .fields = classMetaFieldsName,
+#endif
+        .ctor = cat_2(className, ctor),
+        .dtor = cat_2(className, dtor),
+        .copy = cat_2(className, copy),
+    }
+};
+
+#undef classMetaFieldsName
+#undef classMetaName
+#undef className
+#undef classBase
+#undef classMember
+#undef classBaseName

@@ -1,7 +1,7 @@
 //
 // Created by CodingDev on 2025/12/16.
 //
-#define TYPE_META_H_IMPL
+#define META_H_IMPL
 #include "meta.h"
 
 #define intName int8_t

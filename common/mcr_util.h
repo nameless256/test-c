@@ -22,9 +22,7 @@
 ((total) ? (((value) > (total)) ? (num) : ((num) * (value) / (total))) : 0)
 #define valMapRange(value, num, lBound, uBound) valMap(value - lBound, num, uBound - lBound)
 
-#define structOfsOf(type, member) ((uintptr_t)(&((type *)0)->member))
-
-#define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - structOfsOf(type, member)))
+#define containerOf(ptr, type, member) ((type *)((uintptr_t *)(ptr) - offsetof(type, member)))
 
 #define mcrDispatch(f, ...)         f(__VA_ARGS__)
 

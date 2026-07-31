@@ -136,7 +136,7 @@ typedef struct meta_class meta_class;
 
 struct meta_class {
     meta_typeBase base;
-    meta_class *baseClass;
+    const meta_type *baseClass;
     size_t cnt;
     const meta_field *const fields;
     bool (*ctor)(objBase *);
@@ -198,7 +198,7 @@ extern meta_type __stop_meta_type_data;
 #define registerMetaType(type) __attribute__((section("meta_type_data"), aligned(4))) const meta_type type
 #define foreachMetaType(i) for (meta_type *i = &__start_meta_type_data; i < &__stop_meta_type_data; ++i)
 
-#ifdef TYPE_META_H_IMPL
+#ifdef META_H_IMPL
 #define enumName _typeId_enumName
 #define enumBase _typeId_enumBase
 #define enumMember(f) _typeId_enumMember(f)
@@ -213,7 +213,7 @@ extern meta_type __stop_meta_type_data;
 #define enumBase _ptrTypeId_enumBase
 #define enumMember(f) _ptrTypeId_enumMember(f)
 #include "def_meta_enum.h"
-#undef TYPE_META_H_IMPL
+#undef META_H_IMPL
 #endif
 
 #undef _typeId_enumName
