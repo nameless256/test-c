@@ -2,6 +2,9 @@
 // Created by CodingDev on 2026/2/26.
 //
 
+#ifndef VECTOR_H
+#define VECTOR_H
+
 #include "util.h"
 #include "meta.h"
 
@@ -64,4 +67,6 @@ void vector_reserve(void *v, size_t c);
 
 #ifdef VECTOR_H_IMPL
 #undef VECTOR_H_IMPL
+#endif
+
 #endif

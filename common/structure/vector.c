@@ -1,14 +1,30 @@
 //
 // Created by CodingDev on 2026/2/26.
 //
-// #include "vector_base.h"
-#include "util.h"
-#include <stdio.h>
-#include <malloc.h>
-#include <string.h>
 
 #define VECTOR_H_IMPL
 #include "vector.h"
+#include <malloc.h>
+
+bool vector_base_ctor(objBase *obj) {
+    return false;
+}
+
+bool vector_base_copy(objBase *dst, objBase *src) {
+    return false;
+}
+
+void vector_base_dtor(objBase *obj) {
+    vector_base *self = (vector_base *) obj;
+    if (self->data == NULL) return;
+    free(self->data);
+    self->data = NULL;
+}
+
+// #include "vector_base.h"
+#include "util.h"
+#include <stdio.h>
+#include <string.h>
 
 void vector_dtor(void *v) {
     if (v) free(vector_getMeta(v));
