@@ -32,11 +32,13 @@ mcrDispatch(f, c, int8_t c, 4)
 #include "def_struct.h"
 #include "def_meta_struct.h"
 
+#include "vector.h"
+
 int main() {
     system("chcp 65001");
     clock_t start = clock();
 
-    // test();
+    vector_base_copy(0, 0);
     foreachMetaType(i) {
         printf("0xOil: [%d]{%s} %s \n", __LINE__, __FUNCTION__, i->base.name);
     }

@@ -2,8 +2,8 @@
 // Created by Admin on 25-10-19.
 //
 
-#ifndef TYPE_META_H
-#define TYPE_META_H
+#ifndef META_H
+#define META_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -226,4 +226,4 @@ extern meta_type __stop_meta_type_data;
 #undef _ptrTypeId_enumBase
 #undef _ptrTypeId_enumMember
 
-#endif //TYPE_META_H
+#endif //META_H

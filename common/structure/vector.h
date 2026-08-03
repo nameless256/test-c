@@ -13,7 +13,9 @@
 mcrDispatch(f, capacity, size_t capacity) \
 mcrDispatch(f, size, size_t size) \
 mcrDispatch(f, data, void *data)
+#ifdef VECTOR_H_IMPL
 #define classMataRemain
+#endif
 #include "def_class.h"
 
 #ifdef VECTOR_H_IMPL

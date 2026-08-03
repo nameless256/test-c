@@ -24,6 +24,9 @@ struct className {
 };
 
 extern const meta_type cat_2(className, meta);
+extern bool cat_2(className, ctor)(objBase *);
+extern void cat_2(className, dtor)(objBase *);
+extern bool cat_2(className, copy)(objBase *, objBase *);
 
 #ifdef classMataRemain
 #undef classMataRemain

@@ -6,12 +6,22 @@
 #include "vector.h"
 #include <malloc.h>
 
-bool vector_base_ctor(objBase *obj) {
+#include "stdio.h"
+
+#define MODULE vector_base
+
+#define $(ret, func, ...) \
+ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
+ret cat_2(MODULE, func)(__VA_ARGS__)
+
+$(bool, ctor, objBase *obj) {
+    printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
     return false;
 }
 
 bool vector_base_copy(objBase *dst, objBase *src) {
-    return false;
+    printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
+    return ctor(NULL);
 }
 
 void vector_base_dtor(objBase *obj) {
