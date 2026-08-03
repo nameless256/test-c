@@ -136,7 +136,7 @@ typedef struct meta_class meta_class;
 
 struct meta_class {
     meta_typeBase base;
-    const meta_type *baseClass;
+    const meta_class *baseClass;
     size_t cnt;
     const meta_field *const fields;
     bool (*ctor)(objBase *);

@@ -26,7 +26,9 @@ static const meta_field classMetaFieldsName[] = {
 };
 #endif
 
+#if classBaseName != objBase
 extern const meta_type cat_2(classBaseName, meta);
+#endif
 extern bool cat_2(className, ctor)(objBase *);
 extern void cat_2(className, dtor)(objBase *);
 extern bool cat_2(className, copy)(objBase *, objBase *);
@@ -39,7 +41,9 @@ registerMetaType(classMetaName) = {
             .quals = qual_Null,
             .id = typeId_Class,
         },
-        .baseClass = &cat_2(classBaseName, meta),
+#if classBaseName != objBase
+        .baseClass = (const meta_class *) &cat_2(classBaseName, meta),
+#endif
 #ifdef classMember
         .cnt = ARRAY_SIZE(classMetaFieldsName),
         .fields = classMetaFieldsName,
