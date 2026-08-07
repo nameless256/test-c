@@ -37,6 +37,7 @@
 #define CLEANUP(function)           __attribute__((cleanup(function)))
 #define SECTION(x)                  __attribute__((section(x)))
 
+// 非负整数后继数展开, 支持到 succ31
 #pragma region "succ"
 #define succ0 1
 #define succ1 2
@@ -73,7 +74,9 @@
 #define succ(n) cat2(succ, n)
 #pragma endregion
 
+// 非负整数前驱数展开, 为避免异常, 定义 pred0 = 0
 #pragma region "pred"
+#define pred0 0
 #define pred1 0
 #define pred2 1
 #define pred3 2

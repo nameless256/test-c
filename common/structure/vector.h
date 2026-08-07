@@ -22,6 +22,8 @@ mcrDispatch(f, data, void *data)
 #include "def_meta_class.h"
 #endif
 
+void vector_base_test(vector_base *self);
+
 typedef struct vectorMeta {
     size_t capacity;
     size_t typeSize; ///< \todo 改成通过反射获取的类型元数据
