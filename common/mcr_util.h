@@ -221,12 +221,15 @@
 #define declare(ret, func, ...) \
 ret cat_2(MODULE, func)(__VA_ARGS__)
 
-#define public(ret, func, ...) \
+#define define(ret, func, ...) \
 ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
 ret cat_2(MODULE, func)(__VA_ARGS__)
 
-#define private(ret, func, ...) \
-static ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
-static ret cat_2(MODULE, func)(__VA_ARGS__)
+#define export(ret, func, ...) \
+ret cat_2(className, func)(className *self, ##__VA_ARGS__)
+
+#define method(ret, func, ...) \
+ret func(className *self, ##__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(className, func))))); \
+ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 
 #endif //MCR_UTIL_H

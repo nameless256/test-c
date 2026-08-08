@@ -8,26 +8,25 @@
 
 #include "stdio.h"
 
-#define MODULE vector_base
+#define className vector_base
 
-public(bool, ctor, vector_base *self) {
+method(bool, ctor) {
     printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
     return false;
 }
 
-public(bool, copy, vector_base *self, vector_base *other) {
+method(bool, copy, vector_base *other) {
     printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
     return ctor(NULL);
 }
 
-public(void, dtor, vector_base *self) {
+method(void, dtor) {
     if (self->data == NULL) return;
     free(self->data);
     self->data = NULL;
 }
 
-public(void, test, vector_base *self, int i) {
-//void vector_base_test(vector_base *self) {
+method(void, test, int i) {
     printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
 }
 
