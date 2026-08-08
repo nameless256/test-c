@@ -218,4 +218,15 @@
 #define _mcrParamDummy1(...)
 #define mcrParamDummy(...) cat2(_mcrParamDummy, mcrNot(mcrVaCount(__VA_ARGS__)))(__VA_ARGS__)
 
+#define declare(ret, func, ...) \
+ret cat_2(MODULE, func)(__VA_ARGS__)
+
+#define public(ret, func, ...) \
+ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
+ret cat_2(MODULE, func)(__VA_ARGS__)
+
+#define private(ret, func, ...) \
+static ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
+static ret cat_2(MODULE, func)(__VA_ARGS__)
+
 #endif //MCR_UTIL_H

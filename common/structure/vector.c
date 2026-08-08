@@ -10,26 +10,17 @@
 
 #define MODULE vector_base
 
-#define $decl(ret, func, ...) \
-ret cat_2(MODULE, func)(__VA_ARGS__)
-
-#define public(ret, func, ...) \
-ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
-ret cat_2(MODULE, func)(__VA_ARGS__)
-
-public(bool, ctor, objBase *obj) {
+public(bool, ctor, vector_base *self) {
     printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
     return false;
 }
 
-//$(copy, objBase *obj, objBase *src) {
-bool vector_base_copy(objBase *dst, objBase *src) {
+public(bool, copy, vector_base *self, vector_base *other) {
     printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
     return ctor(NULL);
 }
 
-void vector_base_dtor(objBase *obj) {
-    vector_base *self = (vector_base *) obj;
+public(void, dtor, vector_base *self) {
     if (self->data == NULL) return;
     free(self->data);
     self->data = NULL;

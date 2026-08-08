@@ -45,9 +45,9 @@ registerMetaType(classMetaName) = {
         .cnt = ARRAY_SIZE(classMetaFieldsName),
         .fields = classMetaFieldsName,
 #endif
-        .ctor = cat_2(className, ctor),
-        .dtor = cat_2(className, dtor),
-        .copy = cat_2(className, copy),
+        .ctor = (void *) cat_2(className, ctor),
+        .dtor = (void *) cat_2(className, dtor),
+        .copy = (void *) cat_2(className, copy),
     }
 };
 

@@ -24,7 +24,7 @@ mcrDispatch(f, data, void *data)
 #include "def_meta_class.h"
 #endif
 
-void vector_base_test(vector_base *self, int i);
+declare(void, test, vector_base *self, int i);
 
 typedef struct vectorMeta {
     size_t capacity;
