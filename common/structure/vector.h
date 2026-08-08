@@ -8,6 +8,8 @@
 #include "util.h"
 #include "meta.h"
 
+#define MODULE vector_base
+
 #define className vector_base
 #define classMember(f) \
 mcrDispatch(f, capacity, size_t capacity) \
@@ -22,7 +24,7 @@ mcrDispatch(f, data, void *data)
 #include "def_meta_class.h"
 #endif
 
-void vector_base_test(vector_base *self);
+void vector_base_test(vector_base *self, int i);
 
 typedef struct vectorMeta {
     size_t capacity;
@@ -72,5 +74,7 @@ void vector_reserve(void *v, size_t c);
 #ifdef VECTOR_H_IMPL
 #undef VECTOR_H_IMPL
 #endif
+
+#undef MODULE
 
 #endif

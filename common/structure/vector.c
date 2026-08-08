@@ -10,21 +10,14 @@
 
 #define MODULE vector_base
 
-// 为0展开为()，为1展开为(0)，为2展开为(0, 0)
+#define $decl(ret, func, ...) \
+ret cat_2(MODULE, func)(__VA_ARGS__)
 
-// 有参
-#define _paramFill0(exParam) 0 mcrIter
-// 无参
-#define _paramFill1(...)
-#define paramFill(...) cat2(_paramFill, mcrNot(mcrVaCount(__VA_ARGS__)))(pred(_mcrVaCount(__VA_ARGS__)))
-//paramFill(0, 2, 2, 2, 2, 2)
+#define public(ret, func, ...) \
+ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
+ret cat_2(MODULE, func)(__VA_ARGS__)
 
-
-#define $(func, ...) \
-typeof(cat_2(MODULE, func)(0)) func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
-typeof(cat_2(MODULE, func)(0)) cat_2(MODULE, func)(__VA_ARGS__)
-
-$(ctor, objBase *obj) {
+public(bool, ctor, objBase *obj) {
     printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
     return false;
 }
@@ -42,7 +35,7 @@ void vector_base_dtor(objBase *obj) {
     self->data = NULL;
 }
 
-$(test, vector_base *self) {
+public(void, test, vector_base *self, int i) {
 //void vector_base_test(vector_base *self) {
     printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
 }

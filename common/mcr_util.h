@@ -213,4 +213,9 @@
 
 #define mcrVaTupleArgCount(tuple) _mcrVaCount(mcrVaTuple(tuple))
 
+#define _mcrParamEx(...) , 0
+#define _mcrParamDummy0(a, ...) 0 mcrIter(_mcrParamEx, __VA_ARGS__)
+#define _mcrParamDummy1(...)
+#define mcrParamDummy(...) cat2(_mcrParamDummy, mcrNot(mcrVaCount(__VA_ARGS__)))(__VA_ARGS__)
+
 #endif //MCR_UTIL_H
