@@ -39,13 +39,14 @@ method(bool, empty) {
 }
 
 method(void *, at, int idx, size_t elmSize) {
+#if 1
+    if (idx < 0) idx = self->size + idx;
+    if (idx < 0 || idx >= self->size) return NULL;
+#else
     if (self->size == 0) return NULL;
-    if (idx < 0) {
-        idx = -idx;
-        idx %= self->size;
-        idx = self->size - idx;
-    }
-    if (idx >= self->size) idx %= self->size;
+    idx %= self->size;
+    if (idx < 0) idx += self->size;
+#endif
     return self->data + idx * elmSize;
 }
 
