@@ -4,9 +4,10 @@
 
 #define VECTOR_BASE_H_IMPL
 #include "vector_base.h"
-#include <malloc.h>
+#include "obj.h"
 
-#include "stdio.h"
+#include <malloc.h>
+#include <stdio.h>
 
 #define className vector_base
 
@@ -60,6 +61,10 @@ method(void *, head) {
     return self->data;
 }
 
+method(void *, data) {
+    return self->data;
+}
+
 method(bool, reserve, size_t capacity, size_t elmSize) {
     if (capacity == self->capacity) return false;
     size_t ex = self->capacity + (self->capacity >> 1);
@@ -67,4 +72,24 @@ method(bool, reserve, size_t capacity, size_t elmSize) {
     if (alloc_safe(&self->data, elmSize * ex, 0)) return false;
     self->capacity = ex;
     return true;
+}
+
+method(bool, addTail, bool isClass, size_t elmSize, void *elm) {
+    if (self->size >= self->capacity) {
+        if (reserve(self, 1, elmSize)) return true;
+    }
+    void *dst = self->data + self->size * elmSize;
+    if (isClass) obj_copy(dst, elm);
+    else memcpy(dst, elm, elmSize);
+    self->size++;
+    return false;
+}
+
+method(void *, delTail, bool isClass, size_t elmSize) {
+    void *elm = tail(self, elmSize);
+    if (self->size) self->size--;
+    if (elm == NULL) return NULL;
+    if (isClass) obj_dtor(elm);
+    else memset(elm, 0, elmSize);
+    return elm;
 }
