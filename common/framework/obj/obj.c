@@ -42,8 +42,7 @@ static bool copyBase(const meta_class *class, objBase *dst, objBase *src) {
 }
 
 bool obj_copy(objBase *restrict dst, objBase *restrict src) {
-    if (dst == NULL || src == NULL) return true;
-    if (dst->class == NULL || src->class == NULL) return true;
-    if (dst->class != src->class) return true;
-    return copyBase(dst->class, dst, src);
+    if (dst == NULL || src == NULL || src->class == NULL) return true;
+    if (dst->class != NULL && dst->class != src->class) return true;
+    return copyBase(src->class, dst, src);
 }

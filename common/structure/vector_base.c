@@ -11,11 +11,6 @@
 
 #define className vector_base
 
-method(bool, ctor) {
-    printf("0xOil: %-4d{%s} \n", __LINE__, __FUNCTION__);
-    return false;
-}
-
 method(bool, copy, vector_base *other) {
     *self = *other;
     return false;
@@ -39,7 +34,7 @@ method(bool, empty) {
     return self->size == 0;
 }
 
-method(void *, at, int idx, size_t elmSize) {
+method(void *, at, size_t elmSize, int idx) {
 #if 1
     if (idx < 0) idx = self->size + idx;
     if (idx < 0 || idx >= self->size) return NULL;
@@ -65,7 +60,7 @@ method(void *, data) {
     return self->data;
 }
 
-method(bool, reserve, size_t capacity, size_t elmSize) {
+method(bool, reserve, size_t elmSize, size_t capacity) {
     if (capacity == self->capacity) return false;
     size_t ex = self->capacity + (self->capacity >> 1);
     if (ex < capacity) ex = capacity;
@@ -74,22 +69,43 @@ method(bool, reserve, size_t capacity, size_t elmSize) {
     return true;
 }
 
-method(bool, addTail, bool isClass, size_t elmSize, void *elm) {
+method(void *, end, size_t elmSize) {
+    return self->data + self->size * elmSize;
+}
+
+method(bool, addTail, size_t elmSize, void *elm) {
     if (self->size >= self->capacity) {
         if (reserve(self, 1, elmSize)) return true;
     }
-    void *dst = self->data + self->size * elmSize;
-    if (isClass) obj_copy(dst, elm);
-    else memcpy(dst, elm, elmSize);
+    void *dst = end(self, elmSize);
+    memcpy(dst, elm, elmSize);
     self->size++;
     return false;
 }
 
-method(void *, delTail, bool isClass, size_t elmSize) {
+method(void *, delTail, size_t elmSize) {
     void *elm = tail(self, elmSize);
     if (self->size) self->size--;
     if (elm == NULL) return NULL;
-    if (isClass) obj_dtor(elm);
-    else memset(elm, 0, elmSize);
+    memset(elm, 0, elmSize);
     return elm;
 }
+
+method(bool, insert, size_t elmSize, int idx, size_t count, void *elm) {
+    if (self->size >= self->capacity) {
+        if (reserve(self, 1, elmSize)) return true;
+    }
+    void *dst = at(self, elmSize, idx);
+    if (dst == NULL) return true;
+    size_t moveSize = end(self, elmSize) - dst;
+    if (count == 0) count = 1;
+    memmove(dst + elmSize * count, dst, moveSize);
+    memcpy(dst, elm, elmSize * count);
+    self->size++;
+    return false;
+}
+
+//method(bool, remove, size_t elmSize, int idx, size_t count) {
+//
+//}
+

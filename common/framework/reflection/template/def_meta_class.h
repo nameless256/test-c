@@ -30,6 +30,16 @@ static const meta_field classMetaFieldsName[] = {
 extern const meta_type cat_2(classBaseName, meta);
 #endif
 
+#ifdef classCtor
+export(bool, ctor);
+#endif
+#ifdef classDtor
+export(void, dtor);
+#endif
+#ifdef classCopy
+export(bool, copy, className *);
+#endif
+
 registerMetaType(classMetaName) = {
     .mClass = {
         .base = {
@@ -45,12 +55,21 @@ registerMetaType(classMetaName) = {
         .cnt = ARRAY_SIZE(classMetaFieldsName),
         .fields = classMetaFieldsName,
 #endif
+#ifdef classCtor
         .ctor = (void *) cat_2(className, ctor),
+#endif
+#ifdef classDtor
         .dtor = (void *) cat_2(className, dtor),
+#endif
+#ifdef classCopy
         .copy = (void *) cat_2(className, copy),
+#endif
     }
 };
 
+#undef classCtor
+#undef classDtor
+#undef classCopy
 #undef classMetaFieldsName
 #undef classMetaName
 #undef className
