@@ -268,17 +268,16 @@ void printBuffer(const unsigned char *buff, size_t length) {
     if (length % 16 != 0) putchar('\n');
 }
 
-void fillMemoryWithPattern(void *dest, size_t size, size_t length, const void *pattern) {
-    if (length == 0 || size == 0) return;
-    memcpy(dest, pattern, size);
-    if (length == 0) return;
-    size_t offset = size;
-    size_t remaining = (length - 1) * size;
-    while (remaining > 0) {
-        size_t copySize = (offset < remaining) ? offset : remaining;
-        memmove(dest + offset, dest, copySize);
-        offset += copySize;
-        remaining -= copySize;
+void memFill(void *dst, const void *src, size_t elmSize, size_t count) {
+    if (count == 0 || elmSize == 0) return;
+    if (count > SIZE_MAX / elmSize) return;
+    memcpy(dst, src, elmSize);
+    size_t filled = elmSize;
+    size_t total = count * elmSize;
+    while (filled < total) {
+        size_t copySize = MIN(filled, total - filled);
+        memcpy((char*)dst + filled, dst, copySize);  // 这里可以安全用 memcpy
+        filled += copySize;
     }
 }
 

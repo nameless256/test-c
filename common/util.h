@@ -105,7 +105,7 @@ void printBuffer(const unsigned char *buff, size_t length);
  * @note 当elementCount为0或elementSize为0时，函数直接返回
  * @note 此函数使用memmove确保内存重叠时的安全性
  */
-void fillMemoryWithPattern(void *dest, size_t size, size_t length, const void *pattern);
+void memFill(void *dst, const void *src, size_t elmSize, size_t count);
 
 bool alloc_safe(void **ptr, size_t size, size_t offset);
 

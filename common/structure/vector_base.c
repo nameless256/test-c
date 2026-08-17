@@ -9,9 +9,9 @@
 #include <malloc.h>
 #include <stdio.h>
 
-#define className vector_base
+#define className vectorBase
 
-method(bool, copy, vector_base *other) {
+method(bool, copy, className *other) {
     *self = *other;
     return false;
 }
@@ -83,15 +83,14 @@ method(bool, addTail, size_t elmSize, void *elm) {
     return false;
 }
 
-method(void *, delTail, size_t elmSize) {
+method(void, delTail, size_t elmSize) {
     void *elm = tail(self, elmSize);
-    if (self->size) self->size--;
-    if (elm == NULL) return NULL;
+    if (elm == NULL) return;
+    self->size--;
     memset(elm, 0, elmSize);
-    return elm;
 }
 
-method(bool, insert, size_t elmSize, int idx, size_t count, void *elm) {
+method(bool, add, size_t elmSize, int idx, size_t count, void *elm) {
     if (self->size >= self->capacity) {
         if (reserve(self, 1, elmSize)) return true;
     }
@@ -100,12 +99,35 @@ method(bool, insert, size_t elmSize, int idx, size_t count, void *elm) {
     size_t moveSize = end(self, elmSize) - dst;
     if (count == 0) count = 1;
     memmove(dst + elmSize * count, dst, moveSize);
-    memcpy(dst, elm, elmSize * count);
-    self->size++;
+    memFill(dst, elm, elmSize, count);
+    self->size += count;
     return false;
 }
 
-//method(bool, remove, size_t elmSize, int idx, size_t count) {
-//
-//}
+method(void, del, size_t elmSize, int idx, size_t count) {
+    void *elm = at(self, elmSize, idx);
+    if (elm == NULL) return;
+    if (count == 0) count = 1;
+    size_t delSize = elmSize * count;
+    if (end(self, elmSize) - elm < delSize) {
+        delSize = end(self, elmSize) - elm;
+    } else {
+        void *src = elm + delSize;
+        size_t moveSize = end(self, elmSize) - src;
+        memmove(elm, src, moveSize);
+    }
+    self->size -= (delSize / elmSize);
+    memset(end(self, elmSize) - delSize, 0, delSize);
+}
+
+method(void, clear, size_t elmSize) {
+    if (self->size == 0) return;
+    size_t delSize = elmSize * self->size;
+    self->size = 0;
+    memset(self->data, 0, delSize);
+}
+
+export(void, resize, size_t elmSize, void *elm, size_t count) {
+
+}
 
