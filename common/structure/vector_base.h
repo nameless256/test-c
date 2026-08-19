@@ -39,10 +39,8 @@ export(void, delTail, size_t elmSize);
 export(bool, add, size_t elmSize, int idx, size_t count, void *elm);
 export(void, del, size_t elmSize, int idx, size_t count);
 export(void, clear, size_t elmSize);
-export(void, resize, size_t elmSize, void *elm, size_t count);
-//调整大小	v.resize(n, val)	v.resize(n, val)
-//交换内容	v.swap(other)	std::mem::swap(&mut v, &mut other)
-//缩减容量  shrink_to_fit
+export(bool, resize, size_t elmSize, void *elm, size_t count);
+export(void, swap, className *other);
 
 #undef className
 

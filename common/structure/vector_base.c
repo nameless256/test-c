@@ -127,7 +127,24 @@ method(void, clear, size_t elmSize) {
     memset(self->data, 0, delSize);
 }
 
-export(void, resize, size_t elmSize, void *elm, size_t count) {
+method(bool, resize, size_t elmSize, void *elm, size_t count) {
+    if (count < self->size) {
+        count = self->size - count;
+        for (int i = 0; i < count; ++i) {
+            delTail(self, elmSize);
+        }
+    } else if (count > self->size) {
+        count = count - self->size;
+        for (int i = 0; i < count; ++i) {
+            if (addTail(self, elmSize, elm)) return true;
+        }
+    }
+    return false;
+}
 
+method(void, swap, className *other) {
+    className temp = *other;
+    *other = *self;
+    *self = temp;
 }
 
