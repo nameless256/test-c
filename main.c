@@ -38,7 +38,6 @@ int main() {
     system("chcp 65001");
     clock_t start = clock();
 
-    vector_base_copy(0, 0);
     foreachMetaType(i) {
         printf("0xOil: [%d]{%s} %s \n", __LINE__, __FUNCTION__, i->base.name);
     }

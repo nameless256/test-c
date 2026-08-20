@@ -219,11 +219,11 @@
 #define mcrParamDummy(...) cat2(_mcrParamDummy, mcrNot(mcrVaCount(__VA_ARGS__)))(__VA_ARGS__)
 
 #define declare(ret, func, ...) \
-ret cat_2(MODULE, func)(__VA_ARGS__)
+ret cat_2(moduleName, func)(__VA_ARGS__)
 
 #define define(ret, func, ...) \
-ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(MODULE, func))))); \
-ret cat_2(MODULE, func)(__VA_ARGS__)
+ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(moduleName, func))))); \
+ret cat_2(moduleName, func)(__VA_ARGS__)
 
 #define export(ret, func, ...) \
 ret cat_2(className, func)(className *self, ##__VA_ARGS__)
