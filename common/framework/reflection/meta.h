@@ -27,7 +27,7 @@ mcrDispatch(f, Class)
 
 #define enumName _typeId_enumName
 #define enumBase _typeId_enumBase
-#define enumMember "enum_typeId.h"
+#define enumMember _typeId_enumMember
 
 #include "def_enum.h"
 
@@ -41,7 +41,7 @@ mcrDispatch(f, Restrict, 0b100)
 
 #define enumName _qual_enumName
 #define enumBase _qual_enumBase
-#define enumMember "enum_qual.h"
+#define enumMember _qual_enumMember
 
 #include "def_enum.h"
 
@@ -70,7 +70,7 @@ mcrDispatch(f, Array)
 
 #define enumName _ptrTypeId_enumName
 #define enumBase _ptrTypeId_enumBase
-#define enumMember "enum_ptrTypeId.h"
+#define enumMember _ptrTypeId_enumMember
 
 #include "def_enum.h"
 

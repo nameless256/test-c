@@ -20,9 +20,7 @@
 
 typedef enumBase enumName;
 enum enumName {
-#define f _enumMemberDef
-#include enumMember
-#undef f
+    enumMember(_enumMemberDef)
 };
 
 extern const meta_type cat_2(enumName, meta);
