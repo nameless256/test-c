@@ -9,41 +9,19 @@
 #include <stdint.h>
 #include "mcr_util.h"
 
+#define _enumValDef1(name) cat_2(enumName, name),
+#define _enumValDef2(name, value) cat_2(enumName, name) = value,
+#define enumValDef(...) cat2(_enumValDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
+#define enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
+
 typedef union meta_type meta_type;
 typedef struct meta_enum meta_enum;
 
-#define _typeId_enumName typeId
-#define _typeId_enumBase uint8_t
-#define _typeId_enumMember(f) \
-mcrDispatch(f, Bool) \
-mcrDispatch(f, Int) \
-mcrDispatch(f, Ptr) \
-mcrDispatch(f, Enum) \
-mcrDispatch(f, Float) \
-mcrDispatch(f, Array) \
-mcrDispatch(f, Union) \
-mcrDispatch(f, Struct) \
-mcrDispatch(f, Class)
-
-#define enumName _typeId_enumName
-#define enumBase _typeId_enumBase
-#define enumMember _typeId_enumMember
+#include "def_enum.h"
+#include "typeId.h"
 
 #include "def_enum.h"
-
-#define _qual_enumName qual
-#define _qual_enumBase uint8_t
-#define _qual_enumMember(f) \
-mcrDispatch(f, Null, 0b000) \
-mcrDispatch(f, Const, 0b001) \
-mcrDispatch(f, Volatile, 0b010) \
-mcrDispatch(f, Restrict, 0b100)
-
-#define enumName _qual_enumName
-#define enumBase _qual_enumBase
-#define enumMember _qual_enumMember
-
-#include "def_enum.h"
+#include "qual.h"
 
 typedef struct meta_typeBase meta_typeBase;
 
@@ -61,18 +39,8 @@ struct meta_int {
     bool isSigned;
 };
 
-#define _ptrTypeId_enumName ptrTypeId
-#define _ptrTypeId_enumBase uint8_t
-#define _ptrTypeId_enumMember(f) \
-mcrDispatch(f, Type) \
-mcrDispatch(f, Func) \
-mcrDispatch(f, Array)
-
-#define enumName _ptrTypeId_enumName
-#define enumBase _ptrTypeId_enumBase
-#define enumMember _ptrTypeId_enumMember
-
 #include "def_enum.h"
+#include "ptrTypeId.h"
 
 typedef struct meta_param meta_param;
 
@@ -199,31 +167,15 @@ extern meta_type __stop_meta_type_data;
 #define foreachMetaType(i) for (meta_type *i = &__start_meta_type_data; i < &__stop_meta_type_data; ++i)
 
 #ifdef META_H_IMPL
-#define enumName _typeId_enumName
-#define enumBase _typeId_enumBase
-#define enumMember(f) _typeId_enumMember(f)
-#include "def_meta_enum.h"
+#include "reg_meta_enum.h"
+#include "typeId.h"
 
-#define enumName _qual_enumName
-#define enumBase _qual_enumBase
-#define enumMember(f) _qual_enumMember(f)
-#include "def_meta_enum.h"
+#include "reg_meta_enum.h"
+#include "qual.h"
 
-#define enumName _ptrTypeId_enumName
-#define enumBase _ptrTypeId_enumBase
-#define enumMember(f) _ptrTypeId_enumMember(f)
-#include "def_meta_enum.h"
+#include "reg_meta_enum.h"
+#include "ptrTypeId.h"
 #undef META_H_IMPL
 #endif
-
-#undef _typeId_enumName
-#undef _typeId_enumBase
-#undef _typeId_enumMember
-#undef _qual_enumName
-#undef _qual_enumBase
-#undef _qual_enumMember
-#undef _ptrTypeId_enumName
-#undef _ptrTypeId_enumBase
-#undef _ptrTypeId_enumMember
 
 #endif //META_H

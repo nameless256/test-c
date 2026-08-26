@@ -23,15 +23,12 @@
  * @{
 */
 
-#include "$def_enum.h"
-#include "enumT.h"
-
 int main() {
     system("chcp 65001");
     clock_t start = clock();
 
     foreachMetaType(i) {
-        printf("0xOil: [%d]{%s} %s \n", __LINE__, __FUNCTION__, i->base.name);
+        printf("0xOil: [%d]{%s} %s %d \n", __LINE__, __FUNCTION__, i->base.name, qual_Null);
     }
 
     clock_t stop = clock();

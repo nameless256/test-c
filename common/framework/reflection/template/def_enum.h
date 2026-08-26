@@ -1,34 +1,14 @@
-#include "mcr_util.h"
+//
+// Created by Admin on 26-8-22.
+//
+#include "meta.h"
 
-#ifndef enumName
-#error "enumName is not defined"
-#endif
-
-#ifndef enumBase
-#define enumBase int
-#endif
-
-#ifndef enumMember
-#error "enumMember is not defined"
-#endif
-
-#ifndef _enumMemberDef
-#define __enumMemberDef1(name) cat_2(enumName, name),
-#define __enumMemberDef2(name, value) cat_2(enumName, name) = value,
-#define _enumMemberDef(...) cat2(__enumMemberDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
-#endif
-
-typedef enumBase enumName;
+#define enumStart \
+typedef enumBase enumName; \
 enum enumName {
-    enumMember(_enumMemberDef)
-};
 
+#define enumEntry(...) enumValDef(__VA_ARGS__)
+
+#define enumEnd \
+}; \
 extern const meta_type cat_2(enumName, meta);
-
-#ifdef enumMataRemain
-#undef enumMataRemain
-#else
-#undef enumName
-#undef enumBase
-#undef enumMember
-#endif

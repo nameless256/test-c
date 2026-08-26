@@ -232,8 +232,4 @@ ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 ret func(className *self, ##__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(className, func))))); \
 ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 
-#define _enumValDef1(name) cat_2(enumName, name),
-#define _enumValDef2(name, value) cat_2(enumName, name) = value,
-#define enumValDef(...) cat2(_enumValDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
-
 #endif //MCR_UTIL_H
