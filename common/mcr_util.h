@@ -17,7 +17,6 @@
 #define SWAP(arg0, arg1)            do{(arg0) ^= (arg1); (arg1) ^= (arg0); (arg0) ^= (arg1);} while(0)
 #define name2Str(name)              #name
 #define nameVal2Str(name)           name2Str(name)
-#define name2StrCase(name)          case name: return name2Str(name)
 #define valMap(value, num, total) \
 ((total) ? (((value) > (total)) ? (num) : ((num) * (value) / (total))) : 0)
 #define valMapRange(value, num, lBound, uBound) valMap(value - lBound, num, uBound - lBound)

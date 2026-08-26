@@ -11,4 +11,5 @@ enum enumName {
 
 #define enumEnd \
 }; \
-extern const meta_type cat_2(enumName, meta);
+extern const meta_type cat_2(enumName, meta); \
+extern const char *cat_2(enumName, toString) (enumName value, bool full);

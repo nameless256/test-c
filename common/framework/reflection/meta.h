@@ -170,10 +170,19 @@ extern meta_type __stop_meta_type_data;
 #include "reg_meta_enum.h"
 #include "typeId.h"
 
+#include "def_enum_to_string.h"
+#include "typeId.h"
+
 #include "reg_meta_enum.h"
 #include "qual.h"
 
+#include "def_enum_to_string.h"
+#include "qual.h"
+
 #include "reg_meta_enum.h"
+#include "ptrTypeId.h"
+
+#include "def_enum_to_string.h"
 #include "ptrTypeId.h"
 #undef META_H_IMPL
 #endif

@@ -28,7 +28,7 @@ int main() {
     clock_t start = clock();
 
     foreachMetaType(i) {
-        printf("0xOil: [%d]{%s} %s %d \n", __LINE__, __FUNCTION__, i->base.name, qual_Null);
+        printf("0xOil: [%d]{%s} %s %s \n", __LINE__, __FUNCTION__, i->base.name, qual_toString(qual_Null, 0));
     }
 
     clock_t stop = clock();
