@@ -4,9 +4,9 @@
 
 #define VECTOR_BASE_H_IMPL
 #include "vector_base.h"
+#include "util.h"
 
 #include <malloc.h>
-#include <stdio.h>
 
 #define className vectorBase
 
