@@ -4,7 +4,6 @@
 
 #define VECTOR_BASE_H_IMPL
 #include "vector_base.h"
-#include "obj.h"
 
 #include <malloc.h>
 #include <stdio.h>

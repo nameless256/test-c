@@ -18,10 +18,10 @@ typedef union meta_type meta_type;
 typedef struct meta_enum meta_enum;
 
 #include "def_enum.h"
-#include "typeId.h"
+#include "enum_typeId.h"
 
 #include "def_enum.h"
-#include "qual.h"
+#include "enum_qual.h"
 
 typedef struct meta_typeBase meta_typeBase;
 
@@ -40,7 +40,7 @@ struct meta_int {
 };
 
 #include "def_enum.h"
-#include "ptrTypeId.h"
+#include "enum_ptrTypeId.h"
 
 typedef struct meta_param meta_param;
 
@@ -168,22 +168,22 @@ extern meta_type __stop_meta_type_data;
 
 #ifdef META_H_IMPL
 #include "reg_meta_enum.h"
-#include "typeId.h"
+#include "enum_typeId.h"
 
 #include "def_enum_to_string.h"
-#include "typeId.h"
+#include "enum_typeId.h"
 
 #include "reg_meta_enum.h"
-#include "qual.h"
+#include "enum_qual.h"
 
 #include "def_enum_to_string.h"
-#include "qual.h"
+#include "enum_qual.h"
 
 #include "reg_meta_enum.h"
-#include "ptrTypeId.h"
+#include "enum_ptrTypeId.h"
 
 #include "def_enum_to_string.h"
-#include "ptrTypeId.h"
+#include "enum_ptrTypeId.h"
 #undef META_H_IMPL
 #endif
 
