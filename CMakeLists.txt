@@ -11,9 +11,6 @@ include_directories(
         common/algorithm
         common/framework
         common/framework/obj
-        common/framework/oop
-        common/framework/oop/oop_usage
-        common/framework/oop/oop_heap_usage
         common/framework/reflection
         common/framework/reflection/template
         common/structure
@@ -26,12 +23,6 @@ file(
         "common/algorithm/*.c"
         "common/framework/*.c"
         "common/framework/obj/*.c"
-        "common/framework/oop/oop_usage/*.c"
-        "common/framework/oop/oop_usage/class_demo/*.c"
-        "common/framework/oop/oop_usage/class_demo_base/*.c"
-        "common/framework/oop/oop_heap_usage/*.c"
-        "common/framework/oop/oop_heap_usage/rect/*.c"
-        "common/framework/oop/oop_heap_usage/shape/*.c"
         "common/framework/reflection/*.c"
         "common/structure/*.c"
         "common/*.c"
