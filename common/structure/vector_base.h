@@ -6,7 +6,7 @@
 #define VECTOR_BASE_H
 
 #include "util.h"
-#include "meta.h"
+#include "obj.h"
 
 #define className vectorBase
 #define classMember(f) \

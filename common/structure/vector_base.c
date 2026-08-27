@@ -60,12 +60,12 @@ method(void *, data) {
 }
 
 method(bool, reserve, size_t elmSize, size_t capacity) {
-    if (capacity == self->capacity) return false;
+    if (capacity == self->capacity) return true;
     size_t ex = self->capacity + (self->capacity >> 1);
     if (ex < capacity) ex = capacity;
-    if (alloc_safe(&self->data, elmSize * ex, 0)) return false;
+    if (alloc_safe(&self->data, elmSize * ex, 0)) return true;
     self->capacity = ex;
-    return true;
+    return false;
 }
 
 method(void *, end, size_t elmSize) {
@@ -74,7 +74,7 @@ method(void *, end, size_t elmSize) {
 
 method(bool, addTail, size_t elmSize, void *elm) {
     if (self->size >= self->capacity) {
-        if (reserve(self, 1, elmSize)) return true;
+        if (reserve(self, elmSize, 1)) return true;
     }
     void *dst = end(self, elmSize);
     memcpy(dst, elm, elmSize);
@@ -91,7 +91,7 @@ method(void, delTail, size_t elmSize) {
 
 method(bool, add, size_t elmSize, int idx, size_t count, void *elm) {
     if (self->size >= self->capacity) {
-        if (reserve(self, 1, elmSize)) return true;
+        if (reserve(self, elmSize, 1)) return true;
     }
     void *dst = at(self, elmSize, idx);
     if (dst == NULL) return true;
