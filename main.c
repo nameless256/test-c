@@ -27,10 +27,6 @@ int main() {
     system("chcp 65001");
     clock_t start = clock();
 
-    foreachMetaType(i) {
-        printf("0xOil: [%d]{%s} %s %s \n", __LINE__, __FUNCTION__, i->base.name, qual_toString(qual_Null, 0));
-    }
-
     clock_t stop = clock();
     double elapsed = (double)(stop - start) / CLOCKS_PER_SEC;
     printf("Time elapsed: %.5f \n", elapsed);

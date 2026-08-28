@@ -8,7 +8,7 @@
 
 #include <malloc.h>
 
-#define className vectorBase
+#define className vector_base
 
 method(bool, copy, className *other) {
     *self = *other;

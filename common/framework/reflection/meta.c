@@ -37,6 +37,27 @@
 #define baseTypeId typeId_Float
 #include "reg_meta_base_type.h"
 
+#define className objBase
+
+static const meta_field cat_2(className, fields)[] = {
+    classFieldDef(meta_class *class, class)
+};
+
+registerMetaType(cat_2(className, meta)) = {
+    .mClass = {
+        .base = {
+            .name = nameVal2Str(className),
+            .size = sizeof(className),
+            .quals = qual_Null,
+            .id = typeId_Class,
+        },
+        .cnt = ARRAY_SIZE(cat_2(className, fields)),
+        .fields = cat_2(className, fields),
+    }
+};
+
+#undef className
+
 bool param_type_meta_parsing(meta_param *meta) {
     if (meta == NULL) return true;
     if (meta->dsc == NULL) return true;

@@ -13,6 +13,11 @@
 #define _enumValDef2(name, value) cat_2(enumName, name) = value,
 #define enumValDef(...) cat2(_enumValDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 #define enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
+#define _classFieldDef2(_dsc, _field) \
+{ .base = { .dsc = name2Str(_dsc), .name = name2Str(_field), }, .ofs = offsetof(className, _field), },
+#define _classFieldDef3(_dsc, _field, _bits) \
+{ .base = { .dsc = name2Str(_dsc: _bits), .name = name2Str(_field), }, .bits = _bits, },
+#define classFieldDef(...) cat2(_classFieldDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 
 typedef union meta_type meta_type;
 typedef struct meta_enum meta_enum;

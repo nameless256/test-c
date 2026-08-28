@@ -14,6 +14,7 @@ include_directories(
         common/framework/reflection
         common/framework/reflection/template
         common/structure
+        common/structure/template
         game
         modules
 )
