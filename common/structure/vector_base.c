@@ -9,17 +9,6 @@
 
 #define className vector_base
 
-method(bool, copy, className *other) {
-    *self = *other;
-    return false;
-}
-
-method(void, dtor) {
-    if (self->data == NULL) return;
-    free(self->data);
-    self->data = NULL;
-}
-
 method(size_t, capacity) {
     return self->capacity;
 }
@@ -146,10 +135,23 @@ method(void, swap, className *other) {
     *self = temp;
 }
 
-static const classVtab vtab = {
+method(bool, copy, className *other) {
+    *self = *other;
+    return false;
+}
+
+method(void, dtor) {
+    if (self->data == NULL) return;
+    free(self->data);
+    self->data = NULL;
+}
+
+classVtab = {
     bind(copy),
     bind(dtor),
 };
+
+#undef className
 
 #include "reg_meta_class.h"
 #include "class_vector_base.h"
