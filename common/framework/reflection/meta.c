@@ -1,8 +1,25 @@
 //
 // Created by CodingDev on 2025/12/16.
 //
-#define META_H_IMPL
 #include "meta.h"
+
+#include "reg_meta_enum.h"
+#include "enum_typeId.h"
+
+#include "def_enum_to_string.h"
+#include "enum_typeId.h"
+
+#include "reg_meta_enum.h"
+#include "enum_qual.h"
+
+#include "def_enum_to_string.h"
+#include "enum_qual.h"
+
+#include "reg_meta_enum.h"
+#include "enum_ptrTypeId.h"
+
+#include "def_enum_to_string.h"
+#include "enum_ptrTypeId.h"
 
 #define intName int8_t
 #include "reg_meta_int.h"

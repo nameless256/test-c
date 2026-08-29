@@ -195,25 +195,4 @@ extern meta_type __stop_meta_type_data;
 #define registerMetaType(type) __attribute__((section("meta_type_data"), aligned(4))) const meta_type type
 #define foreachMetaType(i) for (meta_type *i = &__start_meta_type_data; i < &__stop_meta_type_data; ++i)
 
-#ifdef META_H_IMPL
-#include "reg_meta_enum.h"
-#include "enum_typeId.h"
-
-#include "def_enum_to_string.h"
-#include "enum_typeId.h"
-
-#include "reg_meta_enum.h"
-#include "enum_qual.h"
-
-#include "def_enum_to_string.h"
-#include "enum_qual.h"
-
-#include "reg_meta_enum.h"
-#include "enum_ptrTypeId.h"
-
-#include "def_enum_to_string.h"
-#include "enum_ptrTypeId.h"
-#undef META_H_IMPL
-#endif
-
 #endif //META_H

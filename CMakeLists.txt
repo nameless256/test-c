@@ -10,7 +10,6 @@ include_directories(
         common
         common/algorithm
         common/framework
-        common/framework/obj
         common/framework/reflection
         common/framework/reflection/template
         common/structure
@@ -23,7 +22,6 @@ file(
         GLOB_RECURSE SOURCES
         "common/algorithm/*.c"
         "common/framework/*.c"
-        "common/framework/obj/*.c"
         "common/framework/reflection/*.c"
         "common/structure/*.c"
         "common/*.c"
