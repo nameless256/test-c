@@ -13,11 +13,14 @@
 #define _enumValDef2(name, value) cat_2(enumName, name) = value,
 #define enumValDef(...) cat2(_enumValDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 #define enumValMetaDef(name, ...) {nameVal2Str(name), cat_2(enumName, name)},
-#define _classFieldDef2(_dsc, _field) \
-{ .base = { .dsc = name2Str(_dsc), .name = name2Str(_field), }, .ofs = offsetof(className, _field), },
-#define _classFieldDef3(_dsc, _field, _bits) \
-{ .base = { .dsc = name2Str(_dsc: _bits), .name = name2Str(_field), }, .bits = _bits, },
+#define _classFieldDef3(dsc, name, bits) dsc: bits;
+#define _classFieldDef2(dsc, name) dsc;
 #define classFieldDef(...) cat2(_classFieldDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
+#define _classFieldMetaDef2(_dsc, _field) \
+{ .base = { .dsc = name2Str(_dsc), .name = name2Str(_field), }, .ofs = offsetof(className, _field), },
+#define _classFieldMetaDef3(_dsc, _field, _bits) \
+{ .base = { .dsc = name2Str(_dsc: _bits), .name = name2Str(_field), }, .bits = _bits, },
+#define classFieldMetaDef(...) cat2(_classFieldMetaDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 
 typedef union meta_type meta_type;
 typedef struct meta_enum meta_enum;
@@ -105,6 +108,29 @@ struct meta_struct {
 
 typedef struct objBase objBase;
 
+typedef bool (*if_ctor)(objBase *);
+typedef void (*if_dtor)(objBase *);
+typedef bool (*if_copy)(objBase *, objBase *);
+
+typedef struct if_specMethod if_specMethod;
+struct if_specMethod {
+    if_ctor ctor;
+    if_dtor dtor;
+    if_copy copy;
+};
+
+#define classVtabDefStart \
+typedef struct cat_2(className, vtab) cat_2(className, vtab); \
+struct cat_2(className, vtab) { \
+    bool (*ctor)(className *); \
+    void (*dtor)(className *); \
+    bool (*copy)(className *, className *);
+#define classVtabDefEnd };
+
+#define classVtab static const cat_2(className, vtab) vtab
+
+#define methodBind(name) .name = name
+
 typedef struct meta_class meta_class;
 
 struct meta_class {
@@ -112,9 +138,7 @@ struct meta_class {
     const meta_class *baseClass;
     size_t cnt;
     const meta_field *const fields;
-    bool (*ctor)(objBase *);
-    void (*dtor)(objBase *);
-    bool (*copy)(objBase *, objBase *);
+    void *vptr;
 };
 
 struct objBase {

@@ -40,7 +40,7 @@
 #define className objBase
 
 static const meta_field cat_2(className, fields)[] = {
-    classFieldDef(meta_class *class, class)
+    classFieldMetaDef(meta_class *class, class)
 };
 
 registerMetaType(cat_2(className, meta)) = {

@@ -6,8 +6,13 @@
 
 static void dtorBase(const meta_class *class, objBase *obj);
 
+static if_dtor getDtor(const meta_class *class) {
+    if (class->vptr == NULL) return NULL;
+    return ((if_specMethod *) class->vptr)->dtor;
+}
+
 static void dtorBase(const meta_class *class, objBase *obj) {
-    if (class->dtor) class->dtor(obj);
+    if (getDtor(class)) getDtor(class)(obj);
     if (class->baseClass) dtorBase(class->baseClass, obj);
 }
 
@@ -17,9 +22,14 @@ void obj_dtor(objBase *obj) {
     dtorBase(obj->class, obj);
 }
 
+static if_ctor getCtor(const meta_class *class) {
+    if (class->vptr == NULL) return NULL;
+    return ((if_specMethod *) class->vptr)->ctor;
+}
+
 static bool ctorBase(const meta_class *class, objBase *obj) {
     if (class->baseClass && ctorBase(class->baseClass, obj)) return true;
-    if (class->ctor && class->ctor(obj)) {
+    if (getCtor(class) && getCtor(class)(obj)) {
         dtorBase(class->baseClass, obj);
         return true;
     }
@@ -32,9 +42,14 @@ bool obj_ctor(objBase *obj) {
     return ctorBase(obj->class, obj);
 }
 
+static if_copy getCopy(const meta_class *class) {
+    if (class->vptr == NULL) return NULL;
+    return ((if_specMethod *) class->vptr)->copy;
+}
+
 static bool copyBase(const meta_class *class, objBase *dst, objBase *src) {
     if (class->baseClass && copyBase(class->baseClass, dst, src)) return true;
-    if (class->copy && class->copy(dst, src)) {
+    if (getCopy(class) && getCopy(class)(dst, src)) {
         dtorBase(class->baseClass, dst);
         return true;
     }

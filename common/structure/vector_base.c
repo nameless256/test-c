@@ -2,7 +2,6 @@
 // Created by CodingDev on 2026/2/26.
 //
 
-#define VECTOR_BASE_H_IMPL
 #include "vector_base.h"
 #include "util.h"
 
@@ -147,3 +146,10 @@ method(void, swap, className *other) {
     *self = temp;
 }
 
+classVtab = {
+    methodBind(copy),
+    methodBind(dtor),
+};
+
+#include "reg_meta_class.h"
+#include "class_vector_base.h"

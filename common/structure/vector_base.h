@@ -7,24 +7,13 @@
 
 #include "obj.h"
 
-#define className vector_base
-#define classMember(f) \
-mcrDispatch(f, capacity, size_t capacity) \
-mcrDispatch(f, size, size_t size) \
-mcrDispatch(f, data, void *data)
-#ifdef VECTOR_BASE_H_IMPL
-//#define classMataRemain
-#endif
 #include "def_class.h"
-
-#ifdef VECTOR_BASE_H_IMPL
-#define classCopy
-#define classDtor
-#include "reg_meta_class.h"
 #include "class_vector_base.h"
-#endif
 
 #define className vector_base
+
+classVtabDefStart
+classVtabDefEnd
 
 export(size_t, capacity);
 export(size_t, size);
@@ -43,9 +32,5 @@ export(bool, resize, size_t elmSize, void *elm, size_t count);
 export(void, swap, className *other);
 
 #undef className
-
-#ifdef VECTOR_BASE_H_IMPL
-#undef VECTOR_BASE_H_IMPL
-#endif
 
 #endif
