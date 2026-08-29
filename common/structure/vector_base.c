@@ -146,9 +146,9 @@ method(void, swap, className *other) {
     *self = temp;
 }
 
-classVtab = {
-    methodBind(copy),
-    methodBind(dtor),
+static const classVtab vtab = {
+    bind(copy),
+    bind(dtor),
 };
 
 #include "reg_meta_class.h"

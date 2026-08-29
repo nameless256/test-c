@@ -119,17 +119,31 @@ struct if_specMethod {
     if_copy copy;
 };
 
+#define $export(ret, func, ...) \
+ret cat_2(className, func)(className *self, ##__VA_ARGS__)
+
+#define method(ret, func, ...) \
+ret func(className *self, ##__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(className, func))))); \
+ret cat_2(className, func)(className *self, ##__VA_ARGS__)
+
+#define $virtual(ret, func, ...) ret (*func)(className *self, ##__VA_ARGS__)
+
+// private
+// protected
+// public
+
+#define bind(name) .name = name
+
 #define classVtabDefStart \
 typedef struct cat_2(className, vtab) cat_2(className, vtab); \
 struct cat_2(className, vtab) { \
-    bool (*ctor)(className *); \
-    void (*dtor)(className *); \
-    bool (*copy)(className *, className *);
+    $virtual(bool, ctor); \
+    $virtual(void, dtor); \
+    $virtual(bool, copy, className *other);
+
 #define classVtabDefEnd };
 
-#define classVtab static const cat_2(className, vtab) vtab
-
-#define methodBind(name) .name = name
+#define classVtab cat_2(className, vtab)
 
 typedef struct meta_class meta_class;
 
@@ -137,8 +151,8 @@ struct meta_class {
     meta_typeBase base;
     const meta_class *baseClass;
     size_t cnt;
-    const meta_field *const fields;
-    void *vptr;
+    const meta_field *fields;
+    const void *vptr;
 };
 
 struct objBase {
