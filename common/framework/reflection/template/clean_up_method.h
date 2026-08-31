@@ -3,7 +3,7 @@
 //
 
 #undef className
-#undef methodStart
-#undef export
-#undef virtual
-#undef methodEnd
+#undef accessCtrl
+#undef protected
+#undef private
+#undef public

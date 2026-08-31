@@ -1,31 +1,9 @@
 //
-// Created by CodingDev on 2026/2/26.
+// Created by CodingDev on 2026/8/29.
 //
 
-#ifndef VECTOR_BASE_H
-#define VECTOR_BASE_H
-
-#ifdef accessCtrl
-#define accessCtrl_vector_base accessCtrl
-#undef accessCtrl
-#endif
-
-// 另外定义 accessCtrl 并 包含基类
-
-#include "def_class.h"
-#include "class_vector_base.h"
-
-#ifdef accessCtrl_vector_base
-#define accessCtrl accessCtrl_vector_base
-#undef accessCtrl_vector_base
-#endif
-
-#if 1
-#include "method_vector_base.h"
-#else
 #include "access_ctrl.h"
 #define className vector_base
-
 public(size_t, capacity);
 public(size_t, size);
 public(bool, empty);
@@ -43,6 +21,3 @@ public(bool, resize, size_t elmSize, void *elm, size_t count);
 public(void, swap, className *other);
 
 #include "clean_up_method.h"
-#endif
-
-#endif
