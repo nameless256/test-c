@@ -1,7 +1,7 @@
 #include "meta.h"
 
-#ifdef accessCtrl
-#undef accessCtrl
+#ifdef $access
+#undef $access
 #endif
 
 #define classStart \

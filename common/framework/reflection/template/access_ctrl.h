@@ -2,16 +2,16 @@
 // Created by CodingDev on 2026/8/29.
 //
 
-#ifndef accessCtrl
-#define accessCtrl accLvPublic
+#ifndef $access
+#define $access $public
 #endif
 
-#if accessCtrl > accLvPublic
+#if $access > $public
 #define protected(...) export(__VA_ARGS__)
 #else
 #define protected(...)
 #endif
-#if accessCtrl > accLvProtected
+#if $access > $protected
 #define private(...) export(__VA_ARGS__)
 #else
 #define private(...)

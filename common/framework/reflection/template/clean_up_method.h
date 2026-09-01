@@ -7,10 +7,10 @@
 #undef private
 #undef public
 
-#if accessCtrl > accLvPublic
-#undef accessCtrl
-#define accessCtrl accLvProtected
+#if $access > $public
+#undef $access
+#define $access $protected
 #else
-#undef accessCtrl
-#define accessCtrl accLvPublic
+#undef $access
+#define $access $public
 #endif

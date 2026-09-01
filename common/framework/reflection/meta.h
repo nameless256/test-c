@@ -128,9 +128,9 @@ ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 
 #define virtual(ret, func, ...) ret (*func)(className *self, ##__VA_ARGS__)
 
-#define accLvProtected  1
-#define accLvPrivate    2
-#define accLvPublic     0
+#define $protected  1
+#define $private    2
+#define $public     0
 
 #define bind(name) .name = name
 
