@@ -1,5 +1,9 @@
 #include "meta.h"
 
+#ifdef accessCtrl
+#undef accessCtrl
+#endif
+
 #define classStart \
 typedef struct className className; \
 struct className { \

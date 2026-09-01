@@ -16,7 +16,7 @@ public(bool, empty);
 public(void *, at, size_t elmSize, int idx);
 public(void *, tail, size_t elmSize);
 public(void *, head);
-protected(void *, data);
+public(void *, data);
 public(bool, reserve, size_t elmSize, size_t capacity);
 public(bool, addTail, size_t elmSize, void *elm);
 public(void, delTail, size_t elmSize);
@@ -29,10 +29,6 @@ public(void, swap, className *other);
 #include "clean_up_method.h"
 
 // 包含基类
-
-#ifdef accessCtrl
-#undef accessCtrl
-#endif
 
 #include "def_class.h"
 #include "class_vector_base.h"
