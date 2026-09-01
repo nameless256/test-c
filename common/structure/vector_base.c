@@ -3,7 +3,7 @@
 //
 
 #include "obj.h"
-#define $access $private
+#define accessCtrl $private
 #include "vector_base.h"
 #include "util.h"
 
