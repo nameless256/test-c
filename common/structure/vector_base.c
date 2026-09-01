@@ -156,4 +156,5 @@ classVtab = {
 #undef className
 
 #include "reg_meta_class.h"
+// 如果不做字段反射可以不用建这个文件
 #include "class_vector_base.h"
