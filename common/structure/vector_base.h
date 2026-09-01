@@ -5,26 +5,10 @@
 #ifndef VECTOR_BASE_H
 #define VECTOR_BASE_H
 
-#ifdef accessCtrl
-#define accessCtrl_vector_base accessCtrl
-#undef accessCtrl
-#endif
-
-// 另外定义 accessCtrl 并 包含基类
-
-#include "def_class.h"
-#include "class_vector_base.h"
-
-#ifdef accessCtrl_vector_base
-#define accessCtrl accessCtrl_vector_base
-#undef accessCtrl_vector_base
-#endif
-
-#if 1
-#include "method_vector_base.h"
-#else
 #include "access_ctrl.h"
 #define className vector_base
+
+typedef struct className className;
 
 public(size_t, capacity);
 public(size_t, size);
@@ -32,7 +16,7 @@ public(bool, empty);
 public(void *, at, size_t elmSize, int idx);
 public(void *, tail, size_t elmSize);
 public(void *, head);
-public(void *, data);
+protected(void *, data);
 public(bool, reserve, size_t elmSize, size_t capacity);
 public(bool, addTail, size_t elmSize, void *elm);
 public(void, delTail, size_t elmSize);
@@ -43,6 +27,14 @@ public(bool, resize, size_t elmSize, void *elm, size_t count);
 public(void, swap, className *other);
 
 #include "clean_up_method.h"
+
+// 包含基类
+
+#ifdef accessCtrl
+#undef accessCtrl
 #endif
+
+#include "def_class.h"
+#include "class_vector_base.h"
 
 #endif
