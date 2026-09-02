@@ -5,9 +5,9 @@
 #define enumName ptrTypeId
 #define enumBase uint8_t
 enumStart
-enumEntry(Type)
-enumEntry(Func)
-enumEntry(Array)
+    enumEntry(Type)
+    enumEntry(Func)
+    enumEntry(Array)
 enumEnd
 
 #include "clean_up_enum.h"

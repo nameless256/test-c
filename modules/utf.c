@@ -43,6 +43,9 @@ static uint8_t utf8GetCharCodingUnit(const uint8_t *utf8) {
     return bytes;
 }
 
+#define UNICODE_ERROR 0xFFFFFFFF
+#define UNICODE_MAX 0x0010FFFF
+
 uint32_t unicodeGetCodePointByUtf8(const uint8_t **const utf8) {
     if (utf8 == NULL || *utf8 == NULL) return UNICODE_ERROR;
     uint8_t bytes = utf8GetCharCodingUnit(*utf8);

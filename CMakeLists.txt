@@ -16,6 +16,7 @@ include_directories(
         common/structure/template
         game
         modules
+        modules/template
 )
 
 file(
