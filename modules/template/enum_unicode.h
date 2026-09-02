@@ -8,8 +8,8 @@ enumStart
     enumEntry(C0Control, 0x0000)        // C0 控制字符
     enumEntry(C1Control, 0x0080)        // C1 控制字符
     enumEntry(Surrogate, 0xD800)        // 代理区
-    enumEntry(SurrogateHigh, 0xD800)    // 代理对
-    enumEntry(SurrogateLow, 0xDC00)     // 代理对
+    enumEntry(SurrogateHigh, 0xD800)    // 高代理对
+    enumEntry(SurrogateLow, 0xDC00)     // 低代理对
     enumEntry(BmpPua, 0xE000)           // BMP 私用区（PUA）
     enumEntry(BmpNonchar, 0xFDD0)       // BMP 非字符
     enumEntry(Bom, 0xFEFF)              // BOM / 零宽不换行空格
