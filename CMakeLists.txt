@@ -16,7 +16,10 @@ include_directories(
         common/structure/template
         game
         modules
-        modules/template
+        modules/charset
+        modules/charset/template
+        modules/encoding
+        modules/encoding/template
 )
 
 file(
@@ -28,6 +31,8 @@ file(
         "common/*.c"
         "game/*.c"
         "modules/*.c"
+        "modules/charset/*.c"
+        "modules/encoding/*.c"
 )
 
 add_executable(test_c main.c ${SOURCES})
