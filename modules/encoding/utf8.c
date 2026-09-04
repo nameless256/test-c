@@ -43,24 +43,25 @@ static utf8_byteFmt getFmt(uint8_t codeUnit) {
     return fmt;
 }
 
-define(unicode, decode, const uint8_t *utf8, uint8_t *ofs) {
-    if (utf8 == NULL) return unicode_Nonchar;
-    utf8_byteFmt fmt = getFmt(utf8[0]);
+define(encoding_err , decode, uint8_t *src, unicode *dst, uint8_t length, uint8_t *ofs) {
+    if (src == NULL || dst == NULL) return encoding_err_NullPtr;
+    uint8_t offset = 0;
+    if (ofs == NULL) ofs = &offset;
+    if (length == 0) return encoding_err_Truncated;
+    utf8_byteFmt fmt = getFmt(src[0]);
+    if (length < fmt) return encoding_err_Truncated;
     *ofs += 1;
-    if (fmt == utf8_byteFmt_Continue || fmt == utf8_byteFmt_Illegal) return unicode_Nonchar;
-    unicode cp = getVal(utf8[0], fmt);
+    if (fmt == utf8_byteFmt_Continue) return encoding_err_InvalidLead;
+    if (fmt == utf8_byteFmt_Illegal) return encoding_err_InvalidLead;
+    unicode cp = getVal(src[0], fmt);
     for (uint8_t i = 1; i < fmt; ++i) {
         *ofs += 1;
-        if (checkFmt(utf8[i], utf8_byteFmt_Continue)) {
-            cp <<= sCodeUnitValidBits[utf8_byteFmt_Continue];
-            cp |= getVal(utf8[i], utf8_byteFmt_Continue);
-        } else {
-            cp = unicode_Nonchar;
-            break;
-        }
+        if (!checkFmt(src[i], utf8_byteFmt_Continue)) return encoding_err_InvalidTrail;
+        cp <<= sCodeUnitValidBits[utf8_byteFmt_Continue];
+        cp |= getVal(src[i], utf8_byteFmt_Continue);
     }
-    if (cp > unicode_Max) cp = unicode_Nonchar;
-    return cp;
+    *dst = cp;
+    return encoding_err_None;
 }
 
 static inline uint8_t getCharBitsByFmt(utf8_byteFmt fmt) {
@@ -83,6 +84,12 @@ static inline uint8_t getBytes(unicode cp) {
 static inline void utf8SetBytePrefix(uint8_t *const byte, utf8_byteFmt fmt) {
     *byte |= ~((1 << sCodeUnitValidBits[fmt]) - 1);
     *byte &= ~(1 << sCodeUnitValidBits[fmt]);
+}
+
+define(encoding_err , encodeChar, unicode src, uint8_t *dst, uint8_t length, uint8_t *ofs) {
+    if (dst == NULL) return encoding_err_NullPtr;
+    if (src > unicode_Max) return encoding_err_OutOfRange;
+    return encoding_err_None;
 }
 
 define(uint8_t, encode, unicode cp, uint8_t *const utf8, size_t utf8Length) {
