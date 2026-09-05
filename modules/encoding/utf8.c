@@ -88,8 +88,7 @@ define(encoding_err , decode, uint8_t *src, unicode *dst, uint8_t length, uint8_
     }
     if (fmt > 1 && cp < 1 << getCharBitsByFmt(fmt)) err = encoding_err_Overlong;
     else if (cp > unicode_Max) err = encoding_err_OutOfRange;
-    else if (cp < unicode_Surrogate) ;
-    else if (cp - unicode_Surrogate < unicode_size_Surrogate) err = encoding_err_Surrogate;
+    else if (unicode_isSurrogate(cp)) err = encoding_err_Surrogate;
     errProcess:
     if (ofs != NULL) *ofs = offset;
     *dst = err == encoding_err_None ? cp : unicode_Replacement;
@@ -99,11 +98,10 @@ define(encoding_err , decode, uint8_t *src, unicode *dst, uint8_t length, uint8_
 define(encoding_err , encode, unicode src, uint8_t *dst, uint8_t length, uint8_t *ofs) {
     if (dst == NULL) return encoding_err_NullPtr;
     encoding_err err = encoding_err_None;
-    if (src >= unicode_Surrogate) {
-        if (src > unicode_Max) err = encoding_err_InvalidCodepoint;
-        if (src - unicode_Surrogate < unicode_size_Surrogate) err = encoding_err_InvalidCodepoint;
+    if (src > unicode_Max || unicode_isSurrogate(src)) {
+        err = encoding_err_InvalidCodepoint;
+        src = unicode_Replacement;
     }
-    if (err != encoding_err_None) src = unicode_Replacement;
     uint8_t bytes = getBytes(src);
     if (bytes > length) return encoding_err_BufTooSmall;
     dst[0] = src >> (sCodeUnitValidBits[utf8_byteFmt_Continue] * (bytes - 0 - 1));

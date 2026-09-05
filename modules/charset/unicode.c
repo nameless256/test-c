@@ -31,4 +31,22 @@ define(bool, isNochar, unicode cp) {
     return false;
 }
 
+define(bool, isSurrogate, unicode cp) {
+    if (cp < unicode_Surrogate) ;
+    else if (cp - unicode_Surrogate < unicode_size_Surrogate) return true;
+    return false;
+}
+
+define(bool, isSurrogateHigh, unicode cp) {
+    if (cp < unicode_SurrogateHigh) ;
+    else if (cp - unicode_SurrogateHigh < unicode_size_Surrogate / 2) return true;
+    return false;
+}
+
+define(bool, isSurrogateLow, unicode cp) {
+    if (cp < unicode_SurrogateLow) ;
+    else if (cp - unicode_SurrogateLow < unicode_size_Surrogate / 2) return true;
+    return false;
+}
+
 #undef moduleName

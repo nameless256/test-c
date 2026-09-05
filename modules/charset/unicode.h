@@ -18,7 +18,11 @@
 
 declare(bool, isNochar, unicode cp);
 
-declare(bool, isNochar, unicode cp);
+declare(bool, isSurrogate, unicode cp);
+
+declare(bool, isSurrogateHigh, unicode cp);
+
+declare(bool, isSurrogateLow, unicode cp);
 
 #undef moduleName
 
