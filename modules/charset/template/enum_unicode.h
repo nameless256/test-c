@@ -13,6 +13,7 @@ enumStart
     enumEntry(BmpPua, 0xE000)           // BMP 私用区（PUA）
     enumEntry(BmpNonchar, 0xFDD0)       // BMP 非字符
     enumEntry(Bom, 0xFEFF)              // BOM / 零宽不换行空格
+    enumEntry(Replacement, 0xFFFD)      // 替换字符
     enumEntry(Nonchar, 0xFFFE)          // 结尾非字符
     enumEntry(Max, 0x10FFFF)            // 最大码点
 enumEnd

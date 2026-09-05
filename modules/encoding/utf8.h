@@ -28,9 +28,7 @@ declare(encoding_err , decode, uint8_t *src, unicode *dst, uint8_t length, uint8
  * @param[out] ofs 已编码utf8单字符编码单元个数
  * @return
  */
-declare(encoding_err , encodeChar, unicode src, uint8_t *dst, uint8_t length, uint8_t *ofs);
-
-declare(uint8_t, encode, unicode cp, uint8_t *const utf8, size_t utf8Length);
+declare(encoding_err , encode, unicode src, uint8_t *dst, uint8_t length, uint8_t *ofs);
 
 #undef moduleName
 

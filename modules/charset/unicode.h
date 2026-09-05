@@ -18,6 +18,8 @@
 
 declare(bool, isNochar, unicode cp);
 
+declare(bool, isNochar, unicode cp);
+
 #undef moduleName
 
 #endif //TEST_C_UNICODE_H
