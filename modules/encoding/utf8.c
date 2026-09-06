@@ -7,6 +7,7 @@
 #define moduleName utf8
 
 #include "def_enum.h"
+
 #define enumName utf8_byteFmt
 #define enumBase uint8_t
 enumStart
@@ -65,7 +66,7 @@ static inline void setBytePrefix(uint8_t *const byte, utf8_byteFmt fmt) {
     *byte &= ~(1 << sCodeUnitValidBits[fmt]);
 }
 
-define(encoding_err , decode, uint8_t *src, unicode *dst, uint8_t length, uint8_t *ofs) {
+define(encoding_err, decode, uint8_t *src, unicode *dst, uint8_t length, uint8_t *ofs) {
     if (src == NULL || dst == NULL) return encoding_err_NullPtr;
     if (length == 0) return encoding_err_Truncated;
     utf8_byteFmt fmt = getFmt(src[0]);
@@ -95,7 +96,7 @@ define(encoding_err , decode, uint8_t *src, unicode *dst, uint8_t length, uint8_
     return err;
 }
 
-define(encoding_err , encode, unicode src, uint8_t *dst, uint8_t length, uint8_t *ofs) {
+define(encoding_err, encode, unicode src, uint8_t *dst, uint8_t length, uint8_t *ofs) {
     if (dst == NULL) return encoding_err_NullPtr;
     encoding_err err = encoding_err_None;
     if (src > unicode_Max || unicode_isSurrogate(src)) {

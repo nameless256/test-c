@@ -18,7 +18,7 @@
  * @param[out] ofs 已解码utf16单字符编码单元个数
  * @return
  */
-declare(encoding_err , decode, uint16_t *src, unicode *dst, uint8_t length, uint8_t *ofs);
+declare(encoding_err, decode, uint16_t *src, unicode *dst, uint8_t length, uint8_t *ofs);
 
 /**
  * @brief unicode编码到utf16单字符
@@ -28,7 +28,7 @@ declare(encoding_err , decode, uint16_t *src, unicode *dst, uint8_t length, uint
  * @param[out] ofs 已编码utf16单字符编码单元个数
  * @return
  */
-declare(encoding_err , encode, unicode src, uint16_t *dst, uint8_t length, uint8_t *ofs);
+declare(encoding_err, encode, unicode src, uint16_t *dst, uint8_t length, uint8_t *ofs);
 
 #undef moduleName
 
