@@ -13,9 +13,9 @@ enumStart
     /* 成功 */
     enumEntry(None)                 // 成功
     /* 输入数据错误（解码侧） */
-    enumEntry(InvalidLead)          // 无效首字节（0x80-0xBF/0xFE/0xFF）
-    enumEntry(Truncated)            // 不完整序列，缺少续字节
-    enumEntry(InvalidTrail)         // 续字节不在 0x80-0xBF 范围
+    enumEntry(Truncated)            // 不完整序列
+    enumEntry(InvalidLead)          // 前导单元非法（UTF-8首字节错 / UTF-16高代理错）
+    enumEntry(InvalidTrail)         // 后续单元非法（UTF-8续字节错 / UTF-16低代理错）
     enumEntry(Overlong)             // 过编码（Overlong），安全隐患
     enumEntry(Surrogate)            // 编码了代理对码点（U+D800-U+DFFF）
     enumEntry(OutOfRange)           // 码点超出 U+10FFFF
