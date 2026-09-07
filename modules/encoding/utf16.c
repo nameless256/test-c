@@ -6,18 +6,6 @@
 
 #define moduleName utf16
 
-static inline uint8_t getCharCodeUnit(const uint16_t *utf16) {
-    uint8_t codeUnit = 0;
-    if (unicode_isSurrogateHigh(utf16[0])) {
-        if (unicode_isSurrogateLow(utf16[1])) {
-            codeUnit = 2;
-        }
-    } else if (!unicode_isSurrogateLow(utf16[0])) {
-        codeUnit = 1;
-    }
-    return codeUnit;
-}
-
 define(encoding_err, decode, uint16_t *src, unicode *dst, uint8_t length, uint8_t *ofs) {
     if (src == NULL || dst == NULL) return encoding_err_NullPtr;
     if (length == 0) return encoding_err_Truncated;
