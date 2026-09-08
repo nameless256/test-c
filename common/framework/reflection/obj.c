@@ -5,14 +5,11 @@
 #include "obj.h"
 #include <memory.h>
 
-static void (*getDtor(const meta_class *class))(objBase *obj) {
-    if (class->vptr == NULL) return NULL;
-    return ((objBase_vtab *) class->vptr)->dtor;
-}
+#define get(class, func) (class->vptr == NULL ? NULL : ((objBase_vtab *) class->vptr)->func)
 
 static void dtorBase(const meta_type *meta, objBase *obj) {
     const meta_class *class = &meta->mClass;
-    if (getDtor(class)) getDtor(class)(obj);
+    if (get(class, dtor)) get(class, dtor)(obj);
     if (class->base) dtorBase(class->base, obj);
 }
 
@@ -22,15 +19,10 @@ void obj_dtor(void *obj) {
     dtorBase(((objBase *) obj)->meta, obj);
 }
 
-static bool (*getCtor(const meta_class *class))(objBase *obj) {
-    if (class->vptr == NULL) return NULL;
-    return ((objBase_vtab *) class->vptr)->ctor;
-}
-
 static bool ctorBase(const meta_type *meta, objBase *obj) {
     const meta_class *class = &meta->mClass;
     if (class->base && ctorBase(class->base, obj)) return true;
-    if (getCtor(class) && getCtor(class)(obj)) {
+    if (get(class, ctor) && get(class, ctor)(obj)) {
         dtorBase(class->base, obj);
         return true;
     }
@@ -44,18 +36,13 @@ bool obj_ctor(void *obj) {
     return ctorBase(((objBase *) obj)->meta, obj);
 }
 
-static bool (*getCopy(const meta_class *class))(objBase *dst, objBase *src) {
-    if (class->vptr == NULL) return NULL;
-    return ((objBase_vtab *) class->vptr)->copy;
-}
-
 static bool copyBase(const meta_type *meta, objBase *restrict dst, objBase *restrict src) {
     const meta_class *class = &meta->mClass;
     if (class->base && copyBase(class->base, dst, src)) return true;
-    if (getCopy(class) == NULL) {
+    if (get(class, copy) == NULL) {
         size_t baseSize = class->base->meta.size;
         memcpy(dst + baseSize, src + baseSize, meta->meta.size - baseSize);
-    } else if (getCopy(class)(dst, src)) {
+    } else if (get(class, copy)(dst, src)) {
         dtorBase(class->base, dst);
         return true;
     }
