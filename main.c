@@ -23,9 +23,24 @@
  * @{
 */
 
+#include "vector_base.h"
+#include "obj.h"
+
 int main() {
     system("chcp 65001");
     clock_t start = clock();
+
+    vector_base var CLEANUP(obj_dtor) = {(void *) &vector_base_meta};
+    obj_ctor(&var);
+
+    vector_base *var2 = malloc(sizeof(vector_base));
+    if (var2) obj_ctor(var2);
+
+    if (var2) {
+        obj_dtor(var2);
+        free(var2);
+        var2 = NULL;
+    }
 
     clock_t stop = clock();
     double elapsed = (double)(stop - start) / CLOCKS_PER_SEC;

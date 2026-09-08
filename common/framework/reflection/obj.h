@@ -7,8 +7,8 @@
 
 #include "meta.h"
 
-void obj_dtor(objBase *obj);
-bool obj_ctor(objBase *obj);
-bool obj_copy(objBase *restrict dst, objBase *restrict src);
+void obj_dtor(void *obj);
+bool obj_ctor(void *obj);
+bool obj_copy(void *restrict dst, void *restrict src);
 
 #endif //TEST_C_OBJ_H
