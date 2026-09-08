@@ -106,7 +106,7 @@ typedef struct objBase objBase;
 ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 
 #define method(ret, func, ...) \
-ret cat_2(className, func)(className *self, ##__VA_ARGS__) __attribute__((alias(nameVal2Str(func)))); \
+ALIAS(func) export(ret, func, ##__VA_ARGS__); \
 static ret func(className *self, ##__VA_ARGS__)
 
 #define virtual(ret, func, ...) ret (*func)(className *self, ##__VA_ARGS__)
