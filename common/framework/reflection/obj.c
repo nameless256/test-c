@@ -55,9 +55,7 @@ static bool copyBase(const meta_type *meta, objBase *restrict dst, objBase *rest
     if (getCopy(class) == NULL) {
         size_t baseSize = class->base->meta.size;
         memcpy(dst + baseSize, src + baseSize, meta->meta.size - baseSize);
-        return false;
-    }
-    if (getCopy(class)(dst, src)) {
+    } else if (getCopy(class)(dst, src)) {
         dtorBase(class->base, dst);
         return true;
     }
