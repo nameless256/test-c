@@ -22,7 +22,7 @@
 { .base = { .dsc = name2Str(_dsc: _bits), .name = name2Str(_field), }, .bits = _bits, },
 #define classFieldMetaDef(...) cat2(_classFieldMetaDef, mcrVaCount(__VA_ARGS__)) (__VA_ARGS__)
 
-typedef union meta_type meta_type;
+typedef struct meta_type meta_type;
 typedef struct meta_enum meta_enum;
 
 #include "def_enum.h"
@@ -43,7 +43,6 @@ struct meta_typeBase {
 typedef struct meta_int meta_int;
 
 struct meta_int {
-    meta_typeBase base;
     bool isSigned;
 };
 
@@ -57,7 +56,6 @@ typedef struct meta_func meta_func;
 typedef struct meta_array meta_array;
 
 struct meta_array {
-    meta_typeBase base;
     const meta_type *type;
     size_t length;
 };
@@ -65,7 +63,6 @@ struct meta_array {
 typedef struct meta_ptr meta_ptr;
 
 struct meta_ptr {
-    meta_typeBase base; ///< base.name == "*"
     ptrTypeId id;
     union {
         meta_type *type;
@@ -82,7 +79,6 @@ struct meta_enumVal {
 };
 
 struct meta_enum {
-    meta_typeBase base;
     const meta_type *type;
     size_t cnt;
     const meta_enumVal *const vals;
@@ -93,7 +89,6 @@ typedef struct meta_field meta_field;
 typedef struct meta_union meta_union;
 
 struct meta_union {
-    meta_typeBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
     const meta_field *const fields;
 };
@@ -101,23 +96,11 @@ struct meta_union {
 typedef struct meta_struct meta_struct;
 
 struct meta_struct {
-    meta_typeBase base; ///< if not define name, base.name == <anonymous>
     size_t cnt;
     const meta_field *const fields;
 };
 
 typedef struct objBase objBase;
-
-typedef bool (*if_ctor)(objBase *);
-typedef void (*if_dtor)(objBase *);
-typedef bool (*if_copy)(objBase *, objBase *);
-
-typedef struct if_specMethod if_specMethod;
-struct if_specMethod {
-    if_ctor ctor;
-    if_dtor dtor;
-    if_copy copy;
-};
 
 #define export(ret, func, ...) \
 ret cat_2(className, func)(className *self, ##__VA_ARGS__)
@@ -143,29 +126,38 @@ struct cat_2(className, vtab) { \
 }; \
 static const cat_2(className, vtab) vtab
 
+typedef struct cat_2(objBase, vtab) cat_2(objBase, vtab);
+struct cat_2(objBase, vtab) {
+    bool (*ctor)(objBase *);
+    void (*dtor)(objBase *);
+    bool (*copy)(objBase *, objBase *);
+};
+
 typedef struct meta_class meta_class;
 
 struct meta_class {
-    meta_typeBase base;
-    const meta_class *baseClass;
+    const meta_type *base;
     size_t cnt;
     const meta_field *fields;
     const void *vptr;
 };
 
 struct objBase {
-    meta_class *class;
+    const meta_type *meta;
+    const cat_2(objBase, vtab) *vptr;
 };
 
-union meta_type {
-    meta_typeBase base;
-    meta_int mInt;
-    meta_ptr mPtr;
-    meta_enum mEnum;
-    meta_array mArray;
-    meta_union mUnion;
-    meta_struct mStruct;
-    meta_class mClass;
+struct meta_type {
+    meta_typeBase meta;  ///< if not define name, meta.name == <anonymous>
+    union {
+        meta_int mInt;
+        meta_ptr mPtr;
+        meta_enum mEnum;
+        meta_array mArray;
+        meta_union mUnion;
+        meta_struct mStruct;
+        meta_class mClass;
+    };
 };
 
 struct meta_param {

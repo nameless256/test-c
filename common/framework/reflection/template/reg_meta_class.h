@@ -13,14 +13,14 @@ static const meta_field fields[] = { \
 }; \
 extern const meta_type cat_2(classBase, meta); \
 registerMetaType(cat_2(className, meta)) = { \
+    .meta = { \
+        .name = nameVal2Str(className), \
+        .size = sizeof(className), \
+        .quals = qual_Null, \
+        .id = typeId_Class, \
+    }, \
     .mClass = { \
-        .base = { \
-            .name = nameVal2Str(className), \
-            .size = sizeof(className), \
-            .quals = qual_Null, \
-            .id = typeId_Class, \
-        }, \
-        .baseClass = (const meta_class *) &cat_2(classBase, meta), \
+        .base = (const meta_class *) &cat_2(classBase, meta), \
         .cnt = ARRAY_SIZE(fields), \
         .fields = fields, \
         .vptr = &vtab \

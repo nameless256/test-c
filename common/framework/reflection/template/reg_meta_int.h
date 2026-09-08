@@ -8,13 +8,13 @@
 #define intMetaName cat_2(intName, meta)
 
 registerMetaType(intMetaName) = {
+    .meta = {
+        .name = nameVal2Str(intName),
+        .size = sizeof(intName),
+        .quals = qual_Null,
+        .id = typeId_Int,
+    },
     .mInt = {
-        .base = {
-            .name = nameVal2Str(intName),
-            .size = sizeof(intName),
-            .quals = qual_Null,
-            .id = typeId_Int,
-        },
         .isSigned = (((intName)-1) < 0),
     }
 };
