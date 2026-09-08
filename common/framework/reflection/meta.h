@@ -106,8 +106,8 @@ typedef struct objBase objBase;
 ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 
 #define method(ret, func, ...) \
-ret func(className *self, ##__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(className, func))))); \
-ret cat_2(className, func)(className *self, ##__VA_ARGS__)
+ret cat_2(className, func)(className *self, ##__VA_ARGS__) __attribute__((alias(nameVal2Str(func)))); \
+static ret func(className *self, ##__VA_ARGS__)
 
 #define virtual(ret, func, ...) ret (*func)(className *self, ##__VA_ARGS__)
 
@@ -117,14 +117,16 @@ ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 
 #define bind(name) .name = name
 
-#define classVtab \
+#define classVtab static const cat_2(className, vtab) vtab
+
+#define classVtabDefStart \
 typedef struct cat_2(className, vtab) cat_2(className, vtab); \
 struct cat_2(className, vtab) { \
     virtual(bool, ctor); \
     virtual(void, dtor); \
-    virtual(bool, copy, className *other); \
-}; \
-static const cat_2(className, vtab) vtab
+    virtual(bool, copy, className *other);
+
+#define classVtabDefEnd };
 
 typedef struct cat_2(objBase, vtab) cat_2(objBase, vtab);
 struct cat_2(objBase, vtab) {

@@ -57,17 +57,17 @@
 #define className objBase
 
 static const meta_field cat_2(className, fields)[] = {
-    classFieldMetaDef(meta_class *class, class)
+    classFieldMetaDef(meta_type *meta, meta)
 };
 
 registerMetaType(cat_2(className, meta)) = {
+    .meta = {
+        .name = nameVal2Str(className),
+        .size = sizeof(className),
+        .quals = qual_Null,
+        .id = typeId_Class,
+    },
     .mClass = {
-        .base = {
-            .name = nameVal2Str(className),
-            .size = sizeof(className),
-            .quals = qual_Null,
-            .id = typeId_Class,
-        },
         .cnt = ARRAY_SIZE(cat_2(className, fields)),
         .fields = cat_2(className, fields),
     }

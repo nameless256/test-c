@@ -26,6 +26,9 @@ public(void, clear, size_t elmSize);
 public(bool, resize, size_t elmSize, void *elm, size_t count);
 public(void, swap, className *other);
 
+classVtabDefStart
+classVtabDefEnd
+
 #include "clean_up_method.h"
 
 // 包含基类

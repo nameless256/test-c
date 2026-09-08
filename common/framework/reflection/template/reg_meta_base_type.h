@@ -12,7 +12,7 @@
 #define baseTypeMetaName cat_2(baseTypeName, meta)
 
 registerMetaType(baseTypeMetaName) = {
-    .base = {
+    .meta = {
         .name = nameVal2Str(baseTypeName),
         .size = sizeof(baseTypeName),
         .quals = qual_Null,

@@ -20,7 +20,7 @@ registerMetaType(cat_2(className, meta)) = { \
         .id = typeId_Class, \
     }, \
     .mClass = { \
-        .base = (const meta_class *) &cat_2(classBase, meta), \
+        .base = &cat_2(classBase, meta), \
         .cnt = ARRAY_SIZE(fields), \
         .fields = fields, \
         .vptr = &vtab \

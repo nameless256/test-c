@@ -54,7 +54,7 @@ static bool copyBase(const meta_type *meta, objBase *restrict dst, objBase *rest
     if (class->base && copyBase(class->base, dst, src)) return true;
     if (getCopy(class) == NULL) {
         size_t baseSize = class->base->meta.size;
-        memcpy(dst + baseSize, src + baseSize, 1);
+        memcpy(dst + baseSize, src + baseSize, meta->meta.size - baseSize);
         return false;
     }
     if (getCopy(class)(dst, src)) {

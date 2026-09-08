@@ -221,7 +221,7 @@
 ret cat_2(moduleName, func)(__VA_ARGS__)
 
 #define define(ret, func, ...) \
-ret func(__VA_ARGS__) __attribute__((alias(nameVal2Str(cat_2(moduleName, func))))); \
-ret cat_2(moduleName, func)(__VA_ARGS__)
+ret cat_2(moduleName, func)(__VA_ARGS__) __attribute__((alias(nameVal2Str(func)))); \
+static ret func(__VA_ARGS__)
 
 #endif //MCR_UTIL_H
