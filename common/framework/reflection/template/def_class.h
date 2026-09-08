@@ -7,7 +7,13 @@
 #define classStart \
 typedef struct className className; \
 struct className { \
-    classBase base;
+    union { \
+        struct { \
+            const meta_type *meta; \
+            cat_2(className, vtab) *vtab; \
+        }; \
+        classBase base; \
+    };
 
 #define classEntry(...) classFieldDef(__VA_ARGS__)
 
