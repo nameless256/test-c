@@ -7,6 +7,10 @@
 #undef protected
 #undef private
 #undef public
+#undef accessStart
+#undef accessEnd
+#undef export
+#undef virtual
 
 #if accessCtrl == $private
 #undef accessCtrl

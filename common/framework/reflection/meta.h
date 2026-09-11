@@ -113,17 +113,14 @@ typedef struct objBase objBase;
 #define _accessDispatch22(f0, f1, ...) f1(__VA_ARGS__)
 #define accessDispatch(f0, f1, ...) cat3(_accessDispatch, accessLv, accessCtrl)(f0, f1, ##__VA_ARGS__)
 
-#define _void(...)
+#define _dummyVoid(...)
 
-#define _void$(ret, func, ...) void *func
+#define _dummyVirtual(ret, func, ...) void *func
 
 #define _export(ret, func, ...) \
 ret cat_2(className, func)(className *self, ##__VA_ARGS__)
 
 #define _virtual(ret, func, ...) ret (*func)(className *self, ##__VA_ARGS__)
-
-#define export(...) accessDispatch(_void, _export, ##__VA_ARGS__)
-#define virtual(...) accessDispatch(_void$, _virtual, ##__VA_ARGS__)
 
 #define method(ret, func, ...) \
 ALIAS(func) _export(ret, func, ##__VA_ARGS__); \
