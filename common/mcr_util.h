@@ -29,6 +29,10 @@
 #define cat2(a, b) _cat2(a, b)
 #define _cat_2(a, b) a ## _ ## b
 #define cat_2(a, b) _cat_2(a, b)
+#define _cat3(a, b, c) a ## b ## c
+#define cat3(a, b, c) _cat3(a, b, c)
+#define _cat_3(a, b, c) a ## _ ## b ## _ ## c
+#define cat_3(a, b, c) _cat_3(a, b, c)
 
 #define ALIAS(function)             __attribute__((alias(#function)))
 #define WEAK                        __attribute__((weak))

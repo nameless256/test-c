@@ -6,14 +6,16 @@
 #define accessCtrl $public
 #endif
 
+#define accessLv $private
+
 #if accessCtrl > $public
-#define protected(...) export(__VA_ARGS__)
+#define protected(...) _export(__VA_ARGS__)
 #else
 #define protected(...)
 #endif
 #if accessCtrl > $protected
-#define private(...) export(__VA_ARGS__)
+#define private(...) _export(__VA_ARGS__)
 #else
 #define private(...)
 #endif
-#define public(...) export(__VA_ARGS__)
+#define public(...) _export(__VA_ARGS__)

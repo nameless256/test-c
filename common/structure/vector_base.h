@@ -10,21 +10,25 @@
 
 typedef struct className className;
 
-public(size_t, capacity);
-public(size_t, size);
-public(bool, empty);
-public(void *, at, size_t elmSize, int idx);
-public(void *, tail, size_t elmSize);
-public(void *, head);
-public(void *, data);
-public(bool, reserve, size_t elmSize, size_t capacity);
-public(bool, addTail, size_t elmSize, void *elm);
-public(void, delTail, size_t elmSize);
-public(bool, add, size_t elmSize, int idx, size_t count, void *elm);
-public(void, del, size_t elmSize, int idx, size_t count);
-public(void, clear, size_t elmSize);
-public(bool, resize, size_t elmSize, void *elm, size_t count);
-public(void, swap, className *other);
+export(size_t, capacity);
+export(size_t, size);
+export(bool, empty);
+export(void *, at, size_t elmSize, int idx);
+export(void *, tail, size_t elmSize);
+export(void *, head);
+export(void *, data);
+#undef accessLv
+#define accessLv $protected
+export(bool, reserve, size_t elmSize, size_t capacity);
+export(bool, addTail, size_t elmSize, void *elm);
+export(void, delTail, size_t elmSize);
+export(bool, add, size_t elmSize, int idx, size_t count, void *elm);
+export(void, del, size_t elmSize, int idx, size_t count);
+#undef accessLv
+#define accessLv $public
+export(void, clear, size_t elmSize);
+export(bool, resize, size_t elmSize, void *elm, size_t count);
+export(void, swap, className *other);
 
 classVtabDefStart
 classVtabDefEnd
