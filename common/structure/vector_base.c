@@ -131,13 +131,13 @@ method(bool, resize, size_t elmSize, void *elm, size_t count) {
     return false;
 }
 
-method(void, swap, className *other) {
+method(void, swap, className * other) {
     className temp = *other;
     *other = *self;
     *self = temp;
 }
 
-method(bool, copy, className *other) {
+method(bool, copy, className * other) {
     *self = *other;
     return false;
 }
@@ -148,12 +148,7 @@ method(void, dtor) {
     self->data = NULL;
 }
 
-classVtab = {
-    bind(copy),
-    bind(dtor),
-};
-
 #undef className
 
-#include "reg_meta_class.h"
-#include "class_vector_base.h"
+#define classVtabBind
+#include "vector_base.h"

@@ -2,8 +2,12 @@
 // Created by CodingDev on 2026/2/26.
 //
 
+#if !defined(VECTOR_BASE_H) || \
+(defined(VECTOR_BASE_H) && defined(classVtabDecl)) || \
+(defined(VECTOR_BASE_H) && defined(classVtabBind))
 #ifndef VECTOR_BASE_H
 #define VECTOR_BASE_H
+#endif
 
 #include "access_ctrl.h"
 #define className vector_base
@@ -13,6 +17,8 @@ typedef struct className className;
 accessStart
 #undef accessLv
 #define accessLv $public
+bind(copy)
+bind(dtor)
 export(size_t, capacity)
 export(size_t, size)
 export(bool, empty)
@@ -30,15 +36,34 @@ export(bool, resize, size_t elmSize, void *elm, size_t count)
 export(void, swap, className *other)
 accessEnd
 
-classVtabDefStart
-classVtabDefEnd
-
 #include "clean_up_method.h"
+
+#ifndef classVtabDecl
+#ifndef classVtabBind
+#define classVtabDecl
+#include "vector_base.h"
+
+#if accessCtrl == $private
+#undef accessCtrl
+#define accessCtrl $protected
+#endif
 
 // 包含基类
 
 #include "def_class.h"
-// 如果不做字段反射可以不用建这个文件
-#include "class_vector_base.h"
+#else
+#include "reg_meta_class.h"
+#endif
+#define className vector_base
+#define classBase objBase
+classStart
+    classEntry(size_t capacity, capacity)
+    classEntry(size_t size, size)
+    classEntry(void *data, data)
+classEnd
+
+#include "clean_up_class.h"
+
+#endif
 
 #endif

@@ -9,10 +9,6 @@
 #undef public
 #undef accessStart
 #undef accessEnd
+#undef bind
 #undef export
 #undef virtual
-
-#if accessCtrl == $private
-#undef accessCtrl
-#define accessCtrl $protected
-#endif

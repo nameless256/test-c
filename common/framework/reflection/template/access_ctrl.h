@@ -20,19 +20,22 @@
 #endif
 #define public(...) _export(__VA_ARGS__)
 
-#ifdef vtabDecl
+#ifdef classVtabDecl
 #define accessStart classVtabDefStart
 #define accessEnd classVtabDefEnd
+#define bind(...)
 #define export(...)
 #define virtual(...) accessDispatch(_dummyVirtual, _virtual, ##__VA_ARGS__);
-#elif defined(vtabBind)
-#define accessStart
-#define accessEnd
+#elif defined(classVtabBind)
+#define accessStart classVtabStart
+#define accessEnd classVtabEnd
+#define bind(name) _bind(name),
 #define export(...)
-#define virtual(ret, func, ...) bind(func),
+#define virtual(ret, func, ...) _bind(func),
 #else
 #define accessStart
 #define accessEnd
+#define bind(...)
 #define export(...) accessDispatch(_dummyVoid, _export, ##__VA_ARGS__);
 #define virtual(...) export(__VA_ARGS__)
 #endif

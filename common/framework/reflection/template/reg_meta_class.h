@@ -3,6 +3,10 @@
 //
 #include "meta.h"
 
+#ifdef accessCtrl
+#undef accessCtrl
+#endif
+
 #define classStart \
 static const meta_field fields[] = { \
     classEntry(classBase base, base)

@@ -7,3 +7,5 @@
 #undef classStart
 #undef classEntry
 #undef classEnd
+#undef classVtabDecl
+#undef classVtabBind
