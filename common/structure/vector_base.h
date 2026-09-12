@@ -3,8 +3,7 @@
 //
 
 #if !defined(VECTOR_BASE_H) || \
-(defined(VECTOR_BASE_H) && defined(classVtabDecl)) || \
-(defined(VECTOR_BASE_H) && defined(classVtabBind))
+(defined(VECTOR_BASE_H) && (defined(classVtabDecl) || defined(classVtabBind)))
 #ifndef VECTOR_BASE_H
 #define VECTOR_BASE_H
 #endif
@@ -38,22 +37,15 @@ accessEnd
 
 #include "clean_up_method.h"
 
-#ifndef classVtabDecl
-#ifndef classVtabBind
+#if !defined(classVtabDecl) && !defined(classVtabBind)
 #define classVtabDecl
 #include "vector_base.h"
 
-#if accessCtrl == $private
-#undef accessCtrl
-#define accessCtrl $protected
-#endif
-
 // 包含基类
 
-#include "def_class.h"
-#else
-#include "reg_meta_class.h"
 #endif
+
+#include "class_impl.h"
 #define className vector_base
 #define classBase objBase
 classStart
@@ -63,7 +55,5 @@ classStart
 classEnd
 
 #include "clean_up_class.h"
-
-#endif
 
 #endif
