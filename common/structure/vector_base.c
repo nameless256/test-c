@@ -2,7 +2,6 @@
 // Created by CodingDev on 2026/2/26.
 //
 
-#include "obj.h"
 #define accessCtrl $private
 #include "vector_base.h"
 #include "util.h"

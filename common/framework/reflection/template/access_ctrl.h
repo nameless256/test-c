@@ -2,6 +2,8 @@
 // Created by CodingDev on 2026/8/29.
 //
 
+#include "obj.h"
+
 #ifndef accessCtrl
 #define accessCtrl $public
 #endif
